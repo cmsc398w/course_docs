@@ -1,0 +1,45 @@
+version: '3'
+services:
+  # This is the student's workspace container where they'll run their diagnostic tools
+  workspace:
+    container_name: "student_workspace"
+    image: ubuntu:latest
+    privileged: true  # Needed for network tools
+    networks:
+      bridge_net:
+        ipv4_address: 10.0.0.10
+      app_db_net:
+        ipv4_address: 10.0.1.10
+    command: tail -f /dev/null  # Keeps container running
+
+  # This is the "application server" that can't reach the database
+  app_service:
+    container_name: "application_server"
+    image: ubuntu:latest
+    networks:
+      bridge_net:
+        ipv4_address: 10.0.0.20
+      app_db_net:
+        ipv4_address: 10.0.1.20
+    command: tail -f /dev/null
+    cap_add:
+      - NET_ADMIN
+
+  # This is the "database server" that should be reachable
+  db_service:
+    container_name: "database_server"
+    image: ubuntu:latest
+    networks:
+      app_db_net:
+        ipv4_address: 10.0.1.100
+    command: tail -f /dev/null
+
+networks:
+  bridge_net:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+  app_db_net:
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24
