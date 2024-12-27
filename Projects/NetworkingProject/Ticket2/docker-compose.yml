@@ -1,0 +1,43 @@
+version: '3'
+services:
+  blog-server:
+    build: 
+      context: .
+      dockerfile: Dockerfile.blog
+    container_name: blog-server
+    networks:
+      company_net:
+        ipv4_address: 10.0.0.100
+
+  dns-server:
+    image: alpine:3.19
+    container_name: dns-server
+    command: sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && tail -f /dev/null"
+    networks:
+      company_net:
+        ipv4_address: 10.0.0.53
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: client
+    dns: 10.0.0.54  # Wrong DNS server
+    dns_search: []
+    dns_opt:
+      - ndots:1
+    networks:
+      company_net:
+        ipv4_address: 10.0.0.10
+    command: >
+      sh -c "echo 'nameserver 10.0.0.54' > /etc/resolv.conf && 
+             echo 'options ndots:1' >> /etc/resolv.conf &&
+             tail -f /dev/null"
+
+networks:
+  company_net:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+    driver_opts:
+      com.docker.network.bridge.enable_dns: "false"

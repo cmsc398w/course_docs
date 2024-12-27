@@ -1,0 +1,9 @@
+FROM alpine:edge
+RUN sed -i 's/https/http/' /etc/apk/repositories
+RUN apk add --no-cache \
+    busybox-extras \
+    curl \
+    bind-tools \
+    iproute2
+
+CMD ["echo 'nameserver 10.0.0.54' > /etc/resolv.conf"]
