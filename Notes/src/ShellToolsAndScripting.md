@@ -1,13 +1,40 @@
-In this lecture, we will present some of the basics of using bash as a scripting language along with a number of shell tools that cover several of the most common tasks that you will be constantly performing in the command line.
+# Shell Scripting and Shell Tools
 
-# Shell Scripting
+## Shell Scripting
+
+In this lecture, we will present some of the basics of using bash as a scripting language along with a number of shell tools that cover several of the most common tasks that you will be constantly performing in the command line.
 
 So far we have seen how to execute commands in the shell and pipe them together. However, in many scenarios you will want to perform a series of commands and make use of control flow expressions like conditionals or loops.
 
 Shell scripts are the next step in complexity. Most shells have their own scripting language with variables, control flow and its own syntax. What makes shell scripting different from other scripting programming languages is that it is optimized for performing shell-related tasks. Thus, creating command pipelines, saving results into files, and reading from standard input are primitives in shell scripting, which makes it easier to use than general purpose scripting languages. For this section we will focus on bash scripting since it is the most common.
 
-To assign variables in bash, use the syntax `foo=bar` and access the value of the variable with `$foo`.
-Note that `foo = bar` will not work since it is interpreted as calling the `foo` program with arguments `=` and `bar`. In general, in shell scripts, the space character will perform argument splitting. This behavior can be confusing to use at first, so always check for that.
+### Creating a Basic Script
+
+Start by creating a script file using any text editor, here we will create `myscript.sh`.
+
+```bash
+#!/bin/bash
+
+echo "Hello world!"
+```
+
+The first line, called a shebang (`#!/bin/bash`), tells the system to use bash to execute this script. For better portability, use `#!/usr/bin/env bash`, which locates bash using the system's PATH variable. The second line executes the echo program with an argument of "Hello world!".
+
+Now, make the script executable and run it.
+
+```bash
+chmod +x myscript.sh
+./myscript.sh 
+```
+
+Here, we are adding execute permission for all to the myscript.sh file and then execute it. You should see "Hello world!" in your stdout.
+
+Commands will often return output using `STDOUT`, errors through `STDERR`, and a Return Code to report errors in a more script-friendly manner.
+The return code or exit status is the way scripts/commands have to communicate how execution went. A value of 0 usually means everything went OK; anything different from 0 means an error occurred. Commands can also be separated within the same line using a semicolon `;`.
+
+### Assigning Variables
+
+To assign variables in bash, use the syntax `foo=bar` and access the value of the variable with `$foo` or `${foo}`. Note that `foo = bar` will not work since it is interpreted as calling the `foo` program with arguments `=` and `bar`. In general, in shell scripts, the space character will perform argument splitting. This behavior can be confusing to use at first, so always check for that. All variables in bash will have global scope by default (unless noted otherwise).
 
 Strings in bash can be defined with `'` and `"` delimiters, but they are not equivalent. Strings delimited with `'` are string literals and will not substitute variable values whereas `"` delimited strings will.
 
@@ -19,18 +46,8 @@ echo '$foo'
 # prints $foo
 ```
 
-As with most programming languages, bash supports control flow techniques including `if`, `case`, `while` and `for`. Similarly, `bash` has functions that take arguments and can operate with them. Here is an example of a function that creates a directory and `cd`s into it.
-
-
-```bash
-mcd () {
-    mkdir -p "$1"
-    cd "$1"
-}
-```
-
-Here `$1` is the first argument to the script/function.
 Unlike other scripting languages, bash uses a variety of special variables to refer to arguments, error codes, and other relevant variables. Below is a list of some of them. A more comprehensive list can be found [here](https://tldp.org/LDP/abs/html/special-chars.html).
+
 - `$0` - Name of the script
 - `$1` to `$9` - Arguments to the script. `$1` is the first argument and so on.
 - `$@` - All the arguments
@@ -40,39 +57,120 @@ Unlike other scripting languages, bash uses a variety of special variables to re
 - `!!` - Entire last command, including arguments. A common pattern is to execute a command only for it to fail due to missing permissions; you can quickly re-execute the command with sudo by doing `sudo !!`
 - `$_` - Last argument from the last command. If you are in an interactive shell, you can also quickly get this value by typing `Esc` followed by `.` or `Alt+.`
 
-Commands will often return output using `STDOUT`, errors through `STDERR`, and a Return Code to report errors in a more script-friendly manner.
-The return code or exit status is the way scripts/commands have to communicate how execution went.
-A value of 0 usually means everything went OK; anything different from 0 means an error occurred.
+### Control Flow
 
-Exit codes can be used to conditionally execute commands using `&&` (and operator) and `||` (or operator), both of which are [short-circuiting](https://en.wikipedia.org/wiki/Short-circuit_evaluation) operators. Commands can also be separated within the same line using a semicolon `;`.
-The `true` program will always have a 0 return code and the `false` command will always have a 1 return code.
-Let's see some examples
+#### `if` / `else` statements
+
+Basic if statement syntax:
 
 ```bash
-false || echo "Oops, fail"
-# Oops, fail
-
-true || echo "Will not be printed"
-#
-
-true && echo "Things went well"
-# Things went well
-
-false && echo "Will not be printed"
-#
-
-true ; echo "This will always run"
-# This will always run
-
-false ; echo "This will always run"
-# This will always run
+if [[ condition ]]; then
+    echo "Condition is true"
+elif [[ another_condition ]]; then
+    echo "Second condition is true"
+else
+    echo "No conditions were true"
+fi
 ```
 
-Another common pattern is wanting to get the output of a command as a variable. This can be done with _command substitution_.
-Whenever you place `$( CMD )` it will execute `CMD`, get the output of the command and substitute it in place.
-For example, if you do `for file in $(ls)`, the shell will first call `ls` and then iterate over those values.
-A lesser known similar feature is _process substitution_, `<( CMD )` will execute `CMD` and place the output in a temporary file and substitute the `<()` with that file's name. This is useful when commands expect values to be passed by file instead of by STDIN. For example, `diff <(ls foo) <(ls bar)` will show differences between files in dirs  `foo` and `bar`.
+Common conditional tests:
 
+- `-e file`: File exists
+- `-d file`: Directory exists
+- `-f file`: Regular file exists
+- `-z string`: String is empty
+- `-n string`: String is not empty
+- `str1 = str2`: Strings are equal
+- `n1 -eq n2`: Numbers are equal
+- `n1 -lt n2`: Less than
+- `n1 -gt n2`: Greater than
+- `if ! [[ expr ]]; then`: Executes the expression and then negates the result
+- `if [[ ! expr ]]; then`: Negates the individual expression
+
+Exit codes can be used to conditionally execute commands using `&&` (and operator) and `||` (or operator), both of which are [short-circuiting](https://en.wikipedia.org/wiki/Short-circuit_evaluation) operators. The `true` program will always have a 0 return code and the `false` command will always have a 1 return code.
+
+#### For loops
+
+```bash
+# Iterate over a list
+for name in Alice Bob Charlie; do
+    echo "Hello, $name"
+done
+
+# Iterate over files
+for file in *.txt; do
+    echo "Processing $file"
+done
+
+# C-style for loop
+for ((i=0; i<5; i++)); do
+    echo "Count: $i"
+done
+```
+
+#### While loops
+
+```bash
+# Basic while loop
+count=0
+while [[ $count -lt 5 ]]; do
+    echo "Count: $count"
+    ((count++))
+done
+
+# Read file line by line
+while read -r line; do
+    echo "Line: $line"
+done < input.txt
+```
+
+### Functions
+
+Functions make your code more modular and reusable. Note that the function definition must be placed before any calls to the function. Local variables can be declared within the function definition using the `local` modifier (and can only be used in that function, as they have local scope). Unlike functions you see in other programming languages, Bash functions can't to return a value when called. When a bash function completes, its return value is the status of the last statement executed in the function, 0 for success and non-zero decimal number between 1 - 255 range for failure.
+
+```bash
+# Function definition
+check_file() {
+    local filename="$1"  # First argument
+    if [[ -f "$filename" ]]; then
+        echo "File exists"
+        return 0
+    else
+        echo "File not found"
+        return 1
+    fi
+}
+
+# Function usage
+check_file "example.txt" 
+```
+
+To return a non-integer value from a function, we have a few options. The simplest option is to assign the result of the function to a global variable:
+
+```bash
+#!/bin/bash
+
+func () {
+  toRet="my result"
+}
+
+func
+echo $toRet
+```
+
+Alternatively, we can send our return value to stdout using `echo` or similar and use _command substitution_ to get the output.Whenever you place `$( CMD )` it will execute `CMD`, get the output of the command and substitute it in place.
+
+```bash
+#!/bin/bash
+
+func () {
+  local toRet="my result"
+  echo "$toRet"
+}
+
+func_result="$(func)"
+echo $func_result
+```
 
 Since that was a huge information dump, let's see an example that showcases some of these features. It will iterate through the arguments we provide, `grep` for the string `foobar`, and append it to the file as a comment if it's not found.
 
@@ -94,9 +192,10 @@ for file in "$@"; do
 done
 ```
 
-In the comparison we tested whether `$?` was not equal to 0. Bash implements many comparisons of this sort - you can find a detailed list in the manpage for [`test`](https://www.man7.org/linux/man-pages/man1/test.1.html). When performing comparisons in bash, try to use double brackets `[[ ]]` in favor of simple brackets `[ ]`. Chances of making mistakes are lower although it won't be portable to `sh`. A more detailed explanation can be found [here](http://mywiki.wooledge.org/BashFAQ/031).
+### Providing Arguments
 
 When launching scripts, you will often want to provide arguments that are similar. Bash has ways of making this easier, expanding expressions by carrying out filename expansion. These techniques are often referred to as shell _globbing_.
+
 - Wildcards - Whenever you want to perform some sort of wildcard matching, you can use `?` and `*` to match one or any amount of characters respectively. For instance, given files `foo`, `foo1`, `foo2`, `foo10` and `bar`, the command `rm foo?` will delete `foo1` and `foo2` whereas `rm foo*` will delete all but `bar`.
 - Curly braces `{}` - Whenever you have a common substring in a series of commands, you can use curly braces for bash to expand this automatically. This comes in very handy when moving or converting files.
 
@@ -126,37 +225,17 @@ diff <(ls foo) <(ls bar)
 # > y
 ```
 
-<!-- Lastly, pipes `|` are a core feature of scripting. Pipes connect one program's output to the next program's input. We will cover them more in detail in the data wrangling lecture. -->
+### Shell Check
 
 Writing `bash` scripts can be tricky and unintuitive. There are tools like [shellcheck](https://github.com/koalaman/shellcheck) that will help you find errors in your sh/bash scripts.
 
-Note that scripts need not necessarily be written in bash to be called from the terminal. For instance, here's a simple Python script that outputs its arguments in reversed order:
+## Shell Tools
 
-```python
-#!/usr/local/bin/python
-import sys
-for arg in reversed(sys.argv[1:]):
-    print(arg)
-```
-
-The kernel knows to execute this script with a python interpreter instead of a shell command because we included a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) line at the top of the script.
-It is good practice to write shebang lines using the [`env`](https://www.man7.org/linux/man-pages/man1/env.1.html) command that will resolve to wherever the command lives in the system, increasing the portability of your scripts. To resolve the location, `env` will make use of the `PATH` environment variable we introduced in the first lecture.
-For this example the shebang line would look like `#!/usr/bin/env python`.
-
-Some differences between shell functions and scripts that you should keep in mind are:
-- Functions have to be in the same language as the shell, while scripts can be written in any language. This is why including a shebang for scripts is important.
-- Functions are loaded once when their definition is read. Scripts are loaded every time they are executed. This makes functions slightly faster to load, but whenever you change them you will have to reload their definition.
-- Functions are executed in the current shell environment whereas scripts execute in their own process. Thus, functions can modify environment variables, e.g. change your current directory, whereas scripts can't. Scripts will be passed by value environment variables that have been exported using [`export`](https://www.man7.org/linux/man-pages/man1/export.1p.html)
-- As with any programming language, functions are a powerful construct to achieve modularity, code reuse, and clarity of shell code. Often shell scripts will include their own function definitions.
-
-# Shell Tools
-
-
-## System Health / State
+### System Health / State
 
 You can easily view statistics of your system like CPU usage, memory usage, running processes, and more using the ``top``(table of processes) command. You can learn more on how to parse this output [here]([What the first five lines of Linux’s top command tell you](https://www.redhat.com/en/blog/interpret-top-output)).
 
-## Finding files
+### Finding files
 
 One of the most common repetitive tasks that every programmer faces is finding files or directories.
 All UNIX-like systems come packaged with [`find`](https://www.man7.org/linux/man-pages/man1/find.1.html), a great shell tool to find files. `find` will recursively search for files matching some criteria. Some examples:
@@ -171,8 +250,10 @@ find . -mtime -1
 # Find all zip files with size in range 500k to 10M
 find . -size +500k -size -10M -name '*.tar.gz'
 ```
+
 Beyond listing files, find can also perform actions over files that match your query.
 This property can be incredibly helpful to simplify what could be fairly monotonous tasks.
+
 ```bash
 # Delete all files with .tmp extension
 find . -name '*.tmp' -exec rm {} \;
@@ -196,9 +277,9 @@ Therefore one trade-off between the two is speed vs freshness.
 Moreover `find` and similar tools can also find files using attributes such as file size, modification time, or file permissions, while `locate` just uses the file name.
 A more in-depth comparison can be found [here](https://unix.stackexchange.com/questions/60205/locate-vs-find-usage-pros-and-cons-of-each-other).
 
-## Finding code
+### Finding code
 
-Finding files by name is useful, but quite often you want to search based on file *content*. 
+Finding files by name is useful, but quite often you want to search based on file _content_.
 A common scenario is wanting to search for all files that contain some pattern, along with where in those files said pattern occurs.
 To achieve this, most UNIX-like systems provide [`grep`](https://www.man7.org/linux/man-pages/man1/grep.1.html), a generic tool for matching patterns from the input text.
 `grep` is an incredibly valuable shell tool that we will cover in greater detail during the data wrangling lecture.
@@ -211,6 +292,7 @@ But `grep -R` can be improved in many ways, such as ignoring `.git` folders, usi
 Many `grep` alternatives have been developed, including [ack](https://github.com/beyondgrep/ack3), [ag](https://github.com/ggreer/the_silver_searcher) and [rg](https://github.com/BurntSushi/ripgrep).
 All of them are fantastic and pretty much provide the same functionality.
 For now I am sticking with ripgrep (`rg`), given how fast and intuitive it is. Some examples:
+
 ```bash
 # Find all python files where I used the requests library
 rg -t py 'import requests'

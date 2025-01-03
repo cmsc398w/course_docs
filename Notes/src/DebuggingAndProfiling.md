@@ -1,36 +1,44 @@
 Software will execute exactly as instructed, regardless of the programmer's intentions. Debugging bridges the gap between intended and actual behavior, and while this process can be time-intensive, there are effective techniques for identifying and resolving issues in buggy or resource-intensive code. Often times, debugging can be seen as a reactive process that slows down development, but implementing systematic debugging practices accelerates development cycles and reduces time spent tracking down issues.
 
 ## Debugging fundamentals
-### Print Debugging / Logging 
+
+### Print Debugging / Logging
+
 As Brian Kernighan noted in "Unix for Beginners" (1979), "The most effective debugging tool is still careful thought, coupled with judiciously placed print statements." The simplest approach to debugging involves adding print statements near suspected problem areas and iterating until sufficient information is gathered to identify the root cause. This method's simplicity and ease of implementation make it a preferred choice for many software engineers.
 
 Print debugging can be enhanced by implementing proper logging instead of simple print statements. Logging systems offer several advantages over basic printing: they can output to multiple destinations including files, sockets, and remote servers, making log review more convenient than scanning terminal output. They also support severity levels (INFO, DEBUG, WARN, ERROR) for filtered output, and they establish a logging infrastructure that can serve both immediate debugging needs and long-term monitoring requirements.
 
 If used correctly, logging can significantly increase development velocity. Below, are a few tips to help make logs more useful:
-* Use and setting log levels properly to allow you to filter out unnecessary messages (ex. diagnostic messages) to help you narrow down to the actual issue. 
-* Many libraries support structured logging, a method of organizing log data into a structured format, making it easier to analyze and interpret. Instead of recording raw text, structured logging uses key-value pairs which provide context and additional information about the logged event. The structured nature makes it easier to search, filter and analyze logs. 
-* You want to always be able to find the source code for any given log entry. This means using unique messages, prefixes, etc. which will help you trace a code path using log messages. This is more difficult if multiple places create the same log entry. 
+
+* Use and setting log levels properly to allow you to filter out unnecessary messages (ex. diagnostic messages) to help you narrow down to the actual issue.
+* Many libraries support structured logging, a method of organizing log data into a structured format, making it easier to analyze and interpret. Instead of recording raw text, structured logging uses key-value pairs which provide context and additional information about the logged event. The structured nature makes it easier to search, filter and analyze logs.
+* You want to always be able to find the source code for any given log entry. This means using unique messages, prefixes, etc. which will help you trace a code path using log messages. This is more difficult if multiple places create the same log entry.
 * Use a log viewer to make it easier to process and view logs
 * It can be useful (especially in a web-development context) to use a correlation id to track a request throughout the entire transaction.
-* Logging should not be competing with your software for resources. Use logging levels strategically as well as opting for accumulated metrics over textual logs as needed. 
+* Logging should not be competing with your software for resources. Use logging levels strategically as well as opting for accumulated metrics over textual logs as needed.
 * Never log sensitive information.
-* Only log what you need but finding out what you actually need is an iterative process. 
-#### External Logging 
+* Only log what you need but finding out what you actually need is an iterative process.
+
+#### External Logging
+
 As you start building larger software systems you will most probably run into dependencies that run as separate programs. Web servers, databases or message brokers are common examples of this kind of dependencies. When interacting with these systems it is often necessary to read their logs, since client side error messages might not suffice.
 
 Luckily, most programs write their own logs somewhere in your system. In UNIX systems, it is commonplace for programs to write their logs under `/var/log`. For instance, the [NGINX](https://www.nginx.com/) webserver places its logs under `/var/log/nginx`. More recently, systems have started using a **system log**, which is increasingly where all of your log messages go. Most (but not all) Linux systems use `systemd`, a system daemon that controls many things in your system such as which services are enabled and running. `systemd` places the logs under `/var/log/journal` in a specialized format and you can use the [`journalctl`](https://www.man7.org/linux/man-pages/man1/journalctl.1.html) command to display the messages. Similarly, on macOS there is still `/var/log/system.log` but an increasing number of tools use the system log, that can be displayed with [`log show`](https://www.manpagez.com/man/1/log/). On most UNIX systems you can also use the [`dmesg`](https://www.man7.org/linux/man-pages/man1/dmesg.1.html) command to access the kernel log.
+
 ### Debuggers
+
 When print debugging is not enough you should use a debugger. Debuggers are programs that let you interact with the execution of a program, allowing the following:
 
-- Halt execution of the program when it reaches a certain line.
-- Step through the program one instruction at a time.
-- Inspect values of variables after the program crashed.
-- Conditionally halt the execution when a given condition is met.
-- And many more advanced features
+* Halt execution of the program when it reaches a certain line.
+* Step through the program one instruction at a time.
+* Inspect values of variables after the program crashed.
+* Conditionally halt the execution when a given condition is met.
+* And many more advanced features
 
 Many programming languages come with some form of debugger.
 
-#### Debugger Concepts 
+#### Debugger Concepts
+
 The power of a debugger lies in its ability to give developers precise control over program execution and deep visibility into program state. At its core, a debugger allows developers to pause program execution at specific points called breakpoints. These breakpoints can be set on any line of code, and when the program reaches that line, execution halts, allowing developers to examine the current state of the program.
 
 One of the most fundamental concepts in debugging is stepping through code execution. Debuggers typically offer several stepping operations. "Step Over" advances the program by a single line of code, executing any function calls completely before stopping at the next line. "Step Into" is more granular – when encountering a function call, it enters that function and stops at its first line, allowing developers to debug the function's internal behavior. "Step Out" continues execution until the current function returns, which is particularly useful when you've stepped into a function but want to return to the calling context.
@@ -51,7 +59,8 @@ Multi-threaded debugging support is essential for modern applications that utili
 
 Remote debugging capabilities extend these debugging features to programs running on different machines or devices. This is particularly important when debugging deployed applications or programs running on embedded systems where direct access to the execution environment might be limited.
 
-#### Specialized Tools 
+#### Specialized Tools
+
 Even if what you are trying to debug is a black box binary there are tools that can help you with that. Whenever programs need to perform actions that only the kernel can, they use [System Calls](https://en.wikipedia.org/wiki/System_call). There are commands that let you trace the syscalls your program makes. In Linux there's [`strace`](https://www.man7.org/linux/man-pages/man1/strace.1.html) and macOS and BSD have [`dtrace`](http://dtrace.org/blogs/about/). `dtrace` can be tricky to use because it uses its own `D` language, but there is a wrapper called [`dtruss`](https://www.manpagez.com/man/1/dtruss/) that provides an interface more similar to `strace` (more details [here](https://8thlight.com/blog/colin-jones/2015/11/06/dtrace-even-better-than-strace-for-osx.html)).
 
 Below are some examples of using `strace` or `dtruss` to show [`stat`](https://www.man7.org/linux/man-pages/man2/stat.2.html) syscall traces for an execution of `ls`. For a deeper dive into `strace`, [this article](https://blogs.oracle.com/linux/strace-the-sysadmins-microscope-v2) and [this zine](https://jvns.ca/strace-zine-unfolded.pdf) are good reads.
@@ -66,12 +75,15 @@ sudo dtruss -t lstat64_extended ls -l > /dev/null
 Under some circumstances, you may need to look at the network packets to figure out the issue in your program. Tools like [`tcpdump`](https://www.man7.org/linux/man-pages/man1/tcpdump.1.html) and [Wireshark](https://www.wireshark.org/) are network packet analyzers that let you read the contents of network packets and filter them based on different criteria.
 
 For web development, the Chrome/Firefox developer tools are quite handy. They feature a large number of tools, including:
-- Source code - Inspect the HTML/CSS/JS source code of any website.
-- Live HTML, CSS, JS modification - Change the website content, styles and behavior to test (you can see for yourself that website screenshots are not valid proofs).
-- Javascript shell - Execute commands in the JS REPL.
-- Network - Analyze the requests timeline.
-- Storage - Look into the Cookies and local application storage.
-#### Static Analysis 
+
+* Source code - Inspect the HTML/CSS/JS source code of any website.
+* Live HTML, CSS, JS modification - Change the website content, styles and behavior to test (you can see for yourself that website screenshots are not valid proofs).
+* Javascript shell - Execute commands in the JS REPL.
+* Network - Analyze the requests timeline.
+* Storage - Look into the Cookies and local application storage.
+
+#### Static Analysis
+
 For some issues you do not need to run any code. For example, just by carefully looking at a piece of code you could realize that your loop variable is shadowing an already existing variable or function name; or that a program reads a variable before defining it. Here is where [static analysis](https://en.wikipedia.org/wiki/Static_program_analysis) tools come into play. Static analysis programs take source code as input and analyze it using coding rules to reason about its correctness.
 
 In the following Python snippet there are several mistakes. First, our loop variable `foo` shadows the previous definition of the function `foo`. We also wrote `baz` instead of `bar` in the last line, so the program will crash after completing the `sleep` call (which will take one minute).
@@ -113,19 +125,22 @@ This is often called **code linting** and it can also be used to display other t
 A complementary tool to stylistic linting are code formatters such as [`black`](https://github.com/psf/black) for Python, `gofmt` for Go, `rustfmt` for Rust or [`prettier`](https://prettier.io/) for JavaScript, HTML and CSS.
 These tools autoformat your code so that it's consistent with common stylistic patterns for the given programming language.
 Although you might be unwilling to give stylistic control about your code, standardizing code format will help other people read your code and will make you better at reading other people's (stylistically standardized) code.
+
 ## Profiling
+
 Even if your code functionally behaves as you would expect, that might not be good enough if it takes all your CPU or memory in the process. Algorithms classes often teach big _O_ notation but not how to find hot spots in your programs. Since [premature optimization is the root of all evil](http://wiki.c2.com/?PrematureOptimization), you should learn about profilers and monitoring tools. They will help you understand which parts of your program are taking most of the time and/or resources so you can focus on optimizing those parts.
 
-### Timing 
+### Timing
+
 Similarly to the debugging case, in many scenarios it can be enough to just print the wall clock time it took your code between two points. However, wall clock time can be misleading since your computer might be running other processes at the same time or waiting for events to happen. It is common for tools to make a distinction between _Real_, _User_ and _Sys_ time. In general, _User_ + _Sys_ tells you how much time your process actually spent in the CPU (more detailed explanation [here](https://stackoverflow.com/questions/556405/what-do-real-user-and-sys-mean-in-the-output-of-time1)).
 
-- _Real_ - Wall clock elapsed time from start to finish of the program, including the time taken by other processes and time taken while blocked (e.g. waiting for I/O or network)
-- _User_ - Amount of time spent in the CPU running user code
-- _Sys_ - Amount of time spent in the CPU running kernel code
+* _Real_ - Wall clock elapsed time from start to finish of the program, including the time taken by other processes and time taken while blocked (e.g. waiting for I/O or network)
+* _User_ - Amount of time spent in the CPU running user code
+* _Sys_ - Amount of time spent in the CPU running kernel code
 
 For example, try running a command that performs an HTTP request and prefixing it with [`time`](https://www.man7.org/linux/man-pages/man1/time.1.html). Under a slow connection it can take over 2 seconds for the request to complete but the process itself will only take ~15ms of CPU user time and 12ms of kernel CPU time.
 
-### CPU Profiling 
+### CPU Profiling
   
 Most of the time when people refer to _profilers_ they actually mean _CPU profilers_,  which are the most common. There are two main types of CPU profilers: _tracing_ and _sampling_ profilers. Tracing profilers keep a record of every function call your program makes whereas sampling profilers probe your program periodically (commonly every millisecond) and record the program's stack. They use these records to present aggregate statistics of what your program spent the most time doing. [Here](https://jvns.ca/blog/2017/12/17/how-do-ruby---python-profilers-work-) is a good intro article if you want more detail on this topic.
 
@@ -174,7 +189,6 @@ $ python -m cProfile -s tottime grep.py 1000 '^(import|\s*def)[^,]*$' *.py
 [omitted lines]
 ```
 
-
 A caveat of Python's `cProfile` profiler (and many profilers for that matter) is that they display time per function call. That can become unintuitive really fast, especially if you are using third party libraries in your code since internal function calls are also accounted for.
 A more intuitive way of displaying profiling information is to include the time taken per line of code, which is what _line profilers_ do.
 
@@ -220,6 +234,7 @@ Line #  Hits         Time  Per Hit   % Time  Line Contents
 10        25        685.0     27.4      0.1      for url in s.find_all('a'):
 11        24         33.0      1.4      0.0          urls.append(url['href'])
 ```
+
 ### Memory
 
 In languages like C or C++ memory leaks can cause your program to never release memory that it doesn't need anymore.
@@ -258,11 +273,10 @@ As it was the case for `strace` for debugging, you might want to ignore the spec
 The [`perf`](https://www.man7.org/linux/man-pages/man1/perf.1.html) command abstracts CPU differences away and does not report time or memory, but instead it reports system events related to your programs.
 For example, `perf` can easily report poor cache locality, high amounts of page faults or livelocks. Here is an overview of the command:
 
-- `perf list` - List the events that can be traced with perf
-- `perf stat COMMAND ARG1 ARG2` - Gets counts of different events related to a process or command
-- `perf record COMMAND ARG1 ARG2` - Records the run of a command and saves the statistical data into a file called `perf.data`
-- `perf report` - Formats and prints the data collected in `perf.data`
-
+* `perf list` - List the events that can be traced with perf
+* `perf stat COMMAND ARG1 ARG2` - Gets counts of different events related to a process or command
+* `perf record COMMAND ARG1 ARG2` - Records the run of a command and saves the statistical data into a file called `perf.data`
+* `perf report` - Formats and prints the data collected in `perf.data`
 
 ## Resource Monitoring
 
@@ -270,15 +284,15 @@ Sometimes, the first step towards analyzing the performance of your program is t
 Programs often run slowly when they are resource constrained, e.g. without enough memory or on a slow network connection.
 There are a myriad of command line tools for probing and displaying different system resources like CPU usage, memory usage, network, disk usage and so on.
 
-- **General Monitoring** - Probably the most popular is [`htop`](https://htop.dev/), which is an improved version of [`top`](https://www.man7.org/linux/man-pages/man1/top.1.html).
-`htop` presents various statistics for the currently running processes on the system. `htop` has a myriad of options and keybinds, some useful ones  are: `<F6>` to sort processes, `t` to show tree hierarchy and `h` to toggle threads. 
+* **General Monitoring** - Probably the most popular is [`htop`](https://htop.dev/), which is an improved version of [`top`](https://www.man7.org/linux/man-pages/man1/top.1.html).
+`htop` presents various statistics for the currently running processes on the system. `htop` has a myriad of options and keybinds, some useful ones  are: `<F6>` to sort processes, `t` to show tree hierarchy and `h` to toggle threads.
 See also [`glances`](https://nicolargo.github.io/glances/) for similar implementation with a great UI. For getting aggregate measures across all processes, [`dstat`](http://dag.wiee.rs/home-made/dstat/) is another nifty tool that computes real-time resource metrics for lots of different subsystems like I/O, networking, CPU utilization, context switches, &c.
-- **I/O operations** - [`iotop`](https://www.man7.org/linux/man-pages/man8/iotop.8.html) displays live I/O usage information and is handy to check if a process is doing heavy I/O disk operations
-- **Disk Usage** - [`df`](https://www.man7.org/linux/man-pages/man1/df.1.html) displays metrics per partitions and [`du`](http://man7.org/linux/man-pages/man1/du.1.html) displays **d**isk **u**sage per file for the current directory. In these tools the `-h` flag tells the program to print with **h**uman readable format.
+* **I/O operations** - [`iotop`](https://www.man7.org/linux/man-pages/man8/iotop.8.html) displays live I/O usage information and is handy to check if a process is doing heavy I/O disk operations
+* **Disk Usage** - [`df`](https://www.man7.org/linux/man-pages/man1/df.1.html) displays metrics per partitions and [`du`](http://man7.org/linux/man-pages/man1/du.1.html) displays **d**isk **u**sage per file for the current directory. In these tools the `-h` flag tells the program to print with **h**uman readable format.
 A more interactive version of `du` is [`ncdu`](https://dev.yorhel.nl/ncdu) which lets you navigate folders and delete files and folders as you navigate.
-- **Memory Usage** - [`free`](https://www.man7.org/linux/man-pages/man1/free.1.html) displays the total amount of free and used memory in the system. Memory is also displayed in tools like `htop`.
-- **Open Files** - [`lsof`](https://www.man7.org/linux/man-pages/man8/lsof.8.html)  lists file information about files opened by processes. It can be quite useful for checking which process has opened a specific file.
-- **Network Connections and Config** - [`ss`](https://www.man7.org/linux/man-pages/man8/ss.8.html) lets you monitor incoming and outgoing network packets statistics as well as interface statistics. A common use case of `ss` is figuring out what process is using a given port in a machine. For displaying routing, network devices and interfaces you can use [`ip`](http://man7.org/linux/man-pages/man8/ip.8.html). Note that `netstat` and `ifconfig` have been deprecated in favor of the former tools respectively.
-- **Network Usage** -  [`nethogs`](https://github.com/raboof/nethogs) and [`iftop`](http://www.ex-parrot.com/pdw/iftop/) are good interactive CLI tools for monitoring network usage.
+* **Memory Usage** - [`free`](https://www.man7.org/linux/man-pages/man1/free.1.html) displays the total amount of free and used memory in the system. Memory is also displayed in tools like `htop`.
+* **Open Files** - [`lsof`](https://www.man7.org/linux/man-pages/man8/lsof.8.html)  lists file information about files opened by processes. It can be quite useful for checking which process has opened a specific file.
+* **Network Connections and Config** - [`ss`](https://www.man7.org/linux/man-pages/man8/ss.8.html) lets you monitor incoming and outgoing network packets statistics as well as interface statistics. A common use case of `ss` is figuring out what process is using a given port in a machine. For displaying routing, network devices and interfaces you can use [`ip`](http://man7.org/linux/man-pages/man8/ip.8.html). Note that `netstat` and `ifconfig` have been deprecated in favor of the former tools respectively.
+* **Network Usage** -  [`nethogs`](https://github.com/raboof/nethogs) and [`iftop`](http://www.ex-parrot.com/pdw/iftop/) are good interactive CLI tools for monitoring network usage.
 
 If you want to test these tools you can also artificially impose loads on the machine using the [`stress`](https://linux.die.net/man/1/stress) command.
