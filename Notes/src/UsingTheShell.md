@@ -10,6 +10,14 @@ Nearly all platforms you can get your hands on have a shell in one form or anoth
 
 In this lecture, we will focus on the Bourne Again SHell, or “bash” for short. This is one of the most widely used shells, and its syntax is similar to what you will see in many other shells. To open a shell prompt (where you can type commands), you first need a terminal. Your device probably shipped with one installed, or you can install one fairly easily.
 
+### Terminology Distinction
+
+- A **Traditional Terminal** is a historical computing device shaped like a desktop computer (keyboard and screen) that connected through wiring to an actual computer that was shared among terminal users. The Terminal used a communication protocol to convey information to and from the actual computer and display information on the screen. Traditional Terminals had only keyboard/typing interfaces as they predated the invention of the mouse/trackpad. Terminals had a variety of capabilities that evolved over time with later terminals adding more colors, font styles, additional characters beyond ASCII, and so forth. [Wikipedia: Computer Terminal](https://en.wikipedia.org/wiki/Computer_terminal)
+
+- A **Modern Terminal Emulator** is a graphical program that acts more or less like a Traditional Terminal and present a primarily text-based interface that focuses on typing.  Modern Terminal Emulators are software programs and there are a lot of them : Windows has CMD.exe and Powershell built in with Putty and others to download, MacOS has its Terminal.app built in with iTerm2 as a popular download, Linux has dozens including xTerm, Gnome Terminal, Konsole, Kitty, Ghostty, Foot, Alacrity, etc. [Wikipedia: Terminal Emulator](https://en.wikipedia.org/wiki/Terminal_emulator)
+
+- A **Shell** or Command-line Interface is a program that is typically started when logging into a Terminal or Terminal Emulator. It interprets typed commands that allows the user to run programs, navigate directories, and interact with the underlying computer. Shells provide conveniences such as tab completion, command history, and often its own semi-standardized programming language allowing for "Shell Scripts" to be created.  Windows has its own Shells, traditional CMD.exe and Powershell, while MacOS and Linux have dozens of Shells in the Unix tradition, the most popular being BASH (Bourne Again Shell), ZSH (Z-Shell), and TCSH. [Wikipedia:Command-Line Interface](https://en.wikipedia.org/wiki/Command-line_interface)
+
 ## Using the shell
 
 A terminal (or these days, more aptly, a terminal emulator) is a wrapper program which runs a shell. When you launch the terminal, you will see a prompt that will look like this:
