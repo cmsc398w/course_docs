@@ -179,10 +179,9 @@ hello
 mdurrani@MDXPS139380:~/stic$
 ```
 
-Demonstrated in the example above, `cat` is a program that con`cat`enates files. When given file names as arguments, it prints the contents of each of the files in sequence to its output stream. But when `cat` is not given any arguments, it prints contents from its input stream to its output stream (like in the third example above).
+Demonstrated in the example above, `cat` is a program that con`cat`enates files. When given file names as arguments, it prints the contents of each of the files in sequence to its output stream. But when `cat` is not given any arguments, it prints contents from its input stream to its output stream (like in the third example above). You can also use `>>` to append to a file adding output to the end of an existing file.
 
-You can also use `>>` to append to a file. Where this kind of input/output redirection really shines is in the use of _pipes_. The `|` operator lets you "chain" programs such that the output of one is the
-input of another:
+Where this kind of input/output redirection really shines is in the use of _pipes_. The `|` operator lets you "chain" programs such that the output of one is the input of another:
 
 ```console
 missing:~$ ls -l / | tail -n1
@@ -190,3 +189,16 @@ drwxr-xr-x 1 root  root  4096 Jun 20  2019 var
 missing:~$ curl --head --silent google.com | grep --ignore-case content-length | cut --delimiter=' ' -f2
 219
 ```
+
+This example retrieves data from a website the uses a combination of `grep / cut` to extract the total number of bytes in the output.
+
+Pipes allow any two programs that deal with text input/output to be combined. Their presence has led to a proliferation of "small, sharp tools" in UNIX: programs that do a specific, limited set of operations well. For text processing, the most important of these are roughly.
+
+- `grep` to search files for specific text
+- `sed` to do modest text manipulations
+- `awk` to do programmatic text manipulations
+- `find` to locate files with specific attributes
+- `cut / paste` to do limited field selection / addition
+- `xargs` to treat output as arguments to another command
+
+The power of pipes becomes apparent once you get acquainted with these programs but that will take time and be the subject of later lectures.
