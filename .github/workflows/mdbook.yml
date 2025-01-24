@@ -27,21 +27,24 @@ jobs:
           rustup update
           cargo install --version ${MDBOOK_VERSION} mdbook
 
+      - name: Install mdbook-admonition
+        run: |
+          cargo install mdbook-admonish
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
       - name: Build with mdBook
         run: |
-          ls
-          cd Notes
-          ls
-          mdbook build
+          mdbook build documentation/
+          mdbook-admonish documentation/book
+
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: Notes/book
+          path: documentation/book
 
   deploy:
     environment:
