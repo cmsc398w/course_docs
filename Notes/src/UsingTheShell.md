@@ -142,9 +142,22 @@ cmsc398w:~$ man ls
 
 ### Searching man pages
 
-Often times, you will want to search for a specific flag or action within the man pages for a command. To do this, you can type ``/[regex]`` where ``[regex]`` is a valid regular expression and then hit enter. For example, if I wanted to search for the flag ``-B``, I would type ``/-B``.
+Often times, you will want to search for a specific flag or action within the man pages for a command. To do this, you can type ``/[regex]`` where ``[regex]`` is a valid regular expression and then hit enter. For example, if I wanted to search for the flag ``-B``, I would type ``/-B``. Manual pages are usually displayed via a *pager*, a program that displays text. The most common pager is `less` and typing `man less` will show information about that program and its many other shortcut keys.
 
 Other times, it may be more convenient to use the online versions of these man pages, which can be found here: <https://man7.org/linux/man-pages/>. Alternatively, you could use ``curl cheat.sh/[yourcommand]``, which uses cheat.sh to give you nice examples for the command you want to run.
+
+If you are unsure of what command / function is of interest, you can search all manual pages for a word or phrase via either of `man -k <query_phrase>` or `apropos <query_phrase>` which will show one-line summaries of relevant manual pages.
+```console
+mdurrani@MDXPS139380:~/stic$ apropos bash
+bash (1)             - GNU Bourne-Again SHell
+bashbug (1)          - report a bug in bash
+screenfetch (1)      - The Bash Screenshot Information Tool
+
+mdurrani@MDXPS139380:~/stic$ apropos gcc
+avr-gcc (1)          - GNU project C and C++ compiler
+gcc (1)              - GNU project C and C++ compiler
+gccmakedep (1)       - create dependencies in makefiles using 'gcc -M'
+```
 
 [TLDR pages](https://tldr.sh/) are a nifty complementary solution that focuses on giving example use cases of a command so you can quickly figure out which options to use.
 
@@ -166,10 +179,9 @@ hello
 mdurrani@MDXPS139380:~/stic$
 ```
 
-Demonstrated in the example above, `cat` is a program that con`cat`enates files. When given file names as arguments, it prints the contents of each of the files in sequence to its output stream. But when `cat` is not given any arguments, it prints contents from its input stream to its output stream (like in the third example above).
+Demonstrated in the example above, `cat` is a program that con`cat`enates files. When given file names as arguments, it prints the contents of each of the files in sequence to its output stream. But when `cat` is not given any arguments, it prints contents from its input stream to its output stream (like in the third example above). You can also use `>>` to append to a file adding output to the end of an existing file.
 
-You can also use `>>` to append to a file. Where this kind of input/output redirection really shines is in the use of _pipes_. The `|` operator lets you "chain" programs such that the output of one is the
-input of another:
+Where this kind of input/output redirection really shines is in the use of _pipes_. The `|` operator lets you "chain" programs such that the output of one is the input of another:
 
 ```console
 missing:~$ ls -l / | tail -n1
@@ -177,3 +189,16 @@ drwxr-xr-x 1 root  root  4096 Jun 20  2019 var
 missing:~$ curl --head --silent google.com | grep --ignore-case content-length | cut --delimiter=' ' -f2
 219
 ```
+
+This example retrieves data from a website the uses a combination of `grep / cut` to extract the total number of bytes in the output.
+
+Pipes allow any two programs that deal with text input/output to be combined. Their presence has led to a proliferation of "small, sharp tools" in UNIX: programs that do a specific, limited set of operations well. For text processing, the most important of these are roughly.
+
+- `grep` to search files for specific text
+- `sed` to do modest text manipulations
+- `awk` to do programmatic text manipulations
+- `find` to locate files with specific attributes
+- `cut / paste` to do limited field selection / addition
+- `xargs` to treat output as arguments to another command
+
+The power of pipes becomes apparent once you get acquainted with these programs but that will take time and be the subject of later lectures.
