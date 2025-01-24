@@ -21,7 +21,7 @@ echo "Hello world!"
 The first line, called a *shebang* (`#!/bin/bash`), tells the system to use bash to execute this script. For better portability, use `#!/usr/bin/env bash`, which locates bash using the system's PATH variable. The second line executes the echo program with an argument of "Hello world!".
 
 ```admonish info
-The *shebang* mentioned earlier is short of "Shell Bang" as the `!` mark is historically referred to as a "bang" in computing circles.  The first line of scripts will have this syntax though `bash` may be replaced by other script interpreters depending on the programmign language used int the script. Some common examples are
+The *shebang* mentioned earlier is short of "Shell Bang" as the `!` mark is historically referred to as a "bang" in computing circles.  The first line of scripts will have this syntax though `bash` may be replaced by other script interpreters depending on the programming language used int the script. Some common examples are
 
 | Shebang               | Interpreter / Language           |
 |-----------------------|----------------------------------|
@@ -40,7 +40,7 @@ chmod +x myscript.sh
 
 Here, we are adding execute permission for all to the myscript.sh file and then execute it. You should see "Hello world!" in your stdout.
 
-Commands will often produce output using Standard Output (`STDOUT`, defaults to the screen), errors through Standard Error (`STDERR`, defaults to the screen), accept input through Standard Input (`STDIN`, defaults to typed intput), and a Return Code (also called Exit Code) to report errors in a more script-friendly manner.  The return code is the way scripts/commands communicate the success or failure of their execution. A value of 0 usually means everything went OK; anything different from 0 means an error occurred. Commands can also be separated within the same line using a semicolon `;`.
+Commands will often produce output using Standard Output (`STDOUT`, defaults to the screen), errors through Standard Error (`STDERR`, defaults to the screen), accept input through Standard Input (`STDIN`, defaults to typed input), and a Return Code (also called Exit Code) to report errors in a more script-friendly manner.  The return code is the way scripts/commands communicate the success or failure of their execution. A value of 0 usually means everything went OK; anything different from 0 means an error occurred. Commands can also be separated within the same line using a semicolon `;`.
 
 ### Assigning Variables
 
@@ -99,7 +99,6 @@ Common conditional tests:
 
 Exit codes can be used to conditionally execute commands using `&&` (and operator) and `||` (or operator), both of which are [short-circuiting](https://en.wikipedia.org/wiki/Short-circuit_evaluation) operators. The `true` program will always have a 0 return code and the `false` command will always have a 1 return code.
 
-
 ```admonish info
 Both the following syntaxes will be honored for conditions in BASH scripts:
 1. `if [ condition ]; then ...; fi`  : Historical
@@ -130,7 +129,6 @@ for i in $(seq 0 5 30); do
     echo i is $i; 
 done
 ```
-
 
 #### While loops
 
@@ -180,6 +178,7 @@ echo Function returned $?
 ```
 
 Note several features
+
 - Functions in shell scripts do not declare a parameter list making their prototypes less informative than in modern programming languages.
 - The argument to the function is obtained via the `$1` automatic variable; functions called with several arguments will have `$2` and so on populated and the `$#` variable indicates how many arguments were passed.
 - The final `echo` command shows the return value of the function using the built-in `$?` mentioned earlier which contains the last return code from a function or child process.
@@ -197,7 +196,7 @@ func
 echo $toRet
 ```
 
-Alternatively, we can send our return value to stdout using `echo` or similar and use _command substitution_ to get the output.Whenever you place `$( CMD )` it will execute `CMD`, get the output of the command and substitute it in place.
+Alternatively, we can send our return value to stdout using `echo` or similar and use *command substitution* to get the output.Whenever you place `$( CMD )` it will execute `CMD`, get the output of the command and substitute it in place.
 
 ```bash
 #!/bin/bash
@@ -233,7 +232,7 @@ done
 
 ### Shell Globs and Script Arguments
 
-When launching scripts, you will often want to provide arguments that are similar. Bash has ways of making this easier, expanding expressions by carrying out filename expansion. These techniques are often referred to as shell _globbing_.
+When launching scripts, you will often want to provide arguments that are similar. Bash has ways of making this easier, expanding expressions by carrying out filename expansion. These techniques are often referred to as shell *globbing*.
 
 - Wildcards - Whenever you want to perform some sort of wildcard matching, you can use `?` and `*` to match one or any amount of characters respectively. For instance, given files `foo`, `foo1`, `foo2`, `foo10` and `bar`, the command `rm foo?` will delete `foo1` and `foo2` whereas `rm foo*` will delete all but `bar`.
 - Curly braces `{}` - Whenever you have a common substring in a series of commands, you can use curly braces for bash to expand this automatically. This comes in very handy when moving or converting files.
@@ -265,7 +264,7 @@ diff <(ls foo) <(ls bar)
 ```
 
 ```admonish info
-Shell Globs and Regular Expressions are related but distinct methods to specify a pattern to be matched. Globs are tailored best to easily do the most common types of file name matching like all `*.txt` files (all text files). Regular expressions allow finer-grained control over matching at the expense being somewhat longer to specify.  Some programmign libraries allow you to specify use of whichever is more convenient such as Python which has a [glob](https://docs.python.org/3/library/glob.html) library for file matching and a regular expression library in [re](https://docs.python.org/3/library/re.html).
+Shell Globs and Regular Expressions are related but distinct methods to specify a pattern to be matched. Globs are tailored best to easily do the most common types of file name matching like all `*.txt` files (all text files). Regular expressions allow finer-grained control over matching at the expense being somewhat longer to specify.  Some programming libraries allow you to specify use of whichever is more convenient such as Python which has a [glob](https://docs.python.org/3/library/glob.html) library for file matching and a regular expression library in [re](https://docs.python.org/3/library/re.html).
 ```
 
 ### Shell Check
@@ -383,7 +382,7 @@ A more in-depth comparison can be found [here](https://unix.stackexchange.com/qu
 
 ### Finding code
 
-Finding files by name is useful, but quite often you want to search based on file _content_.
+Finding files by name is useful, but quite often you want to search based on file *content*.
 A common scenario is wanting to search for all files that contain some pattern, along with where in those files said pattern occurs.
 To achieve this, most UNIX-like systems provide [`grep`](https://www.man7.org/linux/man-pages/man1/grep.1.html), a generic tool for matching patterns from the input text.
 `grep` is an incredibly valuable shell tool that we will cover in greater detail during the data wrangling lecture.
@@ -443,7 +442,7 @@ There are many simple ways that you could do this, such as writing shell aliases
 
 As with the theme of this course, you often want to optimize for the common case.
 Finding frequent and/or recent files and directories can be done through tools like [`fasd`](https://github.com/clvv/fasd) and [`autojump`](https://github.com/wting/autojump).
-Fasd ranks files and directories by [_frecency_](https://web.archive.org/web/20210421120120/https://developer.mozilla.org/en-US/docs/Mozilla/Tech/Places/Frecency_algorithm), that is, by both _frequency_ and _recency_.
-By default, `fasd` adds a `z` command that you can use to quickly `cd` using a substring of a _frecent_ directory. For example, if you often go to `/home/user/files/cool_project` you can simply use `z cool` to jump there. Using autojump, this same change of directory could be accomplished using `j cool`.
+Fasd ranks files and directories by [*frecency*](https://web.archive.org/web/20210421120120/https://developer.mozilla.org/en-US/docs/Mozilla/Tech/Places/Frecency_algorithm), that is, by both *frequency* and *recency*.
+By default, `fasd` adds a `z` command that you can use to quickly `cd` using a substring of a *frecent* directory. For example, if you often go to `/home/user/files/cool_project` you can simply use `z cool` to jump there. Using autojump, this same change of directory could be accomplished using `j cool`.
 
 More complex tools exist to quickly get an overview of a directory structure: [`tree`](https://linux.die.net/man/1/tree), [`broot`](https://github.com/Canop/broot) or even full fledged file managers like [`nnn`](https://github.com/jarun/nnn), [`ranger`](https://github.com/ranger/ranger), and [midnight commander `mc`](https://midnight-commander.org/).
