@@ -15,4 +15,4 @@
 
 # Projects
 
-- [System Monitoring Tool](./Projects/SystemMonitoring/ProjectDescription.md)
+- [System Monitoring Dashboard](./Projects/SystemMonitoring/ProjectDescription.md)

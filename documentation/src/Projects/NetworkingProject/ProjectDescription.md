@@ -1,14 +1,23 @@
-# System Monitor Dashboard Project
+# System Monitoring Dashboard Project
+
 ## Overview
+
 In this project, you will create a basic system monitoring tool that runs in the terminal. The tool will display real-time system statistics and allow for simple historical data analysis. This project will help you practice shell scripting, data collection, and basic data analysis using common Unix tools.
+
 ## Requirements
+
 ### 0. Script Requirements
+
 Each script must:
+
 - Make use of variables, conditionals, loops, functions, variable substitutions, and other shell syntax as demonstrated in other parts of the course
 - Be commented, and clearly written
 - Implement the –help flag
+
 ### 1. Data Collection Script
+
 Create a bash script named `collect_stats.sh` that:
+
 - Collects CPU and memory usage
 - Parse and format the data into a simple CSV format
 - Appends the collected data to a log file with a timestamp
@@ -39,6 +48,7 @@ Create a bash script named `query_stats.sh` that:
 - It is strongly suggested that UNIX text processing tools be used to complete the required functionality; the instructor solution relies heavily on awk
 
 Sample output is show below:
+
 ```console
 # error cases for underspecifying the command line invocation
 >> bash query_stats.sh
@@ -98,7 +108,7 @@ Press Ctrl+C to exit
 
 ## Grading Criteria
 
-### Script (30pts):
+### Script (30pts)
 
 - Clearly written, and commented code (5 points per script)
 - Meets specification laid out in the requirements section. (5 points per script)
