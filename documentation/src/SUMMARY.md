@@ -1,6 +1,6 @@
 # Summary
 
-- [Syllabus](./CourseInfo/syllabus.md)
+- [Syllabus](./CourseInfo/Syllabus.md)
 - [Setup Guide](./CourseInfo/SetupGuide.md)
 
 # Notes
