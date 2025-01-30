@@ -12,41 +12,43 @@ Most letters and numbers in a regex pattern match themselves exactly. For exampl
 
 ### Special Characters
 
-`.` - Matches any single character except newline
-`^` - Matches the start of a line
-`$` - Matches the end of a line
-`*` - Matches zero or more occurrences of the previous character
-`+` - Matches one or more occurrences of the previous character
-`?` - Makes the previous character optional
-`\` - Escapes special characters (use `\.` to match an actual period)
+- `.`: Matches any single character except newline
+- `^`: Matches the start of a line
+- `$`: Matches the end of a line
+- `*`: Matches zero or more occurrences of the previous character
+- `+`: Matches one or more occurrences of the previous character
+- `?`: Makes the previous character optional
+- `\`: Escapes special characters (use `\.` to match an actual period)
 
 ### Character Classes
 
 Square brackets let us define sets of characters to match:
-`[abc]` - Matches any single character from the set (a, b, or c)
-`[^abc]` - Matches any character except those in the set
-`[a-z]` - Matches any lowercase letter
-`[A-Z]` - Matches any uppercase letter
-`[0-9]` - Matches any digit
+
+- `[abc]`: Matches any single character from the set (a, b, or c)
+- `[^abc]`:  Matches any character except those in the set
+- `[a-z]`: Matches any lowercase letter
+- `[A-Z]`: Matches any uppercase letter
+- `[0-9]`: Matches any digit
 
 ### Common Shortcuts
 
 Some frequently-used patterns have their own shortcuts:
-`\d` - Matches any digit (equivalent to [0-9])
-`\w` - Matches any word character (letters, digits, underscore)
-`\s` - Matches any whitespace (space, tab, newline)
-`\D`, `\W`, `\S` - Match anything except digits, word chars, and whitespace respectively
+
+- `\d`: Matches any digit (equivalent to [0-9])
+- `\w`: Matches any word character (letters, digits, underscore)
+- `\s`: Matches any whitespace (space, tab, newline)
+- `\D`, `\W`, `\S`: Match anything except digits, word chars, and whitespace respectively
 
 ## Common Quantifiers
 
 When you need to specify how many times something should match:
 
-`{n}` - Exactly n times
-`{n,}` - At least n times
-`{n,m}` - Between n and m times
-`*` - Zero or more times (equivalent to {0,})
-`+` - One or more times (equivalent to {1,})
-`?` - Zero or one time (equivalent to {0,1})
+- `{n}`: Exactly n times
+- `{n,}`: At least n times
+- `{n,m}`: Between n and m times
+- `*`: Zero or more times (equivalent to {0,})
+- `+`: One or more times (equivalent to {1,})
+- `?`: Zero or one time (equivalent to {0,1})
 
 ## Examples
 
@@ -80,26 +82,34 @@ This matches phone numbers like (123) 456-7890:
 - Hyphen (`-`)
 - Four digits (`\d{4}`)
 
-## Data Wrangling and sed
+## sed
 
-The stream editor, commonly known as sed, is one of the most powerful text processing tools available in Unix-like operating systems. Created by Lee E. McMahon at Bell Labs in 1974, sed was designed as a successor to the revolutionary ed editor, bringing automation to text editing tasks. Think of sed as a text transformation pipeline - it reads input line by line, applies specified operations, and outputs the result.
+The stream editor, commonly known as sed, is one of the most powerful text processing tools available in Unix-like operating systems. Created by Lee E. McMahon at Bell Labs in 1974, sed was designed as a successor to the revolutionary ed editor, bringing automation to text editing tasks. Sed is a text transformation pipeline - it reads input line by line, applies specified operations, and outputs the result to the output stream. It can either take input from the standard input stream or a file.
 
-Sed processes input line by line, applying commands to each line sequentially. It has two buffers, called the pattern space and the hold space. The pattern buffer is a temporary buffer, the scratchpad where the current information is stored. The hold buffer is for long term storage. There is also an address range, that specifies which lines the command should operate on.
+It has two buffers, called the pattern space and the hold space. The pattern buffer is a temporary buffer, the scratchpad where the current information is stored. The hold buffer is for long term storage. There is also an address range, that specifies which lines the command should operate on.
 
 ### Basic Command structure
 
 The syntax of a sed command is:
 
 ```bash
-sed [options] 'command' filename
+sed [options] SCRIPT INPUT
 ```
 
-Common options include:
+Options allow you to modify the default behavior of sed. Common options include:
 
-- `-e`: Allows multiple commands
-- `-i`: Edit files in-place
+- `-e`: Allows multiple commands chained together
+- `-i`: Edit files in-place (rather than just outputting the changes to the output stream)
 - `-n`: Suppress automatic printing of pattern space
 - `-f`: Read commands from a file
+
+A sed script will consist of one or more commands to execute on the input file, can either be “on the fly” (in a string) or a proper file with a .sed extension. A sed command will follow this syntax:
+
+```bash
+[addr]X[options]
+```
+
+Where `addr` is optional and can be a single line number, a regular expression, or a range of lines. When addr is specified, the command will only be executed on matched lines. `X` will be a single letter sed command. Additional `options` can be specified for some sed commands. Commands within a script can be seperated using a `;` or newlines.
 
 ### Essential Commands
 
@@ -110,6 +120,8 @@ The substitution command is the most frequently used sed command. Its basic synt
 ```bash
 sed 's/pattern/replacement/flags'
 ```
+
+The `s` command will attempt to match what you have in the pattern space (the current line) against your supplied regular expression (`pattern`). If there is a match, then that portion of your pattern space is replaced with `replacement`. By default, this will only operate on the first match. You can use flags to modify the behavior of the `s` command as well. 
 
 Flags:
 
@@ -129,7 +141,7 @@ sed 's/dog/cat/g' file.txt
 
 ### Delete Command (d)
 
-Removes lines matching a pattern:
+The delete command will delete the current pattern space and move on to the next line.
 
 ```bash
 # Delete lines containing 'pattern'
@@ -141,7 +153,7 @@ sed '3,5d' file.txt
 
 ### Print Command (p)
 
-Prints specific lines:
+Print out the pattern space to the standard output, usually in conjunction with the -n command-line option.
 
 ```bash
 # Print lines containing 'pattern'
@@ -162,52 +174,86 @@ sed '/pattern/i\New Line' file.txt
 
 ## Practical Examples
 
-### Example 1: Converting File Formats
-
-Convert Windows line endings to Unix:
-
 ```bash
-sed 's/\r$//' file.txt
+# Replace all instances of 'apple' with 'orange' in a file
+sed 's/apple/orange/g' input.txt > output.txt
+
+# ----
+
+# Comment out all lines containing a specific string
+sed '/password/s/^/#/' config.txt > config_safe.txt
+
+# Common use: Quickly commenting out sensitive configuration lines
+# before sharing configs or temporarily disabling features
+
+# ----
+
+# Delete all lines containing "DEBUG" from a log file
+sed '/DEBUG/d' app.log > production.log
+
+# Common use: Filtering out verbose debug messages when you only need 
+# to see warnings and errors
 ```
 
-### Example 2: Numbering Lines
-
-Add line numbers to a file:
-
-```bash
-sed = file.txt | sed 'N;s/\n/. /'
-```
-
-### Example 3: XML/HTML Processing
-
-Remove HTML tags:
-
-```bash
-sed 's/<[^>]*>//g' file.html
-```
-
-## AWK: Text Processing Made Simple
+## AWK
 
 AWK is a specialized programming language designed for processing text data. Created by Aho, Weinberger, and Kernighan (whose initials form its name), AWK shines when working with data organized in rows and columns, such as CSV files, log files, or any structured text data.
 
 ### AWK Sytnax
 
-At its core, AWK processes text line by line using pattern-action pairs:
+At its core, AWK operates on records and fields, where records are lines by default and fields are "words" (or whitespace seperated chunks by default). An awk command will follow this format:
 
-```awk
-pattern { action }
+```bash
+awk options ‘pattern {actions}’ input
 ```
 
-Think of this as telling AWK "when you see this pattern, perform this action." If you omit the pattern, the action applies to every line. If you omit the action, AWK prints the matching lines.
-
-AWK automatically splits each line into fields, which you can reference using dollar signs:
+AWK generally follows the cycle of "when you see this pattern, perform this action. If you omit this pattern, the action applies to every line. If you omit, the action, AWK will print the matching lines. AWK will automatically split the records into different fields, which you can reference using dollar signs.
 
 - `$0` refers to the entire line
 - `$1` refers to the first field
 - `$2` refers to the second field
-And so on. By default, fields are separated by whitespace, but you can change this using the -F option.
 
-### Essential Variables You'll Use Often
+#### Options
+
+There are various options you can use with AWK, below are some common ones, but you can find more [here](https://www.gnu.org/software/gawk/manual/gawk.html#Command_002dLine-Options).
+
+- `-F fs` or `--field-seperator fs`: sets the field seperator to fs
+- `-f source-file` or `--file source-file`: read the awk program source from source-file instead of in the first nonoption argument
+- `-v var=val` or `--assign var=val`: assigns value `val` to the variable `var`
+
+#### Pattern and Actions
+
+##### Patterns
+
+A regular expression enclosed in slashes (‘/’) is an awk pattern that matches every input record whose text belongs to that set.
+
+Patterns can take any of the following forms:
+
+- BEGIN
+  - Executed before any of the input is read
+- END
+  - Executed after all the input is read
+- /regular expression/
+  - Standard regular expression to match
+- relational expressions
+  - <, >,<=, >=, !=, ==
+- pattern && pattern
+- pattern || pattern
+- pattern ? pattern : pattern
+- (pattern)
+- ! pattern
+- pattern1, pattern2
+  - Range expression
+
+##### Actions
+
+Actions are enclosed in `{`braces`}` and contain all the standard assignment, conditional, control flow, etc. that exist in most languages. We won't go into the various actions here, but you can read more [here](https://linux.die.net/man/1/awk).
+
+##### Input
+
+AWK can either take input from a file provided or from the standard input stream.
+
+##### Built-In Variablest
 
 AWK provides several built-in variables that make text processing easier:
 
@@ -229,7 +275,7 @@ Let's look at some common text processing tasks and how AWK handles them:
 awk '{ sum += $3 } END { print sum }' data.txt
 ```
 
-This script does something simple but powerful. For each line, it adds the value from the third column (`$3`) to a running total (`sum`). The `END` block runs after all lines are processed, printing the final total. This is perfect for tasks like summing a column of numbers in a spreadsheet or calculating total bytes in a log file.
+This script does something simple but powerful. For each line, it adds the value from the third column (`$3`) to a running total (`sum`). The `END` block runs after all lines are processed, printing the final total. Note that variables in AWK do not need to be declared before.
 
 #### Processing CSV Data
 
@@ -292,7 +338,7 @@ while (getline > 0) {
 }
 ```
 
-## xargs: Making Command Lines More Powerful
+## xargs
 
 xargs is a utility that bridges the gap between commands that produce output and commands that expect arguments. It's particularly useful when you need to process many files or handle command line limitations.
 
