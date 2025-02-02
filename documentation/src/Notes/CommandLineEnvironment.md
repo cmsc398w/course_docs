@@ -102,39 +102,39 @@ You can learn more about these and other signals [here](https://en.wikipedia.org
 
 When using the command line interface you will often want to run more than one thing at once. For instance, you might want to run your editor and your program side by side. Although this can be achieved by opening new terminal windows, using a terminal multiplexer is a more versatile solution.
 
-Terminal multiplexers like [`tmux`](https://www.man7.org/linux/man-pages/man1/tmux.1.html) allow you to multiplex terminal windows using panes and tabs so you can interact with multiple shell sessions. Moreover, terminal multiplexers let you detach a current terminal session and reattach at some point later in time. This can make your workflow much better when working with remote machines since it avoids the need to use `nohup` and similar tricks.
+Terminal multiplexers like [`tmux`](https://www.man7.org/linux/man-pages/man1/tmux.1.html) allow you to multiplex terminal windows using panes and tabs so you can interact with multiple shell sessions. Moreover, terminal multiplexers let you detach a current terminal session and reattach at some point later in time. This can make your workflow much better when working with remote machines since it avoids the need to use `nohup` and similar tricks.
 
 ### Tmux usage
 
-`tmux` expects you to know its keybindings, and they all have the form `<C-b> x` where that means (1) press `Ctrl+b`, (2) release `Ctrl+b`, and then (3) press `x`. `tmux` has the following hierarchy of objects:
+`tmux` expects you to know its keybindings, and they all have the form `<C-b> x` where that means (1) press `Ctrl+b`, (2) release `Ctrl+b`, and then (3) press `x`.`tmux` has the following hierarchy of objects:
 
-- **Sessions** - a session is an independent workspace with one or more windows
-  - `tmux` starts a new session.
-  - `tmux new -s NAME` starts it with that name.
-  - `tmux ls` lists the current sessions
-  - Within `tmux` typing `<C-b> d` detaches the current session
-  - `tmux a` attaches the last session. You can use `-t` flag to specify which
-- **Windows** - Equivalent to tabs in editors or browsers, they are visually separate parts of the same session
-  - `<C-b> c` Creates a new window. To close it you can just terminate the shells doing `<C-d>`
-  - `<C-b> N` Go to the _N_ th window. Note they are numbered
-  - `<C-b> p` Goes to the previous window
-  - `<C-b> n` Goes to the next window
-  - `<C-b> ,` Rename the current window
-  - `<C-b> w` List current windows
-- **Panes** - Like vim splits, panes let you have multiple shells in the same visual display.
-  - `<C-b> "` Split the current pane horizontally
-  - `<C-b> %` Split the current pane vertically
-  - `<C-b> <direction>` Move to the pane in the specified _direction_. Direction here means arrow keys.
-  - `<C-b> z` Toggle zoom for the current pane
-  - `<C-b> [` Start scrollback. You can then press `<space>` to start a selection and `<enter>` to copy that selection.
-  - `<C-b> <space>` Cycle through pane arrangements.
-For further reading, [here](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/) is a quick tutorial on `tmux` and [this](http://linuxcommand.org/lc3_adv_termmux.php) has a more detailed explanation that covers the original `screen` command. You might also want to familiarize yourself with [`screen`](https://www.man7.org/linux/man-pages/man1/screen.1.html), since it comes installed in most UNIX systems.
+- **Sessions**- a session is an independent workspace with one or more windows
+  - `tmux` starts a new session.
+  - `tmux new -s NAME` starts it with that name.
+  - `tmux ls` lists the current sessions
+  - Within `tmux` typing `<C-b> d` detaches the current session
+  - `tmux a` attaches the last session. You can use `-t` flag to specify which
+- **Windows**- Equivalent to tabs in editors or browsers, they are visually separate parts of the same session
+  - `<C-b> c` Creates a new window. To close it you can just terminate the shells doing `<C-d>`
+  - `<C-b> N` Go to the _N_ th window. Note they are numbered
+  - `<C-b> p` Goes to the previous window
+  - `<C-b> n` Goes to the next window
+  - `<C-b> ,` Rename the current window
+  - `<C-b> w` List current windows
+- **Panes**- Like vim splits, panes let you have multiple shells in the same visual display.
+  - `<C-b> "` Split the current pane horizontally
+  - `<C-b> %` Split the current pane vertically
+  - `<C-b> <direction>` Move to the pane in the specified _direction_. Direction here means arrow keys.
+  - `<C-b> z` Toggle zoom for the current pane
+  - `<C-b> [` Start scrollback. You can then press `<space>` to start a selection and `<enter>` to copy that selection.
+  - `<C-b> <space>` Cycle through pane arrangements.
+For further reading,[here](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/) is a quick tutorial on `tmux` and [this](http://linuxcommand.org/lc3_adv_termmux.php) has a more detailed explanation that covers the original `screen` command. You might also want to familiarize yourself with [`screen`](https://www.man7.org/linux/man-pages/man1/screen.1.html), since it comes installed in most UNIX systems.
 
 ## Shell Environment Customization
 
 ### Aliases
 
-It can become tiresome typing long commands that involve many flags or verbose options. For this reason, most shells support _aliasing_. A shell alias is a short form for another command that your shell will replace automatically for you. For instance, an alias in bash has the following structure:
+It can become tiresome typing long commands that involve many flags or verbose options. For this reason, most shells support _aliasing_. A shell alias is a short form for another command that your shell will replace automatically for you. For instance, an alias in bash has the following structure:
 
 ```bash
 alias alias_name="command_to_alias arg1 arg2"
@@ -197,21 +197,248 @@ What should you put in your dotfiles?
 You can learn about your tool's settings by reading online documentation or [man pages](https://en.wikipedia.org/wiki/Man_page). Another great way is to search the internet for blog posts about specific programs, where authors will tell you about their preferred customizations. Yet another way to learn about customizations is to look through other people's dotfiles: you can find tons of [dotfiles repositories](https://github.com/search?o=desc&q=dotfiles&s=stars&type=Repositories) on GitHub --- see the most popular one
 [here](https://github.com/mathiasbynens/dotfiles) (we advise you not to blindly copy configurations though). [Here](https://dotfiles.github.io/) is another good resource on the topic.
 
+We will now walk you through a basic dotfiles setup.
+
+#### Part 1: Basic Repository Setup
+
+First, let's create a directory structure for our dotfiles.
+
+```bash
+# Create the base directory
+mkdir ~/.dotfiles
+cd ~/.dotfiles
+
+# Create subdirectories for organization
+mkdir -p bash git scripts
+```
+
+Our directory structure will look like this:
+
+```bash
+.dotfiles/
+├── bash/
+│   ├── .bashrc
+│   └── .bash_profile
+├── git/
+│   ├── .gitconfig
+│   └── .gitignore_global
+├── scripts/
+│   ├── install.sh
+│   └── packages.sh
+└── README.md
+```
+
+#### Part 2: Core Configuration Files
+
+Here, we will just make some generic configs, feel free to ignore these.
+
+##### Bash Configuration (.bashrc)
+
+In your `~/.dotfiles/bash/.bashrc`, we'll add some basic configurations:
+
+```bash
+# Enhance the command prompt with colors and git information
+PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+
+alias ll='ls -alF'
+alias la='ls -A'
+alias update='sudo apt update && sudo apt upgrade'
+alias gst='git status'
+
+export EDITOR=nano
+export PATH="$HOME/bin:$PATH"
+
+# Improve command history
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTCONTROL=ignoreboth 
+
+# Load our custom functions
+if [ -f ~/.dotfiles/bash/functions.sh ]; then
+    source ~/.dotfiles/bash/functions.sh
+fi
+```
+
+##### Git Configuration (.gitconfig)
+
+Create `~/.dotfiles/git/.gitconfig`. Be sure to make the global gitignore file as well.
+
+```ini
+[user]
+    name = Your Name
+    email = your.email@example.com
+[core]
+    editor = nano
+    excludesfile = ~/.gitignore_global
+[alias]
+    st = status
+    ci = commit
+    co = checkout
+    br = branch
+```
+
+#### Part 3: Shell Functions
+
+Create `~/.dotfiles/bash/functions.sh`:
+
+```bash
+# Create and enter a directory in one command
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+
+# Extract various archive formats
+extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2)   tar xjf "$1"     ;;
+            *.tar.gz)    tar xzf "$1"     ;;
+            *.zip)       unzip "$1"      ;;
+            *)          echo "'$1' cannot be extracted" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Create a backup of a file
+backup() {
+    cp "$1" "$1.bak.$(date +%Y%m%d_%H%M%S)"
+}
+```
+
+#### Part 4: Package Management
+
+Create `~/.dotfiles/scripts/packages.sh`:
+
+```bash
+#!/bin/bash
+# Script to install commonly used packages
+
+echo "Updating package list..."
+sudo apt update
+
+# Define packages to install
+PACKAGES=(
+    git
+    nano
+    tmux
+    htop
+    curl
+    wget
+    tree
+)
+
+echo "Installing packages..."
+sudo apt install -y "${PACKAGES[@]}"
+
+echo "Package installation complete!"
+```
+
+#### Part 5: Installation Script
+
+Create `~/.dotfiles/scripts/install.sh`:
+
+```bash
+#!/bin/bash
+
+DOTFILES_DIR="$HOME/.dotfiles"
+BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+
+# Create backup directory
+mkdir -p "$BACKUP_DIR"
+
+link_file() {
+    local src="$1"
+    local dest="$2"
+    
+    if [ -f "$dest" ]; then
+        echo "Backing up $dest to $BACKUP_DIR"
+        mv "$dest" "$BACKUP_DIR/"
+    fi
+    
+    echo "Linking $src to $dest"
+    ln -sf "$src" "$dest"
+}
+
+link_file "$DOTFILES_DIR/bash/.bashrc" "$HOME/.bashrc"
+link_file "$DOTFILES_DIR/bash/.bash_profile" "$HOME/.bash_profile"
+link_file "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+
+source "$HOME/.bashrc"
+
+echo "Dotfiles installation complete!"
+```
+
+#### Part 6: GitHub Integration
+
+Now let's store our dotfiles on GitHub:
+
+1. Initialize the git repository:
+
+```bash
+cd ~/.dotfiles
+git init
+```
+
+2. Create a `.gitignore` file:
+
+```bash
+echo "*.log" > .gitignore
+echo "*.bak" >> .gitignore
+```
+
+3. Stage and commit your files:
+
+```bash
+git add .
+git commit -m "Initial dotfiles setup"
+```
+
+4. Create a new repository on GitHub:
+   - Open your web browser and go to github.com
+   - Click the '+' icon and select 'New repository'
+   - Name it 'dotfiles'
+   - Don't initialize with README (we'll push our own)
+   - Click 'Create repository'
+
+5. Connect and push to GitHub:
+
+```bash
+git remote add origin https://github.com/yourusername/dotfiles.git
+git branch -M main
+git push -u origin main
+```
+
+#### Using Your Dotfiles on a New System
+
+To set up your dotfiles on a new system:
+
+```bash
+# Clone your repository
+git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+
+# Run the installation script
+cd ~/.dotfiles
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
+
 ## Remote Development
 
 It has become more and more common for programmers to use remote servers in their everyday work. If you need to use remote servers in order to deploy backend software or you need a server with higher computational capabilities, you will end up using a Secure Shell (SSH). As with most tools covered, SSH is highly configurable so it is worth learning about it.
 
-To `ssh` into a server you execute a command as follows
+To `ssh` into a server you execute a command as follows
 
 ```bash
 ssh foo@bar.mit.edu
 ```
 
-Here we are trying to ssh as user `foo` in server `bar.mit.edu`. The server can be specified with a URL (like `bar.mit.edu`) or an IP (something like `foobar@192.168.1.42`). Later we will see that if we modify ssh config file you can access just using something like `ssh bar`.
+Here we are trying to ssh as user `foo` in server `bar.mit.edu`. The server can be specified with a URL (like `bar.mit.edu`) or an IP (something like `foobar@192.168.1.42`). Later we will see that if we modify ssh config file you can access just using something like `ssh bar`.
 
 ### Executing commands
 
-An often overlooked feature of `ssh` is the ability to run commands directly. `ssh foobar@server ls` will execute `ls` in the home folder of foobar. It works with pipes, so `ssh foobar@server ls | grep PATTERN` will grep locally the remote output of `ls` and `ls | ssh foobar@server grep PATTERN` will grep remotely the local output of `ls`.
+An often overlooked feature of `ssh` is the ability to run commands directly.`ssh foobar@server ls` will execute `ls` in the home folder of foobar. It works with pipes, so `ssh foobar@server ls | grep PATTERN` will grep locally the remote output of `ls` and `ls | ssh foobar@server grep PATTERN` will grep remotely the local output of `ls`.
 
 ### SSH keys
 
@@ -280,22 +507,3 @@ There are several ways to copy files over SSH:
   > get remotefile.txt
   > put localfile.txt
   ```
-
-#### Port Forwarding
-
-SSH can forward ports between machines, which is incredibly useful for accessing network services securely. There are several types of port forwarding:
-
-- Local forwarding (`-L`): Forwards a port from your local machine to the remote server
-
-  ```console
-  ssh -L 9999:localhost:80 user@remote_host
-  ```
-
-  This forwards your local port 9999 to port 80 on the remote host. You can then access the remote service by connecting to `localhost:9999`.
-- Remote forwarding (`-R`): Forwards a port from the remote machine to your local machine
-
-  ```console
-  ssh -R 9999:localhost:80 user@remote_host
-  ```
-
-  This forwards port 9999 on the remote host to port 80 on your local machine.
