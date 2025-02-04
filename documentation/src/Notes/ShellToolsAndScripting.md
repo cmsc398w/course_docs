@@ -46,6 +46,10 @@ Commands will often produce output using Standard Output (`STDOUT`, defaults to 
 
 To assign variables in bash, use the syntax `foo=bar` and access the value of the variable with `$foo` or `${foo}`. Note that `foo = bar` will not work since it is interpreted as calling the `foo` program with arguments `=` and `bar`. In general, in shell scripts, the space character will perform argument splitting. This behavior can be confusing to use at first, so always check for that. All variables in bash will have global scope by default (unless noted otherwise).
 
+You can also assign variables using `let [expression] ...` which only supports arithmetic / integer expressions. Arithmetic expressions can be evaluated and set to the value of a variable by following the syntax of `var=$((5+5))`.
+
+It is also important to note that all variables in Bash are untyped, but there is a mechanism to declare types (outside the scope of this lesson).
+
 Strings in bash can be defined with `'` and `"` delimiters, but they are not equivalent. Strings delimited with `'` are string literals and will not substitute variable values whereas `"` delimited strings will.
 
 ```bash
