@@ -71,6 +71,10 @@ Unlike other scripting languages, bash uses a variety of special variables to re
 - `!!` - Entire last command, including arguments. A common pattern is to execute a command only for it to fail due to missing permissions; you can quickly re-execute the command with sudo by doing `sudo !!`
 - `$_` - Last argument from the last command. If you are in an interactive shell, you can also quickly get this value by typing `Esc` followed by `.` or `Alt+.`
 
+You also have another type of variable, environment variables which serve as a way to pass information about the current *environment* to the program being executed. By convention, these variables are written in all caps, though they function like any other variable. You can set an environment variable using the export command, like export KEY=VALUE. To view all current environment variables, use the env command.
+
+Some common environment variables include PATH (which tells your shell where to look for executable programs), HOME (your user's home directory), and USER (your username). Environment variables persist only for the duration of your shell session by default. To make them permanent, you can add the export commands to your shell's configuration file (like ~/.bashrc for Bash or ~/.zshrc for Zsh)can list all environment variables using the `env` command.
+
 ### Control Flow
 
 #### `if` / `else` statements
