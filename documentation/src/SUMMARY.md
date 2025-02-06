@@ -12,7 +12,7 @@
 - [Command Line Environment](./Notes/CommandLineEnvironment.md)
 [//]: <> (- [Vim](./Notes/Vim.md))
 [//]: <> (- [Debugging and Profiling](./Notes/DebuggingAndProfiling.md))
-[//]: <> (- [Git and Version Control](./Notes/Git.md))
+- [Git and Version Control](./Notes/new_git.md)
 [//]: <> (- [Networking](./Notes/Networking.md))
 
 # Projects
