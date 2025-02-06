@@ -6,6 +6,8 @@
 
 2. [Install mdbook-admonish](https://github.com/tommilligan/mdbook-admonish?tab=readme-ov-file#installation)
 
-3. `cd` into /src
+3. [Install mdbook-mermaid](https://github.com/badboy/mdbook-mermaid)
 
-4. Run `mdbook serve --open`
+4. `cd` into /src
+
+5. Run `mdbook serve --open`
