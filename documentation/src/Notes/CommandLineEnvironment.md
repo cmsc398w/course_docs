@@ -135,6 +135,66 @@ A special signal is `SIGKILL` since it cannot be captured by the process and it 
 
 You can learn more about these and other signals [here](https://en.wikipedia.org/wiki/Signal_(IPC)) or typing [`man signal`](https://www.man7.org/linux/man-pages/man7/signal.7.html) or `kill -l`.
 
+### Job Control Use Cases
+
+It is possible to perform simple edit/compile/debug sessions in a terminal using job control. Below is an example
+
+```console
+# make edits to the code
+$ vim code.c
+# Press Ctl-Z to suspend vim
+^Z
+
+# compile the code
+$ gcc -g code.c
+
+# run the executable, encounter an error
+$ ./a.out
+Segmentation Fault
+
+# run the executable under a memory checker
+$ valgrind ./a.out
+...
+==85077== Invalid read of size 1
+==85077==    at 0x484FFE7: strcmp (vg_replace_strmem.c:940)
+==85077==    by 0x10971D: main (code.c:98)
+==85077==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+...
+
+# run the debugger on the executable
+$ gdb a.out
+(gdb) break 98
+(gdb) run
+...
+Breakpoint 1 hit at code.c:98
+(gdb)
+# press Ctl-Z to suspend gdb
+^Z
+
+# back in terminal examine running jobs
+$ jobs
+[1]  Stopped  vim code.c
+[2]  Stopped  gdb a.out
+
+# go back to edit the code try to fix the bug
+$ fg %1
+# edit in vim that was previousy suspended
+# press Ctl-Z to suspend and return to terminal
+^Z
+
+# recompile to incorporate changes
+$ gcc -g code.c
+
+# go back to gdb to re-run the new program
+$ fg %2
+(gdb) run
+...
+Breakpoint 1 hit at code.c:98
+(gdb)
+```
+
+As shown above, both the `vim` terminal editor and `gdb` terminal debugger are active in the same terminal. One can switch between them using job control (return to terminal via `Ctl-Z` and return to programs via `fg %N`). In this way, certain simple workflows are readily available in terminals with job control.  However, displaying information from disparate programs side by side and ergonomically switching between programs is beyond what shells provide on their own. Rather, a terminal multiplexer satisfies this role.
+
 ## Terminal Multiplexing
 
 ### Why?
@@ -171,9 +231,9 @@ For further reading,[here](https://www.hamvocke.com/blog/a-quick-and-easy-guide-
 
 ### Alternatives
 
-The idea of Terminal Multiplexing is good enough to have drawn varied implementations. In addition to `tmux`, there are other programs that allow for similar effects.
-- GNU screen has a similar nature to `tmux` allow multiple windows to be created and navigated and allows for session persistence
-- Emacs has in addition to its text editing features all the features of `tmux` including session persistence, multiple windows etc.
+The idea of Terminal Multiplexing is so appealing as to have drawn varied implementations. In addition to `tmux`, there are other programs that allow for similar effects.
+- GNU screen has a similar nature to `tmux` allowing multiple windows to be created and navigated as well as facilitating session persistence (log out and then log back in to see the same programs still active)
+- Emacs has, in addition to its text editing features all, the features of `tmux` including session persistence, multiple windows etc. which can be accessed within a terminal, in a GUI, or in a combination of these two.
 
 ## Shell Environment Customization
 
@@ -222,11 +282,25 @@ alias ll
 
 Note that aliases do not persist shell sessions by default. To make an alias persistent you need to include it in shell startup files, like `.bashrc` or `.zshrc`, which we are going to introduce in the next section.
 
+Aliasing tends to be simple and associated with single commands or short pipelines of commands. For more complex activities that involve conditionals on arguments, a Shell Function (previously discussed) is a better candidate. Several examples of more complex activities appropriate to shell functions rather than aliases are discussed the next sections on dotfiles and customizing program behavior.
+
 ### Dotfiles
 
-Many programs are configured using plain-text files known as _dotfiles_
-(because the file names begin with a `.`, e.g. `~/.vimrc`, so that they are
-hidden in the directory listing `ls` by default).
+Many programs are configured using plain-text files known as _dotfiles_. The naming convention stems from the fact that such files begin with a `.`, e.g. `~/.vimrc`, so that they are hidden in normal directory listings from `ls` by default (use `ls -a` to show ALL files including the hidden ones).
+
+UNIX programs have a long tradition of using dot files for customization. Software that uses dot files ranges from:
+- All major Shells and many terminal emulators
+- Most editors like VIM and Emacs
+- Many programming environments like Java, OCaml, Python, Rust, etc.
+- Most command line interface tools like Git, GDB, Tmux, Mutt, SSH, etc.
+- Many graphical programs, either directly or via configurations under `~/.config`
+If you want to tailor the behavior of a program in UNIX/Linux, you're likely going to edit a dot file of some type.
+
+```admonish info
+Customizing software is desirable but the location of where such customizations are retained is a matter of some debate.  The ad hoc distributed nature of the many dot files which UNIX employs has both advantages (plain text, usually in the home directory) and disadvantages (wide variety of formats/syntax unique to different programs, loads of dot files crowd the home directory). 
+
+The [Windows Registry](https://en.wikipedia.org/wiki/Windows_Registry) used on Windows systmes is an alternative that has a central database of settings for any and all programs that want to retain settings of some type. It goes the opposite route having a centralized, large, binary structure where most programs store information. MacOS favors [Property Lists (plist files)](https://en.wikipedia.org/wiki/Property_list) that are usually stored in a centralized directory like `~/Library/Preferences/` and dictate settings for programs with a somewhat more uniform format in text or binary formats. These speak to the cultural heritage of Microsoft and Apple being able to dictate the design of programs on their OS to others while UNIX and Linux are a federation of many contributors and so lack a central authority to force such uniformity.
+```
 
 Shells are one example of programs configured with such files. On startup, your shell will read many files to load its configuration. Depending on the shell, whether you are starting a login and/or interactive the entire process can be quite complex.
 [Here](https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html) is an excellent resource on the topic.
@@ -529,7 +603,7 @@ Host dev
 
 Now you can simply type `ssh dev` instead of `ssh -p 2222 foobar@dev.example.com`.
 
-##### Copying Files Over SSH
+### Copying Files Over SSH
 
 There are several ways to copy files over SSH:
 
@@ -552,3 +626,15 @@ There are several ways to copy files over SSH:
   > get remotefile.txt
   > put localfile.txt
   ```
+
+### Further Uses of SSH
+Remote work via a terminal has been around a long time and if you find yourself working in such situations frequently, investigate the following items more.
+
+**The (SSH File System or SSHFS)[https://en.wikipedia.org/wiki/SSHFS]** which allows one to mount a remote system via SSH and treat it as a local directory greatly easing the transfer of data to and from. SSHFS is readily available on most Linux systems and provides and easy way to connect one machine to another: 
+```console
+$ sshfs -o follow_symlinks myid@remote.umd.edu: ~/remote-machine
+```
+
+**FTP and SFTP, File Transfer Protocols** that are old but still much used mechanisms that allow data to be moved between machines in bulk (mentioned above)
+
+**Remote editing features/extensions** in your editor of choice: most modern program IDEs like VSCode have Extensions that build on top of SSH-based tools to ease the task of editing and running code on other machines. These GUI-based affairs are often more fragile than their command line alternatives but when they work can make life simpler.
