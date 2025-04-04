@@ -2,13 +2,13 @@
 
 As a software developer, your work constantly relies on networks. Whether you're pulling code from a Git repository, making calls to a third-party API, connecting to a database across the room or across the country, or deploying your application to cloud servers, network connectivity is the invisible thread tying it all together.
 
-Because this reliance is so fundamental, network problems can be significant roadblocks. When services become unreachable, APIs return strange errors, or deployments fail, understanding the underlying network behavior is crucial. This session aims to demystify network troubleshooting by providing you with both the foundational concepts and the practical command-line tools needed to diagnose common issues. Think of this as learning to use a debugger, not just for your code's logic, but for the vital connections it makes. Mastering these skills will make you a more effective, resilient developer, capable of systematically tackling problems that might otherwise seem opaque.
+Because this reliance is so fundamental, network problems can be significant roadblocks. When services become unreachable, APIs return strange errors, or deployments fail, understanding the underlying network behavior is crucial. This section aims to demystify network troubleshooting by providing you with both the foundational concepts and the practical command-line tools needed to diagnose common issues.
 
 <img src="../Resources/networking_xkcd.png" alt="Networking XKCD Comic" width="50%" margin: auto/>
 
 ## Network Stack / OSI Model
 
-Computer networking involves many complex interactions. To make sense of it all, we use layered models, like the seven-layer OSI model, as a conceptual guide. While real-world systems blend these layers, the model provides an invaluable framework for isolating problems during troubleshooting. Let's briefly look at the layers and the kinds of questions they help answer:
+Computer networking involves many complex interactions. To make sense of it all, we use layered models, like the seven-layer OSI model, as a conceptual guide. While real-world systems blend these layers, the model provides a framework for isolating problems during troubleshooting.
 
 * **Layer 1: Physical:** This deals with the actual hardware transmitting the signals – Ethernet cables, fiber optics, Wi-Fi radios.
   * *Troubleshooting Focus:* Is the cable plugged in securely? Is the Wi-Fi connected and the signal strong? Are there physical hardware failures?
@@ -86,21 +86,21 @@ When debugging, you primarily check if the relevant interface is `UP` and `LOWER
 
 Once an IP address gets your data packets to the correct destination machine, Layer 4 protocols take over to deliver that data to the specific application waiting for it. The two major protocols here are TCP and UDP.
 
-**TCP (Transmission Control Protocol)** acts like a reliable courier service for your data. Before sending anything substantial, it establishes aconnection with the receiving end using a process called the "three-way handshake". This ensures both sides are ready and agree to communicate. Once the connection is up, TCP manages the data flow, breaking large chunks into numbered segments, ensuring they arrive in the correct order, and retransmitting any segments that get lost or corrupted along the way. This reliability makes TCP ideal for applications where data integrity and order are critical, such as loading web pages (HTTP/HTTPS), sending emails (SMTP), transferring files (FTP), or maintaining a persistent remote connection (SSH). However, this management comes at the cost of increased overhead and latency compared to UDP.
+**TCP (Transmission Control Protocol)** acts like a reliable courier service for your data. Before sending anything substantial, it establishes aconnection with the receiving end using a handshake protocol. This ensures both sides are ready and agree to communicate. Once the connection is up, TCP manages the data flow, breaking large chunks into numbered segments, ensuring they arrive in the correct order, and retransmitting any segments that get lost or corrupted along the way. This reliability makes TCP ideal for applications where data integrity and order are critical, such as loading web pages (HTTP/HTTPS), sending emails (SMTP), transferring files (FTP), or maintaining a persistent remote connection (SSH). However, this management comes at the cost of increased overhead and latency compared to UDP.
 
-**UDP (User Datagram Protocol)**, in contrast, operates more like the postal service for postcards. It's a connectionless protocol, meaning it simply bundles data into packets (datagrams) and sends them off towards the destination IP address and port without any prior negotiation or handshake. UDP makes a "best effort" attempt to deliver the data but provides no guarantees. Packets might arrive out of order, get duplicated, or never arrive at all, and UDP itself won't try to fix these issues. This approach results in significantly lower overhead and latency than TCP, making UDP suitable for applications where speed is important and occasional data loss can be tolerated or handled by the application itself. Common examples include DNS lookups (where a quick request-response is needed, and the client can just retry if needed), DHCP (assigning IP addresses), live video and audio streaming (where retransmitting old data is pointless), and many online games (where timely updates are more important than guaranteed delivery of every single packet).
+**UDP (User Datagram Protocol)**, in contrast, operates more like the postal service for postcards. It's a connectionless protocol, meaning it bundles data into packets (datagrams) and sends them off towards the destination IP address and port without any prior negotiation or handshake. UDP makes a "best effort" attempt to deliver the data but provides no guarantees. Packets might arrive out of order, get duplicated, or never arrive at all, and UDP itself won't try to fix these issues. This approach results in lower overhead and latency than TCP, making UDP suitable for applications where speed is important and occasional data loss can be tolerated or handled by the application itself. Common examples include DNS lookups (where a quick request-response is needed, and the client can just retry if needed), DHCP (assigning IP addresses), live video and audio streaming (where retransmitting old data is pointless), and many online games (where timely updates are more important than guaranteed delivery of every single packet).
 
 ### Ports and Sockets
 
-Whether using TCP or UDP, applications need a way to distinguish themselves from other services running on the same machine. This is achieved using **port numbers**, ranging from 0 to 65535. Many common services use "well-known" ports (e.g., HTTP on TCP port 80, HTTPS on TCP port 443, DNS on UDP/TCP port 53). The specific combination of an IP address, a transport protocol (TCP or UDP), and a port number forms a unique communication endpoint known as a **socket** (e.g., `172.17.0.2` using TCP on port `443`). When troubleshooting, verifying that the service you're trying to reach is actually listening on the expected protocol and port number on the server side is a fundamental step.
+Whether using TCP or UDP, applications need a way to distinguish themselves from other services running on the same machine. This is achieved using **port numbers**, ranging from 0 to 65535. Many common services use "well-known" ports (e.g., HTTP on TCP port 80, HTTPS on TCP port 443, DNS on UDP/TCP port 53). The specific combination of an IP address, a transport protocol (TCP or UDP), and a port number forms a unique communication endpoint known as a **socket** (e.g., `172.17.0.2` using TCP on port `443`). When troubleshooting, verifying that the service you're trying to reach is actually listening on the expected protocol and port number on the server side is important.
 
 ## Basic Connectivity Testing
 
-Having confirmed your machine possesses valid IP addresses (using `ip addr show`), the next logical step in troubleshooting is to test whether you can actually communicate with other devices, both locally and across the internet. Two fundamental command-line tools, `ping` and `traceroute`, operate primarily at the Network Layer (Layer 3) and are indispensable for this basic connectivity testing.
+Having confirmed your machine possesses valid IP addresses (using `ip addr show`), the next logical step in troubleshooting is to test whether you can communicate with other devices, both locally and across the internet. Two command-line tools, `ping` and `traceroute`, operate primarily at the Network Layer (Layer 3) and are commonly used for connectivity testing..
 
 ### Checking Reachability with `ping`
 
-The `ping` command is your first go-to tool for checking basic network reachability. Its function is simple: it sends special network packets to a specified destination host. If the destination host is reachable and configured to respond (most are, unless blocked by a firewall), it will send back a reply packet. Receiving these replies confirms that a Layer 3 path exists between your machine and the target.
+The `ping` command is allows you to check basic network reachability. Its function is simple: it sends special network packets to a specified destination host. If the destination host is reachable and configured to respond (most are, unless blocked by a firewall), it will send back a reply packet. Receiving these replies confirms that a Layer 3 path exists between your machine and the target.
 
 You use `ping` by simply providing the hostname or IP address you want to test:
 
@@ -134,7 +134,7 @@ Here is what the output means:
   * `Request timed out` or `100% packet loss`: No replies were received. The host might be down, unreachable, or a firewall might be blocking the ping requests or replies.
   * `Destination Host Unreachable`: A router along the path reported that it doesn't know how to reach the destination network or host. This often points to a routing issue closer to your end or the destination's end.
 
-To diagnose issues systematically, use `ping` in a specific order, moving outwards from your own machine:
+To diagnose issues systematically, you can try to use `ping` in a specific order, moving outwards from your own machine:
 
 1. **`ping 127.0.0.1` (or `ping localhost`)**: Tests your machine's own network stack. If this fails, there's a fundamental problem with your OS networking setup.
 2. **`ping <your_own_IP>`**: Tests your specific network interface configuration. Should work if step 1 works.
@@ -146,7 +146,7 @@ To diagnose issues systematically, use `ping` in a specific order, moving outwar
 
 ### Discovering the Path with `traceroute`
 
-While `ping` tells you *if* you can reach a destination, `traceroute` (and similar tools like `tracepath` or `mtr`) attempts to show you the *path* your packets take to get there. It reveals the sequence of routers (or "hops") between your machine and the target. This is invaluable for identifying *where* a connection is failing or where significant delays are occurring.
+While `ping` tells you *if* you can reach a destination, `traceroute` (and similar tools like `tracepath` or `mtr`) attempts to show you the *path* your packets take to get there. It reveals the sequence of routers (or "hops") between your machine and the target. This is useful for identifying *where* a connection is failing or where significant delays are occurring.
 
 ```bash
 $ traceroute google.com 
@@ -170,7 +170,7 @@ Interpreting `traceroute` output:
 
 Alternatives like `tracepath` often provide slightly simpler output, and `mtr` (My Traceroute) is a very powerful tool that continuously sends probes like `ping` to each hop identified by `traceroute`, giving you a live view of latency and packet loss along the entire path. It's excellent for diagnosing intermittent issues.
 
-By using `ping` to check basic reachability and `traceroute` to inspect the path, you gain crucial insights into Layer 3 connectivity. If `ping` fails, the systematic steps help isolate whether the issue is local, with your gateway, your ISP, or potentially DNS. If `ping` works but connections are slow or unreliable, `traceroute` or `mtr` can help pinpoint the segment of the network path responsible for the delay or packet loss. These tools form the bedrock of network debugging before moving up the stack to investigate transport and application layer issues.
+By using `ping` to check basic reachability and `traceroute` to inspect the path, you gain insights into Layer 3 connectivity. If `ping` fails, you can isolate whether the issue is local, with your gateway, your ISP, or potentially DNS. If `ping` works but connections are slow or unreliable, `traceroute` or `mtr` can help pinpoint the segment of the network path responsible for the delay or packet loss.
 
 ## Understanding DNS (Name Resolution)
 
@@ -217,7 +217,6 @@ Transmitting data "in the clear" over networks is insecure, making it vulnerable
 * **HTTPS (HTTP Secure):** This is standard HTTP layered over **TLS/SSL** (Transport Layer Security/Secure Sockets Layer) encryption. It encrypts web traffic between your browser and the server, protecting sensitive data like logins and credit card numbers. It also uses digital certificates to help verify the server's identity. You see it as the padlock icon in your browser's address bar. Operates at Layers 6/7.
 * **VPN (Virtual Private Network):** Creates an encrypted "tunnel" between your device and a VPN server, typically encrypting *all* your network traffic over that tunnel. This protects your data on untrusted networks (like public Wi-Fi) and can make your traffic appear to originate from the VPN server's location/IP address. Often operates at Layer 3.
 
-When debugging, consider security layers. HTTPS failures often involve certificate issues (expired, mismatched name, untrusted authority – `curl -v` provides details). VPNs can sometimes interfere with access to local network resources or introduce routing complexities.
 
 ## Talking Directly to Web Services (`curl`)
 
