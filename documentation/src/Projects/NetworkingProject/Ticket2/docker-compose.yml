@@ -10,16 +10,10 @@ services:
         ipv4_address: 10.0.0.100
 
   dns-server:
-    image: alpine:3.19
+    build:
+      context: .
+      dockerfile: Dockerfile.dns_server
     container_name: dns-server
-    command: >
-      sh -c "
-        apk add --no-cache dnsmasq &&
-        echo 'address=/blog.company.internal/10.0.0.100' > /etc/dnsmasq.conf &&
-        echo 'port=53' >> /etc/dnsmasq.conf &&
-        echo 'interface=eth0' >> /etc/dnsmasq.conf &&
-        echo 'listen-address=10.0.0.53' >> /etc/dnsmasq.conf &&
-        dnsmasq --no-daemon --log-queries"
     networks:
       company_net:
         ipv4_address: 10.0.0.53
@@ -41,13 +35,10 @@ services:
     dns_search: []
     dns_opt:
       - ndots:1
+    command: tail -f /dev/null
     networks:
       company_net:
         ipv4_address: 10.0.0.10
-    command: >
-      sh -c "echo 'nameserver 10.0.0.54' > /etc/resolv.conf && 
-             echo 'options ndots:1' >> /etc/resolv.conf &&
-             tail -f /dev/null"
 
 networks:
   company_net:

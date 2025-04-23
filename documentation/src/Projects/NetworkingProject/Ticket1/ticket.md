@@ -46,7 +46,3 @@ docker exec -it crm-server sh
 docker-compose stop
 docker-compose down
 ```
-
-## Hint
-
-Is the server listening on the right interfaces?

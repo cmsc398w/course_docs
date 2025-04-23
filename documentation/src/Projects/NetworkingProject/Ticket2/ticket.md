@@ -48,7 +48,3 @@ docker exec -it client sh
 docker-compose stop
 docker-compose down
 ```
-
-## Hint
-
-Resolution.
