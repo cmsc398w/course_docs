@@ -11,7 +11,7 @@ fi
 
 get_cpu_usage() {
 	if [[ $PLATFORM == "mac" ]]; then
-		top -l 1 -n 0 -F | grep -E "^CPU" | awk '{print $3+$5}'
+		top -l 1 -n 0 | grep -E "^CPU" | awk '{print $3+$5}'
 	else
 		top -b -n 1 | grep "Cpu(s)" | awk -F',' '{print $4}' | awk '{print 100-$1}'
 	fi
