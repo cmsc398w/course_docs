@@ -16,9 +16,9 @@ The table below details the possible operating mode flags and additional options
 
 | Flag    | Type           | Description                                                                  |
 |---------|----------------|------------------------------------------------------------------------------|
-| --c     | Operating Mode | Enables the `Collection` operating mode. Required.                           |
-| --d     | Operating Mode | Enables the `Display` operating mode. Required.                              |
-| --q     | Operating Mode | Enables the `Query` operating mode. Required.                                |
+| -c     | Operating Mode | Enables the `Collection` operating mode. Required.                           |
+| -d     | Operating Mode | Enables the `Display` operating mode. Required.                              |
+| -q     | Operating Mode | Enables the `Query` operating mode. Required.                                |
 | --start | Configuration  | Sets the start datetime for a query. Required in the `Query` operating mode. |
 | --end   | Configuration  | Sets the end datetime for a query. Required in the `Query` operating mode.   |
 | --help  | User Flag      | Prints out a message on how to use this script. Required.                    |
@@ -40,7 +40,7 @@ The script must:
 
 Collection mode must:
 
-- Be enabled via the `--c` flag
+- Be enabled via the `-c` flag
 - Collects CPU and memory usage
 - Parse and format the data into a simple CSV format
 - Appends the collected data to a log file with a timestamp
@@ -51,7 +51,16 @@ Collection mode must:
 Running your script in this mode looks like:
 
 ```bash
-./system_monitoring_tool.sh --c
+./system_monitoring_tool.sh -c
+```
+
+The output should be of the format:
+
+```bash
+DATETIME1, CPU%, MEM%
+DATETIME2, CPU%, MEM%
+DATETIME3, CPU%, MEM%
+...
 ```
 
 An example of the default contents of running the script several times accumulating the contents in the default output file looks like the following:
@@ -69,7 +78,7 @@ An example of the default contents of running the script several times accumulat
 
 Display mode must:
 
-- Be enabled via the `--d` flag.
+- Be enabled via the `-d` flag.
 - Displays current CPU and memory usage as a percentage
 - Updates the display every 5 seconds using a loop which clears the terminal display and redraws output and the shell builtin sleep command
 - Obtain CPU and Memory usage using standard tools as was done in collection mode
@@ -78,7 +87,7 @@ Display mode must:
 Suggested output is shown below:
 
 ```console
->> ./system_monitoring_tool.sh --d
+>> ./system_monitoring_tool.sh -d
 System Monitor Dashboard
 ========================
 CPU Usage:     19.4% [###                 ]
@@ -91,24 +100,24 @@ Press Ctrl+C to exit
 
 Query mode must:
 
-- Be enabled via the `--q` flag
+- Be enabled via the `-q` flag
 - Accepts start and end date/time parameters via the `--start` and `--end` flags respectively
 - Filters and displays data from the log file within the specified time range
 - Outputs the results in a readable CSV format
 - Honors the SYSTEM_STATSFILE variable or defaulting to  /tmp/system_stats.log  that variable is not set
 - Implement error  detection when the command line arguments do not specify start/end dates for the query
-- It is strongly suggested that UNIX text processing tools be used to complete the required functionality; the instructor solution relies heavily on awk
+- It is strongly suggested that UNIX text processing tools be used to complete the required functionality; the instructor solution relies heavily on awk due to ease of date comparisons.
 
 Sample output is show below:
 
 ```console
 # error cases for underspecifying the command line invocation
->> ./system_monitoring_tool.sh --q
+>> ./system_monitoring_tool.sh -q
 ERROR: Both start and end dates must be specified
 Usage: query_stats.sh --start 'YYYY-MM-DD HH:MM:SS' --end 'YYYY-MM-DD HH:MM:SS'
 Displays all stats between the start and end times.
 
->> ./system_monitoring_tool.sh --q --start '2025-01-08 15:43:12'
+>> ./system_monitoring_tool.sh -q --start '2025-01-08 15:43:12'
 ERROR: Both start and end dates must be specified
 Usage: query_stats.sh --start 'YYYY-MM-DD HH:MM:SS' --end 'YYYY-MM-DD HH:MM:SS'
 Displays all stats between the start and end times.
@@ -122,14 +131,14 @@ Displays all stats between the start and end times.
 2025-01-08 16:00:20,83.3,57.0953
 
 # show a range of entries
->> ./system_monitoring_tool.sh --q --start '2025-01-08 15:43:12' --end '2025-01-08 15:43:33'
+>> ./system_monitoring_tool.sh -q --start '2025-01-08 15:43:12' --end '2025-01-08 15:43:33'
 Timestamp,CPU%,Memory%
 2025-01-08 15:43:12,3.00,55.56,
 2025-01-08 15:43:32,84.40,55.35,
 2025-01-08 15:43:33,84.50,55.42,
 
 # show a different range of entries
->> ./system_monitoring_tool.sh --q --start '2025-01-08 15:43:15' --end '2025-01-08 16:16:00'
+>> ./system_monitoring_tool.sh -q --start '2025-01-08 15:43:15' --end '2025-01-08 16:16:00'
 Timestamp,CPU%,Memory%
 2025-01-08 15:43:32,84.40,55.35,
 2025-01-08 15:43:33,84.50,55.42,
@@ -169,18 +178,18 @@ Timestamp,CPU%,Memory%
 ```bash
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --c)
+        -c)
             echo "Collect mode"
             ;;
-        --d)
+        -d)
             echo "Display mode"
             ;;
-        --q)
+        -q)
             echo "Query mode"
             ;;
         *)
             echo "Unknown parameter: $1"
-            echo "Usage: $0 [--c | --d | --q]"
+            echo "Usage: $0 [-c | -d | -q]"
             exit 1
             ;;
     esac
@@ -189,6 +198,14 @@ done
 
 ```
 
+For parsing the start and end dates, the `$@` variable can be used to pass the arguments to a function. Calling `shift` discards the `$1` and `$2` assumes its place. Then, you can parse arguments using a very similar for loop to the above.
+
 #### WSL / VMs
 
-WSL / VMs is known to have issues with displaying accurate system performance metrics or very low numbers, this is normal and will not impact your grade.
+WSL / VMs is known to have issues with displaying accurate system performance metrics or very low numbers, this is normal and will not impact your grade. You may see output like:
+
+```bash
+%Cpu(s): 0.0 us, 0.0 sy, 0.0 ni,100.0 id, 0.0 wa, 0.0 hi, 0.0 si, 0.0 st
+```
+
+This is due to how WSL is running as a VM, meaning that it will only be tracking the usage of WSL itself which will likely be rather low.

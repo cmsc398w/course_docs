@@ -100,18 +100,18 @@ draw_bar() {
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
-	--c)
+	-c)
 		echo "Collect mode"
 		collect_mode
 		;;
-	--d)
+	-d)
 		echo "Display mode"
 		while true; do
 			display_stats
 			sleep 5
 		done
 		;;
-	--q)
+	-q)
 		echo "Query mode"
 		shift
 		query_stats "$@"
@@ -121,7 +121,7 @@ while [[ $# -gt 0 ]]; do
         echo "See the assignment description for a help message"
         ;;
 	*)
-		echo "Usage: $0 [--c | --d | --q]"
+		echo "Usage: $0 [-c | -d | -q]"
 		exit 1
 		;;
 	esac
