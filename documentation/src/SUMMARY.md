@@ -6,6 +6,7 @@
 # Notes
 
 - [Using The Shell](./Notes/UsingTheShell.md)
+- [Shell Tools](./Notes/ShellToolsAndScripting.md)
 
 
 # Projects
