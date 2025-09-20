@@ -19,7 +19,7 @@ get_cpu_usage() {
 
 get_mem_usage() {
 	if [[ $PLATFORM == "mac" ]]; then
-		top -l 1 -n 0 | grep "PhysMem" | awk '{print $2}' | sed 's/M//' | awk '{print ($1/4096)*100}'
+		memory_pressure | awk '/System-wide memory free percentage/ {print 100-$5}'
 	else
 		free | grep Mem | awk '{print $3/$2 * 100.0}'
 	fi
