@@ -41,10 +41,13 @@ The script must:
 Collection mode must:
 
 - Be enabled via the `-c` flag
-- Collects CPU and memory usage
+- Collects CPU and memory usage (the amount of RAM currently being used by the system)
 - Parse and format the data into a simple CSV format
 - Appends the collected data to a log file with a timestamp
 - Use system utilities like top and free with appropriate command line flags to determine CPU/memory usage; capturing resources does not need to account for multiple CPUs as it is intended a system summary
+
+> Note: `free` isn't avaliable on macOS, so we reccomend parsing the output of the `memory_pressure` command instead for memory usage. `free` should still work on other WSL/Unix machines. Technically, you can use the `PhysMem` row on the `top` output of macOS, but this is mildly harder to parse. For WSL/Unix systems, we reccomend looking at row starting with `Mem` for what you should be looking at.
+
 - Store the results in a CSV file that is determined by the environment variable SYSTEM_STATSFILE; if this variable is not present, use the default /tmp/system_stats.log  
 - Collection times can use any timestamp format but it is suggested that the output of `date` be used as this is standard and widely available
 
