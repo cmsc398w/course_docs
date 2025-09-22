@@ -26,15 +26,15 @@ Your todo manager must implement the following features:
 
 Implement a command-line interface that supports:
 
-- `todo add <task description>` - Add a new task
+- `./todo.sh add <task description>` - Add a new task
     - Useful tools: `echo`
-- `todo done <task_number(s)>` - Mark task(s) as complete
+- `./todo.sh done <task_number(s)>` - Mark task(s) as complete
   - Useful tools: `sed`
-- `todo rm <task_number>` - Remove a specific task
+- `./todo.sh rm <task_number>` - Remove a specific task
   - Useful tools: `sed`
-- `todo clean` - Remove all completed tasks
+- `./todo.sh clean` - Remove all completed tasks
   - Useful tools: `grep`, input output redirection via `>` and `>>`
-- `todo` (no arguments) - Display all current todos
+- `./todo.sh` (no arguments) - Display all current todos
   - Useful tools: `cat -n`
 
 #### Display Format
@@ -49,37 +49,37 @@ Implement a command-line interface that supports:
 
 ```bash
 # Add some tasks
-$ todo add "Buy groceries"
+$ ./todo.sh add "Buy groceries"
 Added: Buy groceries
 
-$ todo add "Finish homework"
+$ ./todo.sh add "Finish homework"
 Added: Finish homework
 
-$ todo add "Call dentist"
+$ ./todo.sh add "Call dentist"
 Added: Call dentist
 
 # View current todos
-$ todo
+$ ./todo.sh
      1  ⬜ Buy groceries
      2  ⬜ Finish homework
      3  ⬜ Call dentist
 
 # Mark task as complete
-$ todo done 1
+$ ./todo.sh done 1
 Completed task #1
 
 # View updated list
-$ todo
+$ ./todo.sh
      1  ✅ Buy groceries
      2  ⬜ Finish homework
      3  ⬜ Call dentist
 
 # Remove a task
-$ todo rm 3
+$ ./todo.sh rm 3
 Removed task #3
 
 # Clean up completed tasks
-$ todo clean
+$ ./todo.sh clean
 Cleaned up 1 completed tasks
 ```
 
