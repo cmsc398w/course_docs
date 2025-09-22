@@ -19,7 +19,6 @@ Your todo manager must implement the following features:
 
 #### File Storage
 
-- Store todos in a hidden file in the user's home directory (e.g., `~/.todos`)
 - Use a simple text format with checkboxes: `[ ]` for incomplete, `[x]` for complete
 - Each todo should be on its own line
 
