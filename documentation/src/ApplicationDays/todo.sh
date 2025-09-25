@@ -3,6 +3,12 @@
 
 TODO_FILE="$HOME/.todos"
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    IS_MAC=true
+else
+    IS_MAC=false
+fi
+
 function add_todo() {           # with 'function'
     echo "[ ] $*" >> "$TODO_FILE"
     echo "Added: $*"
@@ -14,29 +20,28 @@ show_todos() {                  # or without is the same
 
 complete_todo() {
     for num in "$@"; do
-        # works on Linux; no parameter after -i
-        sed -i "${num}s/\[ \]/[x]/" "$TODO_FILE"
-        # # failed on Linux as pattern was taken as the file name
-        # sed -i "" "${num}s/\[ \]/[x]/" "$TODO_FILE"
+        if [[ $IS_MAC == true ]]; then
+            sed -i "" "${num}s/\[ \]/[x]/" "$TODO_FILE"
+        else
+            sed -i "${num}s/\[ \]/[x]/" "$TODO_FILE"
+        fi
         echo "Completed task #$num"
     done
 }
 
 cleanup() {
     local count=$(grep -c "\[x\]" "$TODO_FILE")
-
-    # # Original which fails on removing all items
-    # grep -v "\[x\]" "$TODO_FILE" > temp && mv temp "$TODO_FILE"
-
-    # corrected which ALWAYS moves the temp file 
     grep -v "\[x\]" "$TODO_FILE" > temp
     mv temp "$TODO_FILE"
     echo "Cleaned up $count completed tasks"
 }
 
 remove_todo() {
-    sed -i "${1}d" "$TODO_FILE"
-    # sed -i "" "${1}d" "$TODO_FILE"
+    if [[ $IS_MAC == true ]]; then
+        sed -i "" "${1}d" "$TODO_FILE"
+    else
+        sed -i "${1}d" "$TODO_FILE"
+    fi
     echo "Removed task #$1"
 }
 
