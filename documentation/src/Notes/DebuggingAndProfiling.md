@@ -164,26 +164,6 @@ Common pdb commands:
 - `b function_name` - Set breakpoint at function
 - `condition bp_number condition` - Make breakpoint conditional
 
-Example debugging session:
-```
-$ python -m pdb buggy_calculator.py
-> buggy_calculator.py(1)<module>()
--> def calculate_average(numbers):
-(Pdb) b 17
-Breakpoint 1 at buggy_calculator.py:17
-(Pdb) c
-> buggy_calculator.py(17)process_data()
--> avg = calculate_average(item['values'])
-(Pdb) p item
-{'name': 'dataset1', 'values': [1, 2, 3, 4, 5]}
-(Pdb) n
-> buggy_calculator.py(18)process_data()
--> results.append({'name': item['name'], 'average': avg})
-(Pdb) p avg
-3.0
-(Pdb) c
-# On second iteration with empty list, you'll see the error and can inspect state
-```
 
 ### Specialized Tools
 

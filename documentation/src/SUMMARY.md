@@ -8,6 +8,8 @@
 - [Using The Shell](./Notes/UsingTheShell.md)
 - [Shell Tools and Scripting](./Notes/ShellToolsAndScripting.md)
 - [Data Wrangling](./Notes/DataWrangling.md)
+- [Debugging And Profiling](./Notes/DebuggingAndProfiling.md)
+- [Git Theory](./Notes/git_theory.md)
 
 # Projects
 
