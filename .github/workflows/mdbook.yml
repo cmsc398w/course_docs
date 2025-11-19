@@ -23,7 +23,7 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
           rustup update
-          cargo install mdbook
+          cargo install mdbook --version 0.4.43
 
       - name: Install mdbook-admonition
         run: |
