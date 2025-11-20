@@ -3,16 +3,13 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: "pages"
   cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,29 +21,23 @@ jobs:
           curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
           rustup update
           cargo install mdbook --version 0.4.43
-
       - name: Install mdbook-admonition
         run: |
-          cargo install mdbook-admonish --locked
-
+          cargo install mdbook-admonish --version 1.18.0 --locked
       - name: Install mdbook-mermaid
         run: |
-          cargo install mdbook-mermaid
+          cargo install mdbook-mermaid --version 0.14.1
   
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
-
       - name: Build with mdBook
         run: |
           mdbook build documentation/
-
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: documentation/book
-
   deploy:
     environment:
       name: github-pages
