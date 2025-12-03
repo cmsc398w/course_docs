@@ -2,3 +2,4 @@
 .vscode/
 documentation/book/
 documentation/*.js
+**/.DS_Store
