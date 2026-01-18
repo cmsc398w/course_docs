@@ -1,0 +1,30 @@
+{
+  "name": "STIC Development Container",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "npm.packageManager": "pnpm"
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts",
+      "nodeGypDependencies": true,
+      "installYarnUsingApt": false
+    }
+  },
+  "forwardPorts": [3000, 3001, 3030],
+  "postCreateCommand": "pnpm --version && echo 'Dev container ready! Run: cd documentation && mdbook serve --open to start the documentation server'"
+}

@@ -20,16 +20,16 @@ echo "Hello world!"
 
 The first line, called a *shebang* (`#!/bin/bash`), tells the system to use bash to execute this script. For better portability, use `#!/usr/bin/env bash`, which locates bash using the system's PATH variable. The second line executes the echo program with an argument of "Hello world!".
 
-```admonish info
-The *shebang* mentioned earlier is short of "Shell Bang" as the `!` mark is historically referred to as a "bang" in computing circles.  The first line of scripts will have this syntax though `bash` may be replaced by other script interpreters depending on the programming language used int the script. Some common examples are
+> [!NOTE]
+> The *shebang* mentioned earlier is short of "Shell Bang" as the `!` mark is historically referred to as a "bang" in computing circles.  The first line of scripts will have this syntax though `bash` may be replaced by other script interpreters depending on the programming language used int the script. Some common examples are
+> 
+> | Shebang               | Interpreter / Language           |
+> |-----------------------|----------------------------------|
+> | `#!/bin/bash`         | Bash shell script                |
+> | `#!/bin/sh`           | Traditional vanilla shell script |
+> | `#!/usr/bin/python`   | Python script                    |
+> | `#!/usr/bin/awk -f`   | AWK script                       |
 
-| Shebang               | Interpreter / Language           |
-|-----------------------|----------------------------------|
-| `#!/bin/bash`         | Bash shell script                |
-| `#!/bin/sh`           | Traditional vanilla shell script |
-| `#!/usr/bin/python`   | Python script                    |
-| `#!/usr/bin/awk -f`   | AWK script                       |
-```
 
 Now, make the script executable and run it.
 
@@ -107,12 +107,12 @@ Common conditional tests:
 
 Exit codes can be used to conditionally execute commands using `&&` (and operator) and `||` (or operator), both of which are [short-circuiting](https://en.wikipedia.org/wiki/Short-circuit_evaluation) operators. The `true` program will always have a 0 return code and the `false` command will always have a 1 return code.
 
-```admonish info
-Both the following syntaxes will be honored for conditions in BASH scripts:
-1. `if [ condition ]; then ...; fi`  : Historical
-2. `if [[ condition ]]; then ...; fi` : Modern
-The difference is age: the first which uses a single pair of `[ ]` is the original shell syntax and uses a subshell (starts another program) to evaluate the `condition`. This gets the job done but is computationally costly for its need to start a new shell. Newer shells including BASH offer the double pair `[[ ]]` operator which evaluates a condition within the running shell.  Favor the Modern version in all code that you write unless you expect it will be run on an ancient computing platform.
-```
+> [!NOTE]
+> Both the following syntaxes will be honored for conditions in BASH scripts:
+> 1. `if [ condition ]; then ...; fi`  : Historical
+> 2. `if [[ condition ]]; then ...; fi` : Modern
+> The difference is age: the first which uses a single pair of `[ ]` is the original shell syntax and uses a subshell (starts another program) to evaluate the `condition`. This gets the job done but is computationally costly for its need to start a new shell. Newer shells including BASH offer the double pair `[[ ]]` operator which evaluates a condition within the running shell.  Favor the Modern version in all code that you write unless you expect it will be run on an ancient computing platform.
+
 
 #### For loops
 
@@ -279,9 +279,9 @@ diff <(ls foo) <(ls bar)
 # > y
 ```
 
-```admonish info
-Shell Globs and Regular Expressions are related but distinct methods to specify a pattern to be matched. Globs are tailored best to easily do the most common types of file name matching like all `*.txt` files (all text files). Regular expressions allow finer-grained control over matching at the expense being somewhat longer to specify.  Some programming libraries allow you to specify use of whichever is more convenient such as Python which has a [glob](https://docs.python.org/3/library/glob.html) library for file matching and a regular expression library in [re](https://docs.python.org/3/library/re.html).
-```
+> [!NOTE]
+> Shell Globs and Regular Expressions are related but distinct methods to specify a pattern to be matched. Globs are tailored best to easily do the most common types of file name matching like all `*.txt` files (all text files). Regular expressions allow finer-grained control over matching at the expense being somewhat longer to specify.  Some programming libraries allow you to specify use of whichever is more convenient such as Python which has a [glob](https://docs.python.org/3/library/glob.html) library for file matching and a regular expression library in [re](https://docs.python.org/3/library/re.html).
+
 
 ### Shell Check
 

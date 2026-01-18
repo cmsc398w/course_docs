@@ -64,12 +64,12 @@ When we run the `echo` command, the shell sees that it should execute the progra
 
 A path (in the context of the shell) is a list of directories; separated by `/` on Linux and macOS and `\` on Windows. On Linux and macOS, the path `/` is the "root" of the file system, under which all directories and files lie, whereas on Windows there is one root for each disk partition (e.g., `C:\`). We will generally assume that you are using a Linux filesystem in this class. A path that starts with `/` is called an _absolute_ path. Any other path is a _relative_ path. Relative paths are relative to the current working directory, which we can see with the `pwd` command and change with the `cd` command. In a path, `.` refers to the current directory, and `..` to its parent directory.
 
-```admonish info
-``cd [directory]``: Changes current working directory
+> [!NOTE]
+> ``cd [directory]``: Changes current working directory
+> 
+> ``pwd``: Prints the current working directory
+> 
 
-``pwd``: Prints the current working directory
-
-```
 
 ```bash
 cmsc398w:~/stic$ pwd
@@ -96,9 +96,9 @@ In general, when we run a program, it will operate in the current directory unle
 
 To see what lives in a given directory, we use the `ls` command:
 
-```admonish info
-``ls [OPTION]... [FILE]...``: list directory contents
-```
+> [!NOTE]
+> ``ls [OPTION]... [FILE]...``: list directory contents
+
 
 ```bash
 cmsc398w:~/stic$ ls
@@ -128,11 +128,11 @@ drwxr-x--- 67 cmsc398w cmsc398w 4096 Dec  2 19:22 cmsc398w
 This gives us a bunch more information about each file or directory present. First, the `d` at the beginning of the line tells us that `cmsc398w` is a directory. Then follow three groups of three characters (`rwx`). These indicate what permissions the owner of the file (`cmsc398w`), the owning group (`users`), and everyone else respectively have on the relevant item. A `-` indicates that the given principal does not have the given permission. Above, only the owner is allowed to
 modify (`w`) the `cmsc398w` directory (i.e., add/remove files in it). To enter a directory, a user must have "search" (represented by "execute": `x`) permissions on that directory (and its parents). To list its contents, a user must have read (`r`) permissions on that directory. For files, the permissions are as you would expect. Notice that nearly all the files in `/bin` have the `x` permission set for the last group, "everyone else", so that anyone can execute those programs.
 
-```admonish info
-``mv [OPTION]... SOURCE... DIRECTORY``: Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
+> [!NOTE]
+> ``mv [OPTION]... SOURCE... DIRECTORY``: Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
+> 
+> ``cp [OPTION]... SOURCE... DIRECTORY``: Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.
 
-``cp [OPTION]... SOURCE... DIRECTORY``: Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.
-```
 
 If you ever want _more_ information about a program's arguments, inputs, outputs, or how it works in general, give the `man` program a try. It takes as an argument the name of a program, and shows you its _manual page_. Press `q` to exit.
 

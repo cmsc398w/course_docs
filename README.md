@@ -4,10 +4,8 @@
 
 1. [Install mdbook](https://rust-lang.github.io/mdBook/guide/installation.html)
 
-2. [Install mdbook-admonish](https://github.com/tommilligan/mdbook-admonish?tab=readme-ov-file#installation)
+2. [Install mdbook-mermaid](https://github.com/badboy/mdbook-mermaid)
 
-3. [Install mdbook-mermaid](https://github.com/badboy/mdbook-mermaid)
+3. `cd` into /src
 
-4. `cd` into /src
-
-5. Run `mdbook serve --open`
+4. Run `mdbook serve --open`

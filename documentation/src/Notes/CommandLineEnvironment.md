@@ -12,9 +12,9 @@ In some cases you will need to interrupt a job while it is executing, for instan
 
 Your shell is using a UNIX communication mechanism called a _signal_ to communicate information to the process. When a process receives a signal it stops its execution, deals with the signal and potentially changes the flow of execution based on the information that the signal delivered. For this reason, signals are _software interrupts_.
 
-```admonish info
-Signals are a communication mechanism that is supported by most operating systems including all flavors of UNIX, Linux among them.  Programs can elect to **handle** signals or send signals to other programs. The amount of information that is conveyed is quite limited: just that a signal arrived and it is a certain "flavor".  Mostly signals are used as demonstrated here to affect process control in a terminal. However, they can be used for other purposes though often this is trickier than it seems. Signals are **asynchronous** and may arrive in a program at any point making it hard to set up communication protocols that require order.
-```
+> [!NOTE]
+> Signals are a communication mechanism that is supported by most operating systems including all flavors of UNIX, Linux among them.  Programs can elect to **handle** signals or send signals to other programs. The amount of information that is conveyed is quite limited: just that a signal arrived and it is a certain "flavor".  Mostly signals are used as demonstrated here to affect process control in a terminal. However, they can be used for other purposes though often this is trickier than it seems. Signals are **asynchronous** and may arrive in a program at any point making it hard to set up communication protocols that require order.
+
 
 In our case, when typing `Ctrl-C` this prompts the shell to deliver a `SIGINT` signal to the process.
 
@@ -295,11 +295,11 @@ UNIX programs have a long tradition of using dot files for customization. Softwa
 - Many graphical programs, either directly or via configurations under `~/.config`
 If you want to tailor the behavior of a program in UNIX/Linux, you're likely going to edit a dot file of some type.
 
-```admonish info
-Customizing software is desirable but the location of where such customizations are retained is a matter of some debate.  The ad hoc distributed nature of the many dot files which UNIX employs has both advantages (plain text, usually in the home directory) and disadvantages (wide variety of formats/syntax unique to different programs, loads of dot files crowd the home directory). 
+> [!NOTE]
+> Customizing software is desirable but the location of where such customizations are retained is a matter of some debate.  The ad hoc distributed nature of the many dot files which UNIX employs has both advantages (plain text, usually in the home directory) and disadvantages (wide variety of formats/syntax unique to different programs, loads of dot files crowd the home directory). 
+> 
+> The [Windows Registry](https://en.wikipedia.org/wiki/Windows_Registry) used on Windows systems is an alternative that has a central database of settings for any and all programs that want to retain settings of some type. It goes the opposite route having a centralized, large, binary structure where most programs store information. MacOS favors [Property Lists (plist files)](https://en.wikipedia.org/wiki/Property_list) that are usually stored in a centralized directory like `~/Library/Preferences/` and dictate settings for programs with a somewhat more uniform format in text or binary formats. These speak to the cultural heritage of Microsoft and Apple being able to dictate the design of programs on their OS to others while UNIX and Linux are a federation of many contributors and so lack a central authority to force such uniformity.
 
-The [Windows Registry](https://en.wikipedia.org/wiki/Windows_Registry) used on Windows systems is an alternative that has a central database of settings for any and all programs that want to retain settings of some type. It goes the opposite route having a centralized, large, binary structure where most programs store information. MacOS favors [Property Lists (plist files)](https://en.wikipedia.org/wiki/Property_list) that are usually stored in a centralized directory like `~/Library/Preferences/` and dictate settings for programs with a somewhat more uniform format in text or binary formats. These speak to the cultural heritage of Microsoft and Apple being able to dictate the design of programs on their OS to others while UNIX and Linux are a federation of many contributors and so lack a central authority to force such uniformity.
-```
 
 Shells are one example of programs configured with such files. On startup, your shell will read many files to load its configuration. Depending on the shell, whether you are starting a login and/or interactive the entire process can be quite complex.
 [Here](https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html) is an excellent resource on the topic.
