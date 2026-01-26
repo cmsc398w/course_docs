@@ -17,19 +17,14 @@ mdc: true
 
 Course Overview and The Shell
 
-<div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space for next page <carbon:arrow-right class="inline"/>
-  </span>
-</div>
-
 ---
 layout: two-cols
 ---
 
-# About The Class
+::left::
 
-**CMSC398W: Practical Tools For Efficient Development**
+## About The Class
+
 
 <v-clicks>
 
@@ -52,9 +47,15 @@ layout: two-cols
 
 </div>
 
----
 
-# About Us
+---
+layout: image-right
+
+image: assets/image.png
+backgroundSize: 25%
+
+---
+# About Me
 
 ## Mohammad Durrani
 
@@ -62,7 +63,7 @@ layout: two-cols
 
 - **Year:** Senior
 - **Major:** CS + Math, minor in Robotics
-- **Experience:** SWE Intern at Google, TRX
+- **Experience:** SWE Intern at Google, TRX Systems
 - **Interests:** Rock climbing, Basketball, Robots
 
 </v-clicks>
@@ -74,9 +75,10 @@ layout: two-cols
 <v-clicks>
 
 ## Experience
+<AutoFitText :max="200" :min="100" modelValue="Some text"/>
 
 **AI Research**
-- Bash scripts are essential for reproducible experiments
+- Reproducible experiments are incredibly
 - Can't code without SSH and command line knowledge
 - Docker is heavily used for model deployment
 
