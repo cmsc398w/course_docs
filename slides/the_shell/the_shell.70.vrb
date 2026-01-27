@@ -1,0 +1,40 @@
+\frametitle{sed Address Ranges}
+\begin{block}{Working with Line Ranges}
+\begin{verbatim}
+# Specific line range
+sed '10,20s/old/new/g' file.txt
+
+# From line to end
+sed '10,$s/old/new/g' file.txt
+
+# Pattern to pattern
+sed '/START/,/END/s/old/new/g' file.txt
+
+# Every Nth line
+sed '0~3s/old/new/g' file.txt  # Every 3rd line
+\end{verbatim}
+
+\#\# sed Practical Examples
+:BEAMER\textsubscript{OPT}: fragile
+\end{block}
+\begin{block}{Real-World Usage}
+\begin{verbatim}
+# Remove comments
+sed 's/#.*//' config.txt
+
+# Remove leading whitespace
+sed 's/^[ \t]*//' file.txt
+
+# Remove trailing whitespace
+sed 's/[ \t]*$//' file.txt
+
+# Double-space file
+sed 'G' file.txt
+
+# Number non-empty lines
+sed '/./=' file.txt | sed 'N; s/\n/ /'
+
+# Extract email addresses
+sed -n 's/.*\([a-zA-Z0-9._%+-]\+@[a-zA-Z0-9.-]\+\.[a-zA-Z]\{2,\}\).*/\1/p' file.txt
+\end{verbatim}
+\end{block}

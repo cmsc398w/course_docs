@@ -1,0 +1,14 @@
+\frametitle{Viewing File Contents}
+\begin{block}{Viewing Commands}
+\begin{center}
+\begin{tabular}{ll}
+Command & Description\\
+\hline
+\texttt{cat} & Display entire file\\
+\texttt{less} & Page through file (q to quit)\\
+\texttt{head} & Show first 10 lines\\
+\texttt{tail} & Show last 10 lines\\
+\texttt{tail -f} & Follow file updates (logs)\\
+\end{tabular}
+\end{center}
+\end{block}

@@ -1,0 +1,23 @@
+\frametitle{Input and Output}
+\begin{block}{User Input}
+\begin{verbatim}
+# Read user input
+echo "Enter your name:"
+read name
+echo "Hello, $name"
+
+# Read with prompt
+read -p "Enter your age: " age
+
+# Read password (hidden)
+read -sp "Enter password: " password
+echo
+
+# Read with timeout
+read -t 5 -p "Enter (5 sec timeout): " input
+
+# Read into array
+read -a array
+echo "First element: ${array[0]}"
+\end{verbatim}
+\end{block}

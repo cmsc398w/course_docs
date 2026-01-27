@@ -1,0 +1,20 @@
+\frametitle{Globbing Examples}
+\begin{block}{Pattern Matching}
+\begin{verbatim}
+# All .txt files
+ls *.txt
+
+# Files starting with 'test'
+ls test*
+
+# Single character wildcard
+ls file?.txt
+
+# Character sets
+ls file[123].txt
+ls [a-z]*.txt
+
+# Negation
+ls [!a-z]*
+\end{verbatim}
+\end{block}

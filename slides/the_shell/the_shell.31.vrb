@@ -1,0 +1,19 @@
+\frametitle{grep Examples}
+\begin{block}{Advanced grep Usage}
+\begin{verbatim}
+# Find all TODO comments with context
+grep -n -C 2 "TODO" *.py
+
+# Count errors in log
+grep -c "ERROR" application.log
+
+# Find files containing pattern
+grep -rl "import numpy" .
+
+# Complex pattern matching
+grep -E "error|warning|critical" logfile.txt
+
+# Exclude pattern
+grep -v "DEBUG" logfile.txt | less
+\end{verbatim}
+\end{block}

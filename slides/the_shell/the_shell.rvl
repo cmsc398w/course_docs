@@ -1,0 +1,257 @@
+%% Beamer-revealdriverfile
+@@Presentation: 
+-parameters:compiler={lualatex},canvaswidth={4838},canvasheight={3024}
+@@BeamerFrame: 
+-parameters:rawpage={1},truepage={1},overlay={1},transition={},title={}
+@@BeamerFrame: 
+-parameters:rawpage={2},truepage={2},overlay={1},transition={none},title={About The Class}
+@@BeamerFrame: 
+-parameters:rawpage={3},truepage={3},overlay={1},transition={none},title={About Me - Mohammad}
+@@BeamerFrame: 
+-parameters:rawpage={4},truepage={4},overlay={1},transition={none},title={What To Expect}
+@@BeamerFrame: 
+-parameters:rawpage={5},truepage={5},overlay={1},transition={none},title={Course Logistics}
+@@BeamerFrame: 
+-parameters:rawpage={6},truepage={6},overlay={1},transition={none},title={Application Days}
+@@BeamerFrame: 
+-parameters:rawpage={7},truepage={6},overlay={2},transition={none},title={Application Days}
+@@BeamerFrame: 
+-parameters:rawpage={8},truepage={7},overlay={1},transition={none},title={Grade Distribution}
+@@BeamerFrame: 
+-parameters:rawpage={9},truepage={8},overlay={1},transition={none},title={Introduction}
+@@BeamerFrame: 
+-parameters:rawpage={10},truepage={8},overlay={2},transition={none},title={Introduction}
+@@BeamerFrame: 
+-parameters:rawpage={11},truepage={8},overlay={3},transition={none},title={Introduction}
+@@BeamerFrame: 
+-parameters:rawpage={12},truepage={8},overlay={4},transition={none},title={Introduction}
+@@BeamerFrame: 
+-parameters:rawpage={13},truepage={8},overlay={5},transition={none},title={Introduction}
+@@BeamerFrame: 
+-parameters:rawpage={14},truepage={9},overlay={1},transition={none},title={What is the Shell?}
+@@BeamerFrame: 
+-parameters:rawpage={15},truepage={9},overlay={2},transition={none},title={What is the Shell?}
+@@BeamerFrame: 
+-parameters:rawpage={16},truepage={10},overlay={1},transition={none},title={Important Terminology}
+@@BeamerFrame: 
+-parameters:rawpage={17},truepage={10},overlay={2},transition={none},title={Important Terminology}
+@@BeamerFrame: 
+-parameters:rawpage={18},truepage={11},overlay={1},transition={none},title={Terminal Emulator Features}
+@@BeamerFrame: 
+-parameters:rawpage={19},truepage={11},overlay={2},transition={none},title={Terminal Emulator Features}
+@@BeamerFrame: 
+-parameters:rawpage={20},truepage={12},overlay={1},transition={none},title={Motivation}
+@@BeamerFrame: 
+-parameters:rawpage={21},truepage={12},overlay={2},transition={none},title={Motivation}
+@@BeamerFrame: 
+-parameters:rawpage={22},truepage={12},overlay={3},transition={none},title={Motivation}
+@@BeamerFrame: 
+-parameters:rawpage={23},truepage={12},overlay={4},transition={none},title={Motivation}
+@@BeamerFrame: 
+-parameters:rawpage={24},truepage={12},overlay={5},transition={none},title={Motivation}
+@@BeamerFrame: 
+-parameters:rawpage={25},truepage={12},overlay={6},transition={none},title={Motivation}
+@@BeamerFrame: 
+-parameters:rawpage={26},truepage={13},overlay={1},transition={none},title={The Prompt}
+@@BeamerFrame: 
+-parameters:rawpage={27},truepage={13},overlay={2},transition={none},title={The Prompt}
+@@BeamerFrame: 
+-parameters:rawpage={28},truepage={14},overlay={1},transition={none},title={Basic Commands}
+@@BeamerFrame: 
+-parameters:rawpage={29},truepage={15},overlay={1},transition={none},title={Basic Commands - Examples}
+@@BeamerFrame: 
+-parameters:rawpage={30},truepage={16},overlay={1},transition={none},title={PATH Variable}
+@@BeamerFrame: 
+-parameters:rawpage={31},truepage={17},overlay={1},transition={none},title={PATH Variable - Example}
+@@BeamerFrame: 
+-parameters:rawpage={32},truepage={18},overlay={1},transition={none},title={Modifying PATH}
+@@BeamerFrame: 
+-parameters:rawpage={33},truepage={19},overlay={1},transition={none},title={Navigating - Paths}
+@@BeamerFrame: 
+-parameters:rawpage={34},truepage={20},overlay={1},transition={none},title={Essential Navigation Commands}
+@@BeamerFrame: 
+-parameters:rawpage={35},truepage={21},overlay={1},transition={none},title={Navigation Examples}
+@@BeamerFrame: 
+-parameters:rawpage={36},truepage={22},overlay={1},transition={none},title={File and Directory Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={37},truepage={22},overlay={2},transition={none},title={File and Directory Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={38},truepage={23},overlay={1},transition={none},title={File Manipulation Examples}
+@@BeamerFrame: 
+-parameters:rawpage={39},truepage={24},overlay={1},transition={none},title={Viewing File Contents}
+@@BeamerFrame: 
+-parameters:rawpage={40},truepage={25},overlay={1},transition={none},title={Viewing Examples}
+@@BeamerFrame: 
+-parameters:rawpage={41},truepage={26},overlay={1},transition={none},title={Environment Variables}
+@@BeamerFrame: 
+-parameters:rawpage={42},truepage={27},overlay={1},transition={none},title={Environment Variable Examples}
+@@BeamerFrame: 
+-parameters:rawpage={43},truepage={28},overlay={1},transition={none},title={Searching and Finding}
+@@BeamerFrame: 
+-parameters:rawpage={44},truepage={29},overlay={1},transition={none},title={Search Examples}
+@@BeamerFrame: 
+-parameters:rawpage={45},truepage={30},overlay={1},transition={none},title={Advanced grep}
+@@BeamerFrame: 
+-parameters:rawpage={46},truepage={31},overlay={1},transition={none},title={grep Examples}
+@@BeamerFrame: 
+-parameters:rawpage={47},truepage={32},overlay={1},transition={none},title={Wildcards and Globbing}
+@@BeamerFrame: 
+-parameters:rawpage={48},truepage={33},overlay={1},transition={none},title={Globbing Examples}
+@@BeamerFrame: 
+-parameters:rawpage={49},truepage={34},overlay={1},transition={none},title={Brace Expansion}
+@@BeamerFrame: 
+-parameters:rawpage={50},truepage={35},overlay={1},transition={none},title={Command History}
+@@BeamerFrame: 
+-parameters:rawpage={51},truepage={36},overlay={1},transition={none},title={History Examples}
+@@BeamerFrame: 
+-parameters:rawpage={52},truepage={37},overlay={1},transition={none},title={Tab Completion}
+@@BeamerFrame: 
+-parameters:rawpage={53},truepage={37},overlay={2},transition={none},title={Tab Completion}
+@@BeamerFrame: 
+-parameters:rawpage={54},truepage={37},overlay={3},transition={none},title={Tab Completion}
+@@BeamerFrame: 
+-parameters:rawpage={55},truepage={37},overlay={4},transition={none},title={Tab Completion}
+@@BeamerFrame: 
+-parameters:rawpage={56},truepage={38},overlay={1},transition={none},title={Command Substitution}
+@@BeamerFrame: 
+-parameters:rawpage={57},truepage={39},overlay={1},transition={none},title={Command Substitution Examples}
+@@BeamerFrame: 
+-parameters:rawpage={58},truepage={40},overlay={1},transition={none},title={Process Substitution}
+@@BeamerFrame: 
+-parameters:rawpage={59},truepage={41},overlay={1},transition={none},title={Redirection Basics}
+@@BeamerFrame: 
+-parameters:rawpage={60},truepage={42},overlay={1},transition={none},title={Redirection Examples}
+@@BeamerFrame: 
+-parameters:rawpage={61},truepage={43},overlay={1},transition={none},title={Pipes}
+@@BeamerFrame: 
+-parameters:rawpage={62},truepage={44},overlay={1},transition={none},title={Pipe Examples}
+@@BeamerFrame: 
+-parameters:rawpage={63},truepage={45},overlay={1},transition={none},title={Advanced Pipe Chains}
+@@BeamerFrame: 
+-parameters:rawpage={64},truepage={46},overlay={1},transition={none},title={tee Command}
+@@BeamerFrame: 
+-parameters:rawpage={65},truepage={47},overlay={1},transition={none},title={What is xargs?}
+@@BeamerFrame: 
+-parameters:rawpage={66},truepage={48},overlay={1},transition={none},title={xargs Basic Usage}
+@@BeamerFrame: 
+-parameters:rawpage={67},truepage={49},overlay={1},transition={none},title={xargs Options}
+@@BeamerFrame: 
+-parameters:rawpage={68},truepage={50},overlay={1},transition={none},title={xargs Advanced Examples}
+@@BeamerFrame: 
+-parameters:rawpage={69},truepage={51},overlay={1},transition={none},title={xargs with find}
+@@BeamerFrame: 
+-parameters:rawpage={70},truepage={52},overlay={1},transition={none},title={xargs vs exec}
+@@BeamerFrame: 
+-parameters:rawpage={71},truepage={52},overlay={2},transition={none},title={xargs vs exec}
+@@BeamerFrame: 
+-parameters:rawpage={72},truepage={53},overlay={1},transition={none},title={Introduction to Data Wrangling}
+@@BeamerFrame: 
+-parameters:rawpage={73},truepage={54},overlay={1},transition={none},title={Text Processing Tools}
+@@BeamerFrame: 
+-parameters:rawpage={74},truepage={55},overlay={1},transition={none},title={Text Processing Examples}
+@@BeamerFrame: 
+-parameters:rawpage={75},truepage={56},overlay={1},transition={none},title={sort Command}
+@@BeamerFrame: 
+-parameters:rawpage={76},truepage={57},overlay={1},transition={none},title={sort Examples}
+@@BeamerFrame: 
+-parameters:rawpage={77},truepage={58},overlay={1},transition={none},title={uniq Examples}
+@@BeamerFrame: 
+-parameters:rawpage={78},truepage={59},overlay={1},transition={none},title={cut and paste}
+@@BeamerFrame: 
+-parameters:rawpage={79},truepage={60},overlay={1},transition={none},title={tr Command}
+@@BeamerFrame: 
+-parameters:rawpage={80},truepage={61},overlay={1},transition={none},title={Data Wrangling Example}
+@@BeamerFrame: 
+-parameters:rawpage={81},truepage={62},overlay={1},transition={none},title={Regular Expressions Basics}
+@@BeamerFrame: 
+-parameters:rawpage={82},truepage={63},overlay={1},transition={none},title={Advanced Regex Patterns}
+@@BeamerFrame: 
+-parameters:rawpage={83},truepage={64},overlay={1},transition={none},title={Introduction to sed}
+@@BeamerFrame: 
+-parameters:rawpage={84},truepage={65},overlay={1},transition={none},title={sed Substitution}
+@@BeamerFrame: 
+-parameters:rawpage={85},truepage={66},overlay={1},transition={none},title={sed Advanced Substitution}
+@@BeamerFrame: 
+-parameters:rawpage={86},truepage={67},overlay={1},transition={none},title={sed Line Operations}
+@@BeamerFrame: 
+-parameters:rawpage={87},truepage={68},overlay={1},transition={none},title={sed Insert and Append}
+@@BeamerFrame: 
+-parameters:rawpage={88},truepage={69},overlay={1},transition={none},title={sed In-Place Editing}
+@@BeamerFrame: 
+-parameters:rawpage={89},truepage={70},overlay={1},transition={none},title={sed Address Ranges}
+@@BeamerFrame: 
+-parameters:rawpage={90},truepage={71},overlay={1},transition={none},title={Introduction to awk}
+@@BeamerFrame: 
+-parameters:rawpage={91},truepage={72},overlay={1},transition={none},title={awk Basic Structure}
+@@BeamerFrame: 
+-parameters:rawpage={92},truepage={73},overlay={1},transition={none},title={awk Basic Examples}
+@@BeamerFrame: 
+-parameters:rawpage={93},truepage={74},overlay={1},transition={none},title={awk Field Separators}
+@@BeamerFrame: 
+-parameters:rawpage={94},truepage={75},overlay={1},transition={none},title={awk Pattern Matching}
+@@BeamerFrame: 
+-parameters:rawpage={95},truepage={76},overlay={1},transition={none},title={awk Numerical Operations}
+@@BeamerFrame: 
+-parameters:rawpage={96},truepage={77},overlay={1},transition={none},title={awk BEGIN and END}
+@@BeamerFrame: 
+-parameters:rawpage={97},truepage={78},overlay={1},transition={none},title={awk Built-in Functions}
+@@BeamerFrame: 
+-parameters:rawpage={98},truepage={79},overlay={1},transition={none},title={awk Control Structures}
+@@BeamerFrame: 
+-parameters:rawpage={99},truepage={80},overlay={1},transition={none},title={awk Associative Arrays}
+@@BeamerFrame: 
+-parameters:rawpage={100},truepage={81},overlay={1},transition={none},title={awk Practical Examples}
+@@BeamerFrame: 
+-parameters:rawpage={101},truepage={82},overlay={1},transition={none},title={awk vs sed}
+@@BeamerFrame: 
+-parameters:rawpage={102},truepage={83},overlay={1},transition={none},title={Creating a Script}
+@@BeamerFrame: 
+-parameters:rawpage={104},truepage={83},overlay={2},transition={none},title={Creating a Script}
+@@BeamerFrame: 
+-parameters:rawpage={105},truepage={84},overlay={1},transition={none},title={Script Variables}
+@@BeamerFrame: 
+-parameters:rawpage={106},truepage={85},overlay={1},transition={none},title={Special Variables}
+@@BeamerFrame: 
+-parameters:rawpage={107},truepage={86},overlay={1},transition={none},title={Conditionals}
+@@BeamerFrame: 
+-parameters:rawpage={108},truepage={87},overlay={1},transition={none},title={Test Operators}
+@@BeamerFrame: 
+-parameters:rawpage={109},truepage={87},overlay={2},transition={none},title={Test Operators}
+@@BeamerFrame: 
+-parameters:rawpage={110},truepage={88},overlay={1},transition={none},title={Loops}
+@@BeamerFrame: 
+-parameters:rawpage={111},truepage={89},overlay={1},transition={none},title={Advanced Loop Techniques}
+@@BeamerFrame: 
+-parameters:rawpage={112},truepage={90},overlay={1},transition={none},title={Functions}
+@@BeamerFrame: 
+-parameters:rawpage={113},truepage={91},overlay={1},transition={none},title={Function Best Practices}
+@@BeamerFrame: 
+-parameters:rawpage={114},truepage={92},overlay={1},transition={none},title={Error Handling}
+@@BeamerFrame: 
+-parameters:rawpage={115},truepage={93},overlay={1},transition={none},title={Input and Output}
+@@BeamerFrame: 
+-parameters:rawpage={116},truepage={94},overlay={1},transition={none},title={Arrays}
+@@BeamerFrame: 
+-parameters:rawpage={117},truepage={95},overlay={1},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={118},truepage={95},overlay={2},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={119},truepage={95},overlay={3},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={120},truepage={95},overlay={4},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={121},truepage={95},overlay={5},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={122},truepage={95},overlay={6},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={123},truepage={95},overlay={7},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={124},truepage={95},overlay={8},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={125},truepage={95},overlay={9},transition={none},title={String Manipulation}
+@@BeamerFrame: 
+-parameters:rawpage={126},truepage={96},overlay={1},transition={none},title={Debugging Scripts}
+@@BeamerFrame: 
+-parameters:rawpage={127},truepage={97},overlay={1},transition={none},title={Practical Script Example}
+@@BeamerFrame: 
+-parameters:rawpage={128},truepage={98},overlay={1},transition={none},title={Questions?}

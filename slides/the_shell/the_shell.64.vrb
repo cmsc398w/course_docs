@@ -1,0 +1,36 @@
+\frametitle{Introduction to sed}
+\begin{definition}[What is sed?]\label{sec:org6d27412}
+\texttt{sed} (Stream Editor) is a powerful tool for parsing and transforming text in a data stream or file.
+\end{definition}
+\begin{block}{Common Uses}
+\begin{itemize}
+\item Text substitution
+\item Line deletion
+\item In-place file editing
+\item Pattern-based text manipulation
+\item Automated text transformations
+\end{itemize}
+
+\#\# sed Basic Syntax
+\end{block}
+\begin{block}{sed Command Structure}
+\begin{verbatim}
+sed 'command' file
+sed -e 'command1' -e 'command2' file
+sed -i 'command' file  # In-place editing
+\end{verbatim}
+\end{block}
+\begin{exampleblock}{Common Commands}\label{sec:orgff9f099}
+\begin{center}
+\begin{tabular}{ll}
+Command & Action\\
+\hline
+\texttt{s} & Substitute\\
+\texttt{d} & Delete\\
+\texttt{p} & Print\\
+\texttt{a} & Append\\
+\texttt{i} & Insert\\
+\texttt{c} & Change\\
+\end{tabular}
+\end{center}
+\end{exampleblock}

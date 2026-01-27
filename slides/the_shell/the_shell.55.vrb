@@ -1,0 +1,19 @@
+\frametitle{Text Processing Examples}
+\begin{block}{Basic Operations}
+\begin{verbatim}
+# Count lines in file
+wc -l file.txt
+
+# Sort and remove duplicates
+sort file.txt | uniq
+
+# Extract specific column
+cut -d',' -f2 data.csv
+
+# Count unique values
+sort file.txt | uniq -c
+
+# Translate characters
+echo "hello" | tr 'a-z' 'A-Z'
+\end{verbatim}
+\end{block}

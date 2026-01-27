@@ -1,0 +1,20 @@
+\frametitle{sed Substitution}
+\begin{block}{Basic Substitution}
+\begin{verbatim}
+# Basic substitution (first occurrence)
+sed 's/old/new/' file.txt
+
+# Global substitution (all occurrences)
+sed 's/old/new/g' file.txt
+
+# Case-insensitive
+sed 's/old/new/gi' file.txt
+
+# Only on specific lines
+sed '3s/old/new/' file.txt
+sed '1,5s/old/new/g' file.txt
+
+# With different delimiter
+sed 's|/path/old|/path/new|g' file.txt
+\end{verbatim}
+\end{block}

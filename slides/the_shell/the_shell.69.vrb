@@ -1,0 +1,16 @@
+\frametitle{sed In-Place Editing}
+\begin{block}{Modifying Files Directly}
+\begin{verbatim}
+# Edit file in place
+sed -i 's/old/new/g' file.txt
+
+# Create backup before editing
+sed -i.bak 's/old/new/g' file.txt
+
+# Multiple operations
+sed -i -e 's/foo/bar/g' -e 's/hello/world/g' file.txt
+
+# Process multiple files
+sed -i 's/old/new/g' *.txt
+\end{verbatim}
+\end{block}

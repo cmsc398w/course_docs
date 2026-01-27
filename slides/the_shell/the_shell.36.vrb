@@ -1,0 +1,19 @@
+\frametitle{History Examples}
+\begin{block}{Using History}
+\begin{verbatim}
+# View history
+history
+history 20  # Last 20 commands
+
+# Execute from history
+!42        # Run command number 42
+!!         # Repeat last command
+!grep      # Last command starting with grep
+
+# Search history
+Ctrl+R     # Then start typing
+
+# Clear history
+history -c
+\end{verbatim}
+\end{block}

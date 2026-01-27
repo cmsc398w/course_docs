@@ -1,0 +1,28 @@
+\frametitle{Error Handling}
+\#\#\# Robust Scripts
+:BEAMER\textsubscript{ENV}: block
+
+\begin{verbatim}
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Exit on undefined variable
+set -u
+
+# Pipeline fails if any command fails
+set -o pipefail
+
+# All together
+set -euo pipefail
+
+# Check command success
+if ! command -v git &> /dev/null; then
+    echo "git not found"
+    exit 1
+fi
+
+# Custom error messages
+mkdir /tmp/mydir || { echo "Failed to create directory"; exit 1; }
+\end{verbatim}

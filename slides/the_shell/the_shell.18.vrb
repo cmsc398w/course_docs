@@ -1,0 +1,8 @@
+\frametitle{Modifying PATH}
+\begin{exampleblock}{Adding to PATH}\label{sec:org27b42af}
+\begin{verbatim}
+export PATH="/Directory1:$PATH"
+\end{verbatim}
+
+This adds \texttt{/Directory1} to the beginning of your PATH, giving it priority in command searches.
+\end{exampleblock}

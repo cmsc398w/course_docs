@@ -1,0 +1,20 @@
+\frametitle{awk BEGIN and END}
+\begin{block}{Special Patterns}
+\begin{verbatim}
+# BEGIN: executed before processing
+awk 'BEGIN { print "Starting..." } { print $0 }' file.txt
+
+# END: executed after processing
+awk '{ sum += $1 } END { print "Total:", sum }' file.txt
+
+# Both together
+awk 'BEGIN { FS=","; print "Name,Score" }
+     { print $1, $2 }
+     END { print "Done" }' file.csv
+
+# Initialize variables
+awk 'BEGIN { max = 0 }
+     $2 > max { max = $2 }
+     END { print "Max:", max }' file.txt
+\end{verbatim}
+\end{block}

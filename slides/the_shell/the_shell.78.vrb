@@ -1,0 +1,20 @@
+\frametitle{awk Built-in Functions}
+\begin{block}{Useful Functions}
+\begin{verbatim}
+# String functions
+awk '{ print length($0) }' file.txt
+awk '{ print toupper($1) }' file.txt
+awk '{ print tolower($1) }' file.txt
+awk '{ print substr($1, 1, 3) }' file.txt
+
+# Math functions
+awk '{ print sqrt($1) }' file.txt
+awk '{ print int($1) }' file.txt
+
+# Pattern matching
+awk '{ if (match($0, /[0-9]+/)) print substr($0, RSTART, RLENGTH) }' file.txt
+
+# Substitution
+awk '{ gsub(/old/, "new"); print }' file.txt
+\end{verbatim}
+\end{block}

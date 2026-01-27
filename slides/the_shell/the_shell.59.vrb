@@ -1,0 +1,16 @@
+\frametitle{cut and paste}
+\begin{block}{Column Manipulation}
+\begin{verbatim}
+# Extract columns 1 and 3
+cut -d',' -f1,3 data.csv
+
+# Extract character range
+cut -c1-10 file.txt
+
+# Combine columns from different files
+paste file1.txt file2.txt
+
+# Use custom delimiter
+paste -d',' file1.txt file2.txt
+\end{verbatim}
+\end{block}

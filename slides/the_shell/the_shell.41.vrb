@@ -1,0 +1,15 @@
+\frametitle{Redirection Basics}
+\begin{block}{Redirection Operators}
+\begin{center}
+\begin{tabular}{ll}
+Operator & Description\\
+\hline
+\texttt{>} & Redirect output (overwrite)\\
+\texttt{>{}>{}} & Redirect output (append)\\
+\texttt{<} & Redirect input\\
+\texttt{2>} & Redirect stderr\\
+\texttt{2>\&1} & Redirect stderr to stdout\\
+\texttt{\&>} & Redirect both stdout and stderr\\
+\end{tabular}
+\end{center}
+\end{block}

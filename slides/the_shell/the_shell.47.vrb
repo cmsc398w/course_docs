@@ -1,0 +1,13 @@
+\frametitle{What is xargs?}
+\begin{definition}[Definition]\label{sec:orgc927895}
+\texttt{xargs} builds and executes command lines from standard input, converting input into arguments for another command.
+\end{definition}
+\begin{block}{Why xargs?}
+Many commands don't read from stdin—they need arguments:
+\begin{itemize}
+\item \texttt{rm}, \texttt{cp}, \texttt{mv} expect filenames as arguments
+\item \texttt{xargs} bridges this gap
+\item Enables parallel execution
+\item Handles large argument lists safely
+\end{itemize}
+\end{block}

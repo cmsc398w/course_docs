@@ -1,0 +1,9 @@
+\frametitle{Pipes}
+\begin{definition}[What are Pipes?]\label{sec:org135532b}
+Pipes (\texttt{|}) connect the output of one command to the input of another, enabling powerful command chaining.
+\end{definition}
+\begin{exampleblock}{Pipe Philosophy}\label{sec:org098d720}
+Unix philosophy: "Do one thing and do it well"
+
+Combine simple tools to accomplish complex tasks!
+\end{exampleblock}

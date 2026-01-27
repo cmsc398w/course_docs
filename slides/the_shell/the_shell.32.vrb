@@ -1,0 +1,14 @@
+\frametitle{Wildcards and Globbing}
+\begin{block}{Glob Patterns}
+\begin{center}
+\begin{tabular}{ll}
+Pattern & Matches\\
+\hline
+\texttt{*} & Any string (including empty)\\
+\texttt{?} & Any single character\\
+\texttt{[abc]} & Any character in brackets\\
+\texttt{[a-z]} & Any character in range\\
+\texttt{[!abc]} & Any character NOT in brackets\\
+\end{tabular}
+\end{center}
+\end{block}

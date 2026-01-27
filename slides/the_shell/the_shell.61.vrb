@@ -1,0 +1,25 @@
+\frametitle{Data Wrangling Example}
+\begin{block}{Real-World Pipeline}
+\begin{verbatim}
+# Analyze web server logs
+# Find most common ERROR messages
+cat access.log \
+  | grep "ERROR" \
+  | cut -d' ' -f5- \
+  | sort \
+  | uniq -c \
+  | sort -rn \
+  | head -10
+\end{verbatim}
+
+This pipeline:
+\begin{enumerate}
+\item Reads the log file
+\item Filters ERROR lines
+\item Extracts relevant fields
+\item Sorts entries
+\item Counts unique occurrences
+\item Sorts by frequency
+\item Shows top 10
+\end{enumerate}
+\end{block}

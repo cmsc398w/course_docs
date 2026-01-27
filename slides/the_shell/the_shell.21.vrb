@@ -1,0 +1,20 @@
+\frametitle{Navigation Examples}
+\begin{block}{Using Navigation Commands}
+\begin{verbatim}
+# Show current directory
+pwd
+
+# Go to home directory
+cd ~
+cd
+
+# Go to parent directory
+cd ..
+
+# Go to specific directory
+cd /usr/local/bin
+
+# Go to previous directory
+cd -
+\end{verbatim}
+\end{block}

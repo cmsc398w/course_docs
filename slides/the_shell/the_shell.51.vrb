@@ -1,0 +1,17 @@
+\frametitle{xargs with find}
+\begin{block}{The Power Combo}
+\begin{verbatim}
+# Delete files older than 30 days
+find /tmp -mtime +30 -print0 | xargs -0 rm
+
+# Change permissions on all scripts
+find . -name "*.sh" -print0 | xargs -0 chmod +x
+
+# Search in found files
+find . -name "*.log" | xargs grep "ERROR"
+
+# Archive old files
+find . -mtime +365 -print0 | \
+  xargs -0 tar -czf archive.tar.gz
+\end{verbatim}
+\end{block}

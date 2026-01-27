@@ -1,0 +1,21 @@
+\frametitle{File Manipulation Examples}
+\begin{block}{Examples}
+\begin{verbatim}
+# Create directory
+mkdir new_folder
+mkdir -p parent/child/grandchild
+
+# Copy files
+cp file.txt backup.txt
+cp -r folder1 folder2
+
+# Move/rename
+mv old_name.txt new_name.txt
+mv file.txt /path/to/destination/
+
+# Remove files
+rm file.txt
+rm -r folder
+rm -rf folder  # Force remove (careful!)
+\end{verbatim}
+\end{block}

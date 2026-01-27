@@ -1,0 +1,18 @@
+\frametitle{Advanced grep}
+\begin{block}{grep Options}
+\begin{center}
+\begin{tabular}{ll}
+Option & Description\\
+\hline
+\texttt{-i} & Case-insensitive search\\
+\texttt{-r} & Recursive search\\
+\texttt{-v} & Invert match (show non-matching)\\
+\texttt{-n} & Show line numbers\\
+\texttt{-c} & Count matching lines\\
+\texttt{-l} & Show only filenames\\
+\texttt{-A N} & Show N lines after match\\
+\texttt{-B N} & Show N lines before match\\
+\texttt{-C N} & Show N lines before and after\\
+\end{tabular}
+\end{center}
+\end{block}

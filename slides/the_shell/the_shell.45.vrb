@@ -1,0 +1,17 @@
+\frametitle{Advanced Pipe Chains}
+\begin{block}{Complex Pipelines}
+\begin{verbatim}
+# Top 10 most common IP addresses in log
+cat access.log \
+  | awk '{print $1}' \
+  | sort \
+  | uniq -c \
+  | sort -rn \
+  | head -10
+
+# Find largest directories
+du -sh * \
+  | sort -rh \
+  | head -5
+\end{verbatim}
+\end{block}

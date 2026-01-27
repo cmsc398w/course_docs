@@ -1,0 +1,16 @@
+\frametitle{xargs Options}
+\begin{block}{Common Flags}
+\begin{center}
+\begin{tabular}{ll}
+Option & Description\\
+\hline
+\texttt{-n N} & Use at most N args per command\\
+\texttt{-I \{\}} & Replace \{\} with input\\
+\texttt{-P N} & Run N processes in parallel\\
+\texttt{-t} & Print command before executing\\
+\texttt{-p} & Prompt before executing\\
+\texttt{-0} & Input items null-terminated\\
+\texttt{-L N} & Use N lines per command\\
+\end{tabular}
+\end{center}
+\end{block}

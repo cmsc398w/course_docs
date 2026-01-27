@@ -1,0 +1,16 @@
+\frametitle{Pipe Examples}
+\begin{block}{Basic Piping}
+\begin{verbatim}
+# Count lines in directory listing
+ls -l | wc -l
+
+# Search and sort
+cat file.txt | grep "pattern" | sort
+
+# Find largest files
+du -h | sort -rh | head -10
+
+# Process logs
+cat access.log | grep "404" | wc -l
+\end{verbatim}
+\end{block}

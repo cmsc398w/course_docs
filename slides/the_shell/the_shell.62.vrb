@@ -1,0 +1,20 @@
+\frametitle{Regular Expressions Basics}
+\begin{definition}[What are Regular Expressions?]\label{sec:orgff09206}
+Regular expressions (regex) are patterns used to match character combinations in strings.
+\end{definition}
+\begin{block}{Common Patterns}
+\begin{center}
+\begin{tabular}{ll}
+Pattern & Matches\\
+\hline
+\texttt{.} & Any single character\\
+\texttt{*} & Zero or more of previous\\
+\texttt{+} & One or more of previous\\
+\texttt{?} & Zero or one of previous\\
+\texttt{\textasciicircum{}} & Start of line\\
+\texttt{\$} & End of line\\
+\texttt{[abc]} & Any character in brackets\\
+\texttt{[\textasciicircum{}abc]} & Any character NOT in brackets\\
+\end{tabular}
+\end{center}
+\end{block}

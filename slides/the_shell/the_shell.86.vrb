@@ -1,0 +1,24 @@
+\frametitle{Conditionals}
+\begin{block}{If Statements}
+\begin{verbatim}
+#!/bin/bash
+
+if [ -f "file.txt" ]; then
+    echo "File exists"
+elif [ -d "directory" ]; then
+    echo "Directory exists"
+else
+    echo "Neither exists"
+fi
+
+# Numeric comparison
+if [ $count -gt 10 ]; then
+    echo "Greater than 10"
+fi
+
+# String comparison
+if [ "$name" = "Alice" ]; then
+    echo "Hello Alice!"
+fi
+\end{verbatim}
+\end{block}

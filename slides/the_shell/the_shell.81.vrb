@@ -1,0 +1,20 @@
+\frametitle{awk Practical Examples}
+\begin{block}{Real-World Usage}
+\begin{verbatim}
+# Calculate total and average
+awk '{ sum += $2; count++ }
+     END { print "Total:", sum, "Avg:", sum/count }' data.txt
+
+# Print lines with more than 5 fields
+awk 'NF > 5' file.txt
+
+# Print line numbers with content
+awk '{ print NR ":", $0 }' file.txt
+
+# Format output as table
+awk '{ printf "%-10s %-10s %5d\n", $1, $2, $3 }' file.txt
+
+# Extract email addresses
+awk '/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/' file.txt
+\end{verbatim}
+\end{block}

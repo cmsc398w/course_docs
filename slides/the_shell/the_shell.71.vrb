@@ -1,0 +1,13 @@
+\frametitle{Introduction to awk}
+\begin{definition}[What is awk?]\label{sec:orgab6a19d}
+\texttt{awk} is a powerful pattern-scanning and processing language, excellent for structured text and data extraction.
+\end{definition}
+\begin{block}{When to Use awk}
+\begin{itemize}
+\item Processing column-based data (CSV, TSV, logs)
+\item Performing calculations on data
+\item Generating reports
+\item Complex pattern matching
+\item Field-based transformations
+\end{itemize}
+\end{block}

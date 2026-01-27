@@ -1,0 +1,19 @@
+\frametitle{sed Line Operations}
+\#\#\# Deleting and Printing Lines
+:BEAMER\textsubscript{ENV}: block
+
+\begin{verbatim}
+# Delete lines
+sed '3d' file.txt           # Delete line 3
+sed '1,5d' file.txt         # Delete lines 1-5
+sed '/pattern/d' file.txt   # Delete matching lines
+sed '/^$/d' file.txt        # Delete empty lines
+
+# Print lines
+sed -n '3p' file.txt        # Print only line 3
+sed -n '1,5p' file.txt      # Print lines 1-5
+sed -n '/pattern/p' file.txt # Print matching lines
+
+# Print non-matching lines
+sed -n '/pattern/!p' file.txt
+\end{verbatim}

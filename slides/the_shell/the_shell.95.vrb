@@ -1,0 +1,37 @@
+\frametitle{String Manipulation}
+\#\#\# String Operations
+:BEAMER\textsubscript{ENV}: block
+
+\begin{verbatim}
+# Length
+str="Hello World"
+echo ${#str}
+
+# Substring
+echo ${str:0:5}          # Hello
+echo ${str:6}            # World
+
+# Replace
+echo ${str/World/Bash}   # Replace first
+echo ${str//l/L}         # Replace all
+
+# Remove prefix/suffix
+file="document.txt"
+echo ${file%.txt}        # document
+echo ${file#*.}          # txt
+\end{verbatim}
+
+\#\# Script Best Practices
+\begin{block}{Good Practices}
+\begin{itemize}[<+->]
+\item Always use \texttt{\#!/bin/bash} shebang
+\item Use meaningful variable names
+\item Quote variables: \texttt{"\$var"}
+\item Use \texttt{set -euo pipefail} for safety
+\item Add comments to explain complex logic
+\item Check for required commands
+\item Validate input
+\item Use functions for reusable code
+\item Handle errors gracefully
+\end{itemize}
+\end{block}

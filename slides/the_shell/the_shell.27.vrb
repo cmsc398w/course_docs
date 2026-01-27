@@ -1,0 +1,19 @@
+\frametitle{Environment Variable Examples}
+\begin{block}{Working with Variables}
+\begin{verbatim}
+# Display variable
+echo $PATH
+echo $HOME
+
+# Set variable (current session)
+MY_VAR="value"
+echo $MY_VAR
+
+# Export variable (to child processes)
+export MY_VAR="value"
+
+# View all environment variables
+env
+printenv
+\end{verbatim}
+\end{block}

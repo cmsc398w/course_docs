@@ -1,0 +1,19 @@
+\frametitle{xargs vs exec}
+\begin{block}{Comparison}
+\begin{verbatim}
+# Using find -exec (one process per file)
+find . -name "*.txt" -exec grep "pattern" {} \;
+
+# Using xargs (batches arguments, more efficient)
+find . -name "*.txt" | xargs grep "pattern"
+
+# With null termination for safety
+find . -name "*.txt" -print0 | xargs -0 grep "pattern"
+\end{verbatim}
+\end{block}
+\begin{exampleblock}<2->{When to Use Each}\label{sec:org0e38cd5}
+\begin{itemize}
+\item Use \texttt{xargs} for better performance with many files
+\item Use \texttt{find -exec} when you need per-file control
+\end{itemize}
+\end{exampleblock}

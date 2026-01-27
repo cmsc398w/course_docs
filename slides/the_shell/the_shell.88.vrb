@@ -1,0 +1,28 @@
+\frametitle{Loops}
+\begin{block}{For and While Loops}
+\begin{verbatim}
+#!/bin/bash
+
+# For loop
+for i in {1..5}; do
+    echo "Number: $i"
+done
+
+# Loop over files
+for file in *.txt; do
+    echo "Processing $file"
+done
+
+# C-style for loop
+for ((i=0; i<5; i++)); do
+    echo "Count: $i"
+done
+
+# While loop
+count=0
+while [ $count -lt 5 ]; do
+    echo "Count: $count"
+    ((count++))
+done
+\end{verbatim}
+\end{block}

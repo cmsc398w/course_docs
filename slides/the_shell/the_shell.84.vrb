@@ -1,0 +1,24 @@
+\frametitle{Script Variables}
+\begin{block}{Using Variables}
+\begin{verbatim}
+#!/bin/bash
+
+# Define variables
+name="Alice"
+count=5
+
+# Use variables
+echo "Hello, $name"
+echo "Count: $count"
+
+# Command substitution
+current_date=$(date)
+echo "Today is: $current_date"
+
+# Script arguments
+echo "Script name: $0"
+echo "First argument: $1"
+echo "All arguments: $@"
+echo "Number of arguments: $#"
+\end{verbatim}
+\end{block}

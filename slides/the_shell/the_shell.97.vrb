@@ -1,0 +1,25 @@
+\frametitle{Practical Script Example}
+\begin{block}{Complete Script}
+\begin{verbatim}
+#!/bin/bash
+set -euo pipefail
+
+# Backup script
+backup_dir="/backups/$(date +%Y%m%d)"
+source_dir="$HOME/documents"
+
+# Create backup directory
+mkdir -p "$backup_dir"
+
+# Backup files
+echo "Starting backup..."
+tar -czf "$backup_dir/documents.tar.gz" "$source_dir"
+
+if [ $? -eq 0 ]; then
+    echo "Backup completed successfully"
+else
+    echo "Backup failed" >&2
+    exit 1
+fi
+\end{verbatim}
+\end{block}

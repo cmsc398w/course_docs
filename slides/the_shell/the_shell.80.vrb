@@ -1,0 +1,16 @@
+\frametitle{awk Associative Arrays}
+\begin{block}{Hash Tables}
+\begin{verbatim}
+# Count occurrences
+awk '{ count[$1]++ } END { for (word in count) print word, count[word] }' file.txt
+
+# Sum by category
+awk '{ sum[$1] += $2 } END { for (cat in sum) print cat, sum[cat] }' file.txt
+
+# Find unique values
+awk '!seen[$1]++' file.txt
+
+# Build histogram
+awk '{ hist[$1]++ } END { for (h in hist) print h, hist[h] }' log.txt
+\end{verbatim}
+\end{block}

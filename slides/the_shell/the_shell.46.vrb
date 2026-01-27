@@ -1,0 +1,19 @@
+\frametitle{tee Command}
+\begin{definition}[Read and Write Simultaneously]\label{sec:org0f0aa0f}
+The \texttt{tee} command reads from stdin and writes to both stdout and files.
+\end{definition}
+\begin{block}{Examples}
+\begin{verbatim}
+# Save output to file while displaying
+ls -la | tee directory_listing.txt
+
+# Append to file
+command | tee -a logfile.txt
+
+# Write to multiple files
+command | tee file1.txt file2.txt
+
+# Use with sudo
+echo "new line" | sudo tee -a /etc/hosts
+\end{verbatim}
+\end{block}

@@ -1,0 +1,22 @@
+\frametitle{Debugging Scripts}
+\begin{block}{Debugging Techniques}
+\begin{verbatim}
+# Print commands as they execute
+set -x
+
+# Turn off debug mode
+set +x
+
+# Run with debugging
+bash -x script.sh
+
+# Add debug statements
+echo "DEBUG: Variable value is $var" >&2
+
+# Check syntax without running
+bash -n script.sh
+
+# Verbose mode
+set -v
+\end{verbatim}
+\end{block}
