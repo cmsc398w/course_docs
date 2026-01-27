@@ -1,0 +1,2618 @@
+#+TITLE: Course Overview and The Shell
+#+SUBTITLE: CMSC398W: Practical Tools For Efficient Development
+#+AUTHOR: Mohammad Durrani
+#+DATE: \today
+#+OPTIONS: H:2 toc:nil num:nil
+#+STARTUP: beamer
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+BEAMER_THEME: Madrid
+#+BEAMER_COLOR_THEME: dolphin
+#+BEAMER_FONT_THEME: structurebold
+#+LATEX_HEADER: \setbeamertemplate{navigation symbols}{}
+#+LATEX_HEADER: \setbeamertemplate{footline}[frame number]
+#+LATEX_HEADER: \usepackage{pgfplots}
+#+LATEX_HEADER: \usepgfplotslibrary{polar}
+#+LATEX_HEADER: \pgfplotsset{compat=1.18}
+#+LATEX_HEADER: \usepackage[height=3024]{beamer-reveal}
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col)
+
+* About The Class
+
+** About The Class
+
+*** Course Information
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+*CMSC398W: Practical Tools For Efficient Development*
+
+- Overview of tools used in development: command line, Git, debuggers, build systems, etc.
+- Emphasis on breadth over depth
+- Hands-on learning through projects
+
+*** Course Goals
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+- Improve your computing ecosystem literacy
+- Improve your efficiency
+- Reduce cognitive load while developing
+
+** About Me - Mohammad
+
+***                                                              :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Profile                                                        :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.55
+:END:
+
+*Mohammad Durrani*
+
+- Senior
+- CS + Math, minor in Robotics
+- *Previous Experience:*
+  - Teaching this class since Spring 2025
+  - SWE Intern at Google in SF
+  - SWE Intern at TRX Systems in Greenbelt
+
+**** Interests                                                      :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.4
+:END:
+
+*Hobbies:*
+
+- Rock climbing
+- Basketball
+- Robots
+ 
+** What To Expect
+
+*** Course Structure
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+*Read the syllabus for all course related information!*
+
+***                                                              :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** In Class                                                       :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Introduction of topic
+- Motivation / Real world example
+- Technical details
+
+**** Out of Class                                                   :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Projects focusing on application
+- Best way to learn: *use them*
+
+** Course Logistics
+
+*** Communication & Submission
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+- All course communication: *Piazza*
+- All assignments submitted: *Gradescope*
+- *10% per-day late penalty* (except the last project)
+
+*** Grade Breakdown
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Percentage | Title                       | Description                              |
+|------------+-----------------------------+------------------------------------------|
+| 80%        | Projects (20% per)          | 4 Major Projects                         |
+| 15%        | Application Days (5% per)   | Completion of Application Days           |
+| 5%         | Participation               | Participation in class                   |
+
+** Application Days
+
+*** Based on Feedback
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Based on feedback from the previous iteration, we'll have days focused on using the tools we learn in class on toy problems.
+
+*** Three Application Days
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+1. *Shell*
+2. *Git*
+3. *Networking*
+
+#+BEAMER: \vspace{0.3em}
+(Subject to change)
+
+** Grade Distribution
+
+#+BEGIN_SRC gnuplot :file grade-pie.png :exports results
+set terminal pngcairo size 600,400
+set output 'grade-pie.png'
+set title "Grade Distribution"
+set xlabel "Grade"
+set ylabel "Number of Students"
+set style fill solid
+set boxwidth 0.5
+set yrange [0:*]
+set xtics ("A" 1, "B" 2, "C" 3, "D" 4, "F" 5)
+plot '-' using 1:2 with boxes lc rgb "#e74c3c" notitle
+1 42
+2 2
+3 1
+4 0
+5 3
+e
+#+END_SRC
+* The Shell
+
+** Introduction
+
+*** Why The Shell?
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_BEAMER: :overlay +-
+- Traditional interfaces: graphical UIs, voice commands, AR/VR
+- Modern interfaces great for ~80% of use cases, but can be limiting
+- You cannot click a button that doesn't exist
+- You cannot give a voice command that hasn't been programmed
+- The shell provides a powerful *text-based interface* with flexibility and control
+
+*** Focus
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+- We'll focus on *bash* (Bourne Again Shell)
+- One of the most widely used shells
+- Essential for developers, system administrators, and power users
+
+** What is the Shell?
+
+*** Definition
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+*Shell:* A program that allows you to execute commands and interface with your operating system.
+
+*** Characteristics
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Textual interface for computer interaction
+- Most platforms have a shell with many types (bash, zsh, dash, fish, etc.)
+- Requires a *terminal* / *terminal emulator* to interact with the shell
+- We will use *bash* in this class (generally default on Linux)
+- macOS / Windows have different defaults
+
+*** Reference
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+The *Bash Reference Manual* contains everything you need to know about bash!
+
+** Important Terminology
+
+*** 1. Traditional Terminal
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Historical computing device
+- Physical keyboard and screen connected to shared computer
+- Text-only interface (pre-mouse era)
+- Used specific protocols to communicate
+- Evolution: colors, different fonts, extended character sets
+
+*** 2. Modern Terminal Emulator
+:PROPERTIES:
+:BEAMER_ENV: block
+:BEAMER_ACT: <2->
+:END:
+
+Software that emulates traditional terminals
+
+*Examples by platform:*
+- *Windows:* CMD.exe, PowerShell, PuTTY, Windows Terminal
+- *macOS:* Terminal.app, iTerm2
+- *Linux:* xTerm, Gnome Terminal, Konsole, Kitty, Ghostty, Alacritty
+
+** Terminal Emulator Features
+
+*** Modern Features
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+- Supports tabs, split panes, and Unicode
+- Quality-of-life features:
+  - Search functionality
+  - Copy/paste
+  - Customizable appearance
+
+*** 3. Shell/Command-line Interface
+:PROPERTIES:
+:BEAMER_ENV: definition
+:BEAMER_ACT: <2->
+:END:
+
+Program started when logging into terminal that interprets commands and provides interactive environment.
+
+** Motivation
+
+*** Why Master the Command Line?
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_BEAMER: :overlay +-
+- *Essential* for software development
+- Makes you *much more efficient*
+- Many development tools are command line based
+- Access remote servers and cloud platforms
+- Automate repetitive tasks
+- Work across different operating systems
+
+** The Prompt
+
+*** Anatomy of the Prompt
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+=username@domain directory$=
+
+*** Components
+:PROPERTIES:
+:BEAMER_COL: 1.0
+:END:
+
+| Component   | Description                      |
+|-------------+----------------------------------|
+| username    | Currently logged in user         |
+| @           | Separator (convention)           |
+| domain      | Machine name                     |
+| directory   | Current working directory        |
+| $           | User-level shell indicator       |
+| =#=         | Root-level shell indicator       |
+
+*** Note
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+The prompt is customizable and can include additional information (git status, time, etc.)
+
+** Basic Commands
+
+*** How Commands Work
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Inside a prompt you type a command, which is then executed or interpreted.
+
+The shell:
+1. Parses by splitting on whitespace
+2. Runs the program indicated by the first word
+3. Gives each subsequent word as an argument to the program
+
+*** Important Notes
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+- Commands are *case-sensitive*
+- Each command is a separate program (usually)
+- Arguments modify command behavior
+- Special characters need proper handling
+- Commands can accept flags/options starting with =-=
+
+** Basic Commands - Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Command Examples
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Show current date and time
+date
+
+# Echo text to screen
+echo hello
+
+# Handle spaces in arguments
+echo "Hello World"
+echo Hello\ World
+
+# Multiple arguments
+echo first second third
+#+END_SRC
+
+** PATH Variable
+
+*** What is PATH?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+PATH is an environment variable that lists which directories the shell should search for programs.
+
+*** Characteristics
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Colon-separated list of directories
+- Shell searches directories in order
+- First matching executable is used
+- Can be modified to add new directories
+- Built-in commands take precedence over PATH
+
+** PATH Variable - Example
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Exploring PATH
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Display PATH
+cmsc398w:~$ echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:
+/usr/bin:/sbin:/bin:/snap/bin
+
+# Find location of command
+cmsc398w:~$ which echo
+/usr/bin/echo
+
+# Run directly without PATH
+cmsc398w:~$ /bin/echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:
+/usr/bin:/sbin:/bin:/snap/bin
+#+END_SRC
+
+** Modifying PATH
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Adding to PATH
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+BEGIN_SRC bash
+export PATH="/Directory1:$PATH"
+#+END_SRC
+
+This adds =/Directory1= to the beginning of your PATH, giving it priority in command searches.
+
+** Navigating - Paths
+
+***                                                              :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Absolute Paths                                                 :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+***** 
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+- Start with =/= (Unix) or drive letter (Windows)
+- Full path from root
+- Work from any location
+- *Example:* =/home/user/docs=
+
+**** Relative Paths                                                 :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+***** 
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+- Relative to current directory
+- More concise
+- Context-dependent
+
+*** Special Directories
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+| Symbol | Meaning          |
+|--------+------------------|
+| =.=      | Current directory |
+| =..=     | Parent directory  |
+| =~=      | Home directory    |
+
+** Essential Navigation Commands
+
+*** Commands
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Command          | Description                         |
+|------------------+-------------------------------------|
+| =pwd=     | Print working directory             |
+| =cd=      | Change directory                    |
+| =ls=      | List directory contents             |
+| =ls -l=   | Long format listing                 |
+| =ls -a=   | Show hidden files                   |
+| =ls -lh=  | Human-readable sizes                |
+
+** Navigation Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Using Navigation Commands
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Show current directory
+pwd
+
+# Go to home directory
+cd ~
+cd
+
+# Go to parent directory
+cd ..
+
+# Go to specific directory
+cd /usr/local/bin
+
+# Go to previous directory
+cd -
+#+END_SRC
+
+** File and Directory Manipulation
+
+*** Common Operations
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Command        | Description                         |
+|----------------+-------------------------------------|
+| =mkdir= | Make directory                      |
+| =touch= | Create empty file / update timestamp|
+| =cp=    | Copy files/directories              |
+| =mv=    | Move/rename files                   |
+| =rm=    | Remove files                        |
+| =rmdir= | Remove empty directory              |
+
+*** Important Flags
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+- =-r=: Recursive (for directories)
+- =-i=: Interactive (ask before overwrite)
+- =-f=: Force (no prompts)
+- =-v=: Verbose (show what's happening)
+
+** File Manipulation Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Examples
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Create directory
+mkdir new_folder
+mkdir -p parent/child/grandchild
+
+# Copy files
+cp file.txt backup.txt
+cp -r folder1 folder2
+
+# Move/rename
+mv old_name.txt new_name.txt
+mv file.txt /path/to/destination/
+
+# Remove files
+rm file.txt
+rm -r folder
+rm -rf folder  # Force remove (careful!)
+#+END_SRC
+
+** Viewing File Contents
+
+*** Viewing Commands
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Command      | Description                           |
+|--------------+---------------------------------------|
+| =cat= | Display entire file                   |
+| =less=| Page through file (q to quit)         |
+| =head=| Show first 10 lines                   |
+| =tail=| Show last 10 lines                    |
+| =tail -f= | Follow file updates (logs)        |
+
+** Viewing Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** File Viewing
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Display entire file
+cat file.txt
+
+# Page through file
+less file.txt
+
+# First 20 lines
+head -n 20 file.txt
+
+# Last 15 lines
+tail -n 15 file.txt
+
+# Follow log file
+tail -f /var/log/system.log
+#+END_SRC
+
+** Environment Variables
+
+*** What are Environment Variables?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+Variables that affect how processes run and are accessible to all child processes.
+
+*** Common Variables
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Variable      | Description                           |
+|---------------+---------------------------------------|
+| =PATH= | Command search path                   |
+| =HOME= | User's home directory                 |
+| =USER= | Current username                      |
+| =SHELL=| Current shell                         |
+| =PWD=  | Current directory                     |
+
+** Environment Variable Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Working with Variables
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Display variable
+echo $PATH
+echo $HOME
+
+# Set variable (current session)
+MY_VAR="value"
+echo $MY_VAR
+
+# Export variable (to child processes)
+export MY_VAR="value"
+
+# View all environment variables
+env
+printenv
+#+END_SRC
+
+* Shell Tools
+
+** Searching and Finding
+
+*** Search Commands
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Command      | Description                           |
+|--------------+---------------------------------------|
+| =find=| Find files by name/type/size          |
+| =grep=| Search file contents                  |
+| =which=| Locate command                       |
+| =locate=| Fast file search (uses database)    |
+
+** Search Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Finding Files and Content
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Find files by name
+find . -name "*.txt"
+find /home -name "config.json"
+
+# Find directories
+find . -type d -name "test*"
+
+# Search file contents
+grep "error" logfile.txt
+grep -r "TODO" .  # Recursive search
+grep -i "warning" file.txt  # Case-insensitive
+
+# Locate command
+which python
+#+END_SRC
+
+** Advanced grep
+
+*** grep Options
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Option | Description                           |
+|--------|---------------------------------------|
+| =-i=     | Case-insensitive search               |
+| =-r=     | Recursive search                      |
+| =-v=     | Invert match (show non-matching)      |
+| =-n=     | Show line numbers                     |
+| =-c=     | Count matching lines                  |
+| =-l=     | Show only filenames                   |
+| =-A N=   | Show N lines after match              |
+| =-B N=   | Show N lines before match             |
+| =-C N=   | Show N lines before and after         |
+
+** grep Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Advanced grep Usage
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Find all TODO comments with context
+grep -n -C 2 "TODO" *.py
+
+# Count errors in log
+grep -c "ERROR" application.log
+
+# Find files containing pattern
+grep -rl "import numpy" .
+
+# Complex pattern matching
+grep -E "error|warning|critical" logfile.txt
+
+# Exclude pattern
+grep -v "DEBUG" logfile.txt | less
+#+END_SRC
+
+** Wildcards and Globbing
+
+*** Glob Patterns
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Pattern       | Matches                               |
+|---------------+---------------------------------------|
+| =*=    | Any string (including empty)          |
+| =?=    | Any single character                  |
+| =[abc]=| Any character in brackets             |
+| =[a-z]=| Any character in range                |
+| =[!abc]=| Any character NOT in brackets        |
+
+** Globbing Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Pattern Matching
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# All .txt files
+ls *.txt
+
+# Files starting with 'test'
+ls test*
+
+# Single character wildcard
+ls file?.txt
+
+# Character sets
+ls file[123].txt
+ls [a-z]*.txt
+
+# Negation
+ls [!a-z]*
+#+END_SRC
+
+** Brace Expansion
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Creating Multiple Arguments
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+Brace expansion generates multiple strings from a pattern.
+
+*** Examples
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Create multiple files
+touch file{1,2,3}.txt
+# Creates: file1.txt, file2.txt, file3.txt
+
+# Ranges
+echo {1..10}
+echo {a..z}
+
+# Nested expansion
+mkdir -p project/{src,test,docs}/{main,utils}
+
+# Combinations
+echo {A,B}{1,2}
+# Outputs: A1 A2 B1 B2
+#+END_SRC
+
+** Command History
+
+*** History Features
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Key/Command   | Action                                |
+|---------------|---------------------------------------|
+| Up/Down arrows| Navigate history                      |
+| =history=| Show command history                |
+| =!n=   | Execute command number n              |
+| =!!=   | Repeat last command                   |
+| =!string=| Execute last command starting with string |
+| Ctrl+R        | Reverse search history                |
+
+** History Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Using History
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# View history
+history
+history 20  # Last 20 commands
+
+# Execute from history
+!42        # Run command number 42
+!!         # Repeat last command
+!grep      # Last command starting with grep
+
+# Search history
+Ctrl+R     # Then start typing
+
+# Clear history
+history -c
+#+END_SRC
+
+** Tab Completion
+
+*** Productivity Booster
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+*Tab completion* saves time and prevents typos:
+
+#+ATTR_BEAMER: :overlay +-
+- Press =Tab= to complete commands, files, directories
+- Press =Tab= twice to see all possibilities
+- Works with commands, paths, and filenames
+- Context-aware in many shells
+
+*** Example Workflow
+:PROPERTIES:
+:BEAMER_ENV: block
+:BEAMER_ACT: <2->
+:END:
+
+Type =cd /usr/loc= then press =Tab= $\rightarrow$ completes to =cd /usr/local/=
+
+** Command Substitution
+
+*** Using Command Output
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+Command substitution allows you to use the output of a command as an argument to another command.
+
+** Command Substitution Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Substitution Syntax
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Using $(command) syntax (preferred)
+echo "Today is $(date)"
+files=$(ls -1)
+echo "Found $(wc -l < file.txt) lines"
+
+# Using backticks (older syntax)
+echo "Today is `date`"
+
+# Nested substitution
+echo "User $(whoami) in $(pwd)"
+#+END_SRC
+
+** Process Substitution
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Advanced Input/Output
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+Process substitution allows you to use the output of a command as if it were a file.
+
+*** Examples
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Compare output of two commands
+diff <(ls dir1) <(ls dir2)
+
+# Use command output as input file
+while read line; do
+    echo "Processing: $line"
+done < <(find . -name "*.txt")
+
+# Multiple inputs
+paste <(cut -f1 file1.csv) <(cut -f2 file2.csv)
+#+END_SRC
+
+* Pipes and Redirection
+
+** Redirection Basics
+
+*** Redirection Operators
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Operator      | Description                           |
+|---------------+---------------------------------------|
+| =>=    | Redirect output (overwrite)           |
+| =>>=   | Redirect output (append)              |
+| =<=    | Redirect input                        |
+| =2>=   | Redirect stderr                       |
+| =2>&1=| Redirect stderr to stdout             |
+| =&>=   | Redirect both stdout and stderr       |
+
+** Redirection Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Using Redirection
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Redirect output to file
+echo "Hello" > output.txt
+ls -l >> listing.txt
+
+# Redirect input
+sort < unsorted.txt
+
+# Redirect errors
+command 2> errors.log
+
+# Combine stdout and stderr
+command > all.log 2>&1
+command &> all.log  # Shorter syntax
+#+END_SRC
+
+** Pipes
+
+*** What are Pipes?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+Pipes (=|=) connect the output of one command to the input of another, enabling powerful command chaining.
+
+*** Pipe Philosophy
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+Unix philosophy: "Do one thing and do it well"
+
+Combine simple tools to accomplish complex tasks!
+
+** Pipe Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Basic Piping
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Count lines in directory listing
+ls -l | wc -l
+
+# Search and sort
+cat file.txt | grep "pattern" | sort
+
+# Find largest files
+du -h | sort -rh | head -10
+
+# Process logs
+cat access.log | grep "404" | wc -l
+#+END_SRC
+
+** Advanced Pipe Chains
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Complex Pipelines
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Top 10 most common IP addresses in log
+cat access.log \
+  | awk '{print $1}' \
+  | sort \
+  | uniq -c \
+  | sort -rn \
+  | head -10
+
+# Find largest directories
+du -sh * \
+  | sort -rh \
+  | head -5
+#+END_SRC
+
+** tee Command
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Read and Write Simultaneously
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+The =tee= command reads from stdin and writes to both stdout and files.
+
+*** Examples
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Save output to file while displaying
+ls -la | tee directory_listing.txt
+
+# Append to file
+command | tee -a logfile.txt
+
+# Write to multiple files
+command | tee file1.txt file2.txt
+
+# Use with sudo
+echo "new line" | sudo tee -a /etc/hosts
+#+END_SRC
+
+* xargs
+
+** What is xargs?
+
+*** Definition
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+=xargs= builds and executes command lines from standard input, converting input into arguments for another command.
+
+*** Why xargs?
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Many commands don't read from stdin—they need arguments:
+- =rm=, =cp=, =mv= expect filenames as arguments
+- =xargs= bridges this gap
+- Enables parallel execution
+- Handles large argument lists safely
+
+** xargs Basic Usage
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Simple Examples
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Delete all .tmp files
+find . -name "*.tmp" | xargs rm
+
+# Move files to directory
+ls *.txt | xargs -I {} mv {} archive/
+
+# Print each item on new line
+echo "one two three" | xargs -n 1
+
+# Execute command per line
+cat urls.txt | xargs -n 1 curl -O
+#+END_SRC
+
+** xargs Options
+
+*** Common Flags
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Option   | Description                           |
+|----------|---------------------------------------|
+| =-n N=     | Use at most N args per command        |
+| =-I {}=    | Replace {} with input                 |
+| =-P N=     | Run N processes in parallel           |
+| =-t=       | Print command before executing        |
+| =-p=       | Prompt before executing               |
+| =-0=       | Input items null-terminated           |
+| =-L N=     | Use N lines per command               |
+
+** xargs Advanced Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Powerful Patterns
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Parallel processing (4 jobs at once)
+find . -name "*.jpg" | xargs -P 4 -I {} convert {} {}.png
+
+# Handle filenames with spaces
+find . -name "*.txt" -print0 | xargs -0 grep "pattern"
+
+# Backup files with custom names
+ls *.conf | xargs -I {} cp {} {}.backup
+
+# Download files in parallel
+cat urls.txt | xargs -n 1 -P 8 wget
+
+# Convert multiple files
+ls *.md | xargs -I {} pandoc {} -o {}.pdf
+#+END_SRC
+
+** xargs with find
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** The Power Combo
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Delete files older than 30 days
+find /tmp -mtime +30 -print0 | xargs -0 rm
+
+# Change permissions on all scripts
+find . -name "*.sh" -print0 | xargs -0 chmod +x
+
+# Search in found files
+find . -name "*.log" | xargs grep "ERROR"
+
+# Archive old files
+find . -mtime +365 -print0 | \
+  xargs -0 tar -czf archive.tar.gz
+#+END_SRC
+
+** xargs vs exec
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Comparison
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Using find -exec (one process per file)
+find . -name "*.txt" -exec grep "pattern" {} \;
+
+# Using xargs (batches arguments, more efficient)
+find . -name "*.txt" | xargs grep "pattern"
+
+# With null termination for safety
+find . -name "*.txt" -print0 | xargs -0 grep "pattern"
+#+END_SRC
+
+*** When to Use Each
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+- Use =xargs= for better performance with many files
+- Use =find -exec= when you need per-file control
+
+* Data Wrangling
+
+** Introduction to Data Wrangling
+
+*** What is Data Wrangling?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+Data wrangling is the process of cleaning, transforming, and analyzing data using command-line tools.
+
+*** Common Tasks
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Extracting specific fields from logs
+- Counting occurrences and frequencies
+- Filtering and transforming data
+- Aggregating statistics
+- Reformatting output
+
+** Text Processing Tools
+
+*** Essential Tools
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Command      | Description                           |
+|--------------+---------------------------------------|
+| =cat= | Concatenate files                     |
+| =sort=| Sort lines                            |
+| =uniq=| Remove duplicate lines                |
+| =wc=  | Word/line/character count             |
+| =cut= | Extract columns                       |
+| =tr=  | Translate or delete characters        |
+| =sed= | Stream editor                         |
+| =awk= | Pattern scanning and processing       |
+
+** Text Processing Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Basic Operations
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Count lines in file
+wc -l file.txt
+
+# Sort and remove duplicates
+sort file.txt | uniq
+
+# Extract specific column
+cut -d',' -f2 data.csv
+
+# Count unique values
+sort file.txt | uniq -c
+
+# Translate characters
+echo "hello" | tr 'a-z' 'A-Z'
+#+END_SRC
+
+** sort Command
+
+*** Sorting Options
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Option | Description                           |
+|--------|---------------------------------------|
+| =-r=     | Reverse order                         |
+| =-n=     | Numeric sort                          |
+| =-h=     | Human-readable numbers (1K, 2M)       |
+| =-k N=   | Sort by Nth field                     |
+| =-t=     | Field delimiter                       |
+| =-u=     | Unique (remove duplicates)            |
+
+** sort Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Sorting Data
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Sort numerically in reverse
+sort -rn numbers.txt
+
+# Sort by second column
+sort -k2 data.txt
+
+# Sort CSV by third column
+sort -t',' -k3 data.csv
+
+# Sort file sizes
+du -sh * | sort -rh
+#+END_SRC
+
+## uniq Command
+
+*** Unique Line Options
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Option | Description                           |
+|--------|---------------------------------------|
+| =-c=     | Prefix lines with count               |
+| =-d=     | Only print duplicate lines            |
+| =-u=     | Only print unique lines               |
+| =-i=     | Case-insensitive                      |
+
+** uniq Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Finding Duplicates
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Count occurrences
+sort file.txt | uniq -c
+
+# Find duplicates
+sort file.txt | uniq -d
+
+# Case-insensitive unique
+sort -f file.txt | uniq -i
+
+# Most common lines
+sort file.txt | uniq -c | sort -rn
+#+END_SRC
+
+** cut and paste
+
+*** Column Manipulation
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Extract columns 1 and 3
+cut -d',' -f1,3 data.csv
+
+# Extract character range
+cut -c1-10 file.txt
+
+# Combine columns from different files
+paste file1.txt file2.txt
+
+# Use custom delimiter
+paste -d',' file1.txt file2.txt
+#+END_SRC
+
+** tr Command
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Character Translation
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Convert to uppercase
+echo "hello" | tr 'a-z' 'A-Z'
+
+# Delete characters
+echo "hello123" | tr -d '0-9'
+
+# Squeeze repeated characters
+echo "hello    world" | tr -s ' '
+
+# Replace spaces with newlines
+echo "one two three" | tr ' ' '\n'
+
+# ROT13 encoding
+echo "hello" | tr 'a-zA-Z' 'n-za-mN-ZA-M'
+#+END_SRC
+
+** Data Wrangling Example
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Real-World Pipeline
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Analyze web server logs
+# Find most common ERROR messages
+cat access.log \
+  | grep "ERROR" \
+  | cut -d' ' -f5- \
+  | sort \
+  | uniq -c \
+  | sort -rn \
+  | head -10
+#+END_SRC
+
+This pipeline:
+1. Reads the log file
+2. Filters ERROR lines
+3. Extracts relevant fields
+4. Sorts entries
+5. Counts unique occurrences
+6. Sorts by frequency
+7. Shows top 10
+
+** Regular Expressions Basics
+
+*** What are Regular Expressions?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+Regular expressions (regex) are patterns used to match character combinations in strings.
+
+*** Common Patterns
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Pattern  | Matches                               |
+|----------|---------------------------------------|
+| =.=        | Any single character                  |
+| =*=        | Zero or more of previous              |
+| =+=        | One or more of previous               |
+| =?=        | Zero or one of previous               |
+| =^=        | Start of line                         |
+| =$=        | End of line                           |
+| =[abc]=    | Any character in brackets             |
+| =[^abc]=   | Any character NOT in brackets         |
+
+** Advanced Regex Patterns
+
+*** More Patterns
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Pattern     | Matches                               |
+|-------------|---------------------------------------|
+| =\d=          | Any digit (0-9)                       |
+| =\w=          | Any word character (a-z, A-Z, 0-9, _) |
+| =\s=          | Any whitespace                        |
+| =(...)=       | Capture group                         |
+| =...{{{vert()}}}...=     | Alternative (or)                      |
+| ={n}=         | Exactly n times                       |
+| ={n,m}=       | Between n and m times                 |
+
+* sed
+
+** Introduction to sed
+
+*** What is sed?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+=sed= (Stream Editor) is a powerful tool for parsing and transforming text in a data stream or file.
+
+*** Common Uses
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Text substitution
+- Line deletion
+- In-place file editing
+- Pattern-based text manipulation
+- Automated text transformations
+
+## sed Basic Syntax
+
+*** sed Command Structure
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+sed 'command' file
+sed -e 'command1' -e 'command2' file
+sed -i 'command' file  # In-place editing
+#+END_SRC
+
+*** Common Commands
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+| Command | Action                                |
+|---------|---------------------------------------|
+| =s=       | Substitute                            |
+| =d=       | Delete                                |
+| =p=       | Print                                 |
+| =a=       | Append                                |
+| =i=       | Insert                                |
+| =c=       | Change                                |
+
+** sed Substitution
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Basic Substitution
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Basic substitution (first occurrence)
+sed 's/old/new/' file.txt
+
+# Global substitution (all occurrences)
+sed 's/old/new/g' file.txt
+
+# Case-insensitive
+sed 's/old/new/gi' file.txt
+
+# Only on specific lines
+sed '3s/old/new/' file.txt
+sed '1,5s/old/new/g' file.txt
+
+# With different delimiter
+sed 's|/path/old|/path/new|g' file.txt
+#+END_SRC
+
+** sed Advanced Substitution
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Using Capture Groups
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Capture and reuse with \1, \2, etc.
+echo "Hello World" | sed 's/\(.*\) \(.*\)/\2 \1/'
+# Output: World Hello
+
+# Swap two columns
+sed 's/\([^,]*\),\([^,]*\)/\2,\1/' data.csv
+
+# Add parentheses around numbers
+echo "Error 404" | sed 's/\([0-9]\+\)/(\1)/'
+# Output: Error (404)
+
+# Extract domain from URL
+echo "https://example.com/path" | \
+  sed 's|https://\([^/]*\)/.*|\1|'
+#+END_SRC
+
+** sed Line Operations
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+### Deleting and Printing Lines
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Delete lines
+sed '3d' file.txt           # Delete line 3
+sed '1,5d' file.txt         # Delete lines 1-5
+sed '/pattern/d' file.txt   # Delete matching lines
+sed '/^$/d' file.txt        # Delete empty lines
+
+# Print lines
+sed -n '3p' file.txt        # Print only line 3
+sed -n '1,5p' file.txt      # Print lines 1-5
+sed -n '/pattern/p' file.txt # Print matching lines
+
+# Print non-matching lines
+sed -n '/pattern/!p' file.txt
+#+END_SRC
+
+** sed Insert and Append
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Adding Text
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Insert before line
+sed '3i\New text' file.txt
+
+# Append after line
+sed '3a\New text' file.txt
+
+# Insert before pattern
+sed '/pattern/i\New text' file.txt
+
+# Append after pattern
+sed '/pattern/a\New text' file.txt
+
+# Change entire line
+sed '3c\Replacement line' file.txt
+sed '/pattern/c\Replacement' file.txt
+#+END_SRC
+
+** sed In-Place Editing
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Modifying Files Directly
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Edit file in place
+sed -i 's/old/new/g' file.txt
+
+# Create backup before editing
+sed -i.bak 's/old/new/g' file.txt
+
+# Multiple operations
+sed -i -e 's/foo/bar/g' -e 's/hello/world/g' file.txt
+
+# Process multiple files
+sed -i 's/old/new/g' *.txt
+#+END_SRC
+
+** sed Address Ranges
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Working with Line Ranges
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Specific line range
+sed '10,20s/old/new/g' file.txt
+
+# From line to end
+sed '10,$s/old/new/g' file.txt
+
+# Pattern to pattern
+sed '/START/,/END/s/old/new/g' file.txt
+
+# Every Nth line
+sed '0~3s/old/new/g' file.txt  # Every 3rd line
+#+END_SRC
+
+## sed Practical Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Real-World Usage
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Remove comments
+sed 's/#.*//' config.txt
+
+# Remove leading whitespace
+sed 's/^[ \t]*//' file.txt
+
+# Remove trailing whitespace
+sed 's/[ \t]*$//' file.txt
+
+# Double-space file
+sed 'G' file.txt
+
+# Number non-empty lines
+sed '/./=' file.txt | sed 'N; s/\n/ /'
+
+# Extract email addresses
+sed -n 's/.*\([a-zA-Z0-9._%+-]\+@[a-zA-Z0-9.-]\+\.[a-zA-Z]\{2,\}\).*/\1/p' file.txt
+#+END_SRC
+
+* awk
+
+** Introduction to awk
+
+*** What is awk?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+=awk= is a powerful pattern-scanning and processing language, excellent for structured text and data extraction.
+
+*** When to Use awk
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Processing column-based data (CSV, TSV, logs)
+- Performing calculations on data
+- Generating reports
+- Complex pattern matching
+- Field-based transformations
+
+** awk Basic Structure
+
+*** awk Syntax
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+awk 'pattern { action }' file
+awk '/pattern/ { print $0 }' file
+#+END_SRC
+
+*** Built-in Variables
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+| Variable | Description                           |
+|----------|---------------------------------------|
+| =$0=       | Entire line                           |
+| =$1, $2..= | First field, second field, etc.       |
+| =NF=       | Number of fields                      |
+| =NR=       | Current record (line) number          |
+| =FS=       | Field separator (default: whitespace) |
+| =RS=       | Record separator (default: newline)   |
+
+** awk Basic Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Simple Usage
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Print entire file
+awk '{ print }' file.txt
+awk '{ print $0 }' file.txt
+
+# Print specific column
+awk '{ print $1 }' file.txt
+
+# Print multiple columns
+awk '{ print $1, $3 }' file.txt
+
+# Print with custom separator
+awk '{ print $1 "," $2 }' file.txt
+
+# Print last column
+awk '{ print $NF }' file.txt
+#+END_SRC
+
+** awk Field Separators
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Custom Delimiters
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Use comma as separator
+awk -F',' '{ print $1 }' data.csv
+
+# Use colon as separator
+awk -F':' '{ print $1, $3 }' /etc/passwd
+
+# Multiple character separator
+awk -F'::' '{ print $1 }' file.txt
+
+# Tab separator
+awk -F'\t' '{ print $1 }' file.tsv
+
+# Set in BEGIN block
+awk 'BEGIN { FS="," } { print $1 }' data.csv
+#+END_SRC
+
+** awk Pattern Matching
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Filtering with Patterns
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Match pattern in any field
+awk '/error/' log.txt
+
+# Match pattern in specific field
+awk '$3 == "error"' log.txt
+
+# Regular expression match
+awk '$2 ~ /^[0-9]+$/' file.txt
+
+# Negation
+awk '$2 !~ /pattern/' file.txt
+
+# Multiple conditions
+awk '$1 == "ERROR" && $3 > 100' log.txt
+awk '$1 == "ERROR" || $1 == "WARNING"' log.txt
+#+END_SRC
+
+** awk Numerical Operations
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Calculations
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Numeric comparison
+awk '$3 > 100' file.txt
+awk '$2 >= 50 && $2 <= 100' file.txt
+
+# Arithmetic
+awk '{ print $1, $2 * 1.1 }' file.txt
+awk '{ print $1, $2 + $3 }' file.txt
+
+# Sum a column
+awk '{ sum += $2 } END { print sum }' file.txt
+
+# Average
+awk '{ sum += $2; count++ } END { print sum/count }' file.txt
+
+# Count lines matching condition
+awk '$3 > 100 { count++ } END { print count }' file.txt
+#+END_SRC
+
+** awk BEGIN and END
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Special Patterns
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# BEGIN: executed before processing
+awk 'BEGIN { print "Starting..." } { print $0 }' file.txt
+
+# END: executed after processing
+awk '{ sum += $1 } END { print "Total:", sum }' file.txt
+
+# Both together
+awk 'BEGIN { FS=","; print "Name,Score" } 
+     { print $1, $2 } 
+     END { print "Done" }' file.csv
+
+# Initialize variables
+awk 'BEGIN { max = 0 } 
+     $2 > max { max = $2 } 
+     END { print "Max:", max }' file.txt
+#+END_SRC
+
+** awk Built-in Functions
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Useful Functions
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# String functions
+awk '{ print length($0) }' file.txt
+awk '{ print toupper($1) }' file.txt
+awk '{ print tolower($1) }' file.txt
+awk '{ print substr($1, 1, 3) }' file.txt
+
+# Math functions
+awk '{ print sqrt($1) }' file.txt
+awk '{ print int($1) }' file.txt
+
+# Pattern matching
+awk '{ if (match($0, /[0-9]+/)) print substr($0, RSTART, RLENGTH) }' file.txt
+
+# Substitution
+awk '{ gsub(/old/, "new"); print }' file.txt
+#+END_SRC
+
+** awk Control Structures
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Conditionals and Loops
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# If-else
+awk '{ if ($3 > 100) print $1, "high"; else print $1, "low" }' file.txt
+
+# For loop
+awk '{ for (i=1; i<=NF; i++) print $i }' file.txt
+
+# While loop
+awk '{ i=1; while (i<=3) { print $i; i++ } }' file.txt
+
+# Ternary operator
+awk '{ print ($3 > 100) ? "high" : "low" }' file.txt
+#+END_SRC
+
+** awk Associative Arrays
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Hash Tables
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Count occurrences
+awk '{ count[$1]++ } END { for (word in count) print word, count[word] }' file.txt
+
+# Sum by category
+awk '{ sum[$1] += $2 } END { for (cat in sum) print cat, sum[cat] }' file.txt
+
+# Find unique values
+awk '!seen[$1]++' file.txt
+
+# Build histogram
+awk '{ hist[$1]++ } END { for (h in hist) print h, hist[h] }' log.txt
+#+END_SRC
+
+** awk Practical Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Real-World Usage
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Calculate total and average
+awk '{ sum += $2; count++ } 
+     END { print "Total:", sum, "Avg:", sum/count }' data.txt
+
+# Print lines with more than 5 fields
+awk 'NF > 5' file.txt
+
+# Print line numbers with content
+awk '{ print NR ":", $0 }' file.txt
+
+# Format output as table
+awk '{ printf "%-10s %-10s %5d\n", $1, $2, $3 }' file.txt
+
+# Extract email addresses
+awk '/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/' file.txt
+#+END_SRC
+
+** awk vs sed
+
+### When to Use Which?
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+***                                                              :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Use sed for:                                                   :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+***** 
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+- Simple substitutions
+- Line-based operations
+- In-place file editing
+- Stream transformations
+
+**** Use awk for:                                                   :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+***** 
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+- Column-based data
+- Calculations and math
+- Complex pattern matching
+- Report generation
+
+* Shell Scripting
+
+## Introduction to Shell Scripting
+
+*** What is a Shell Script?
+:PROPERTIES:
+:BEAMER_ENV: definition
+:END:
+
+A file containing a sequence of commands that the shell can execute.
+
+*** Key Features
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Automate repetitive tasks
+- Combine multiple commands
+- Add logic with conditionals and loops
+- Use variables and functions
+- Make tasks reproducible
+
+** Creating a Script
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Basic Script Structure
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+# This is a comment
+
+echo "Hello, World!"
+echo "Current directory: $(pwd)"
+echo "User: $USER"
+#+END_SRC
+
+*** Making it Executable
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+#+BEGIN_SRC bash
+chmod +x script.sh
+./script.sh
+#+END_SRC
+
+** Script Variables
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Using Variables
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+
+# Define variables
+name="Alice"
+count=5
+
+# Use variables
+echo "Hello, $name"
+echo "Count: $count"
+
+# Command substitution
+current_date=$(date)
+echo "Today is: $current_date"
+
+# Script arguments
+echo "Script name: $0"
+echo "First argument: $1"
+echo "All arguments: $@"
+echo "Number of arguments: $#"
+#+END_SRC
+
+** Special Variables
+
+*** Built-in Variables
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Variable | Description                           |
+|----------|---------------------------------------|
+| =$0=       | Script name                           |
+| =$1-$9=    | Positional arguments                  |
+| =$@=       | All arguments as separate words       |
+| =$*=       | All arguments as single word          |
+| =$#=       | Number of arguments                   |
+| =$?=       | Exit status of last command           |
+| =$$=       | Process ID of current shell           |
+| =$!=       | Process ID of last background command |
+
+** Conditionals
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** If Statements
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+
+if [ -f "file.txt" ]; then
+    echo "File exists"
+elif [ -d "directory" ]; then
+    echo "Directory exists"
+else
+    echo "Neither exists"
+fi
+
+# Numeric comparison
+if [ $count -gt 10 ]; then
+    echo "Greater than 10"
+fi
+
+# String comparison
+if [ "$name" = "Alice" ]; then
+    echo "Hello Alice!"
+fi
+#+END_SRC
+
+** Test Operators
+
+*** File Tests
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Test      | True if...                            |
+|-----------|---------------------------------------|
+| =-e file=   | File exists                           |
+| =-f file=   | File exists and is regular file       |
+| =-d file=   | File exists and is directory          |
+| =-r file=   | File exists and is readable           |
+| =-w file=   | File exists and is writable           |
+| =-x file=   | File exists and is executable         |
+| =-s file=   | File exists and is not empty          |
+
+## Comparison Operators
+
+*** Numeric Comparisons
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Operator | Description                           |
+|----------|---------------------------------------|
+| =-eq=      | Equal to                              |
+| =-ne=      | Not equal to                          |
+| =-gt=      | Greater than                          |
+| =-ge=      | Greater than or equal to              |
+| =-lt=      | Less than                             |
+| =-le=      | Less than or equal to                 |
+
+*** String Comparisons
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+| Operator | Description                           |
+|----------|---------------------------------------|
+| ===        | Equal to                              |
+| =!==       | Not equal to                          |
+| =-z=       | String is null (zero length)          |
+| =-n=       | String is not null                    |
+
+** Loops
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** For and While Loops
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+
+# For loop
+for i in {1..5}; do
+    echo "Number: $i"
+done
+
+# Loop over files
+for file in *.txt; do
+    echo "Processing $file"
+done
+
+# C-style for loop
+for ((i=0; i<5; i++)); do
+    echo "Count: $i"
+done
+
+# While loop
+count=0
+while [ $count -lt 5 ]; do
+    echo "Count: $count"
+    ((count++))
+done
+#+END_SRC
+
+** Advanced Loop Techniques
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+### Loop Control
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Break out of loop
+for i in {1..10}; do
+    if [ $i -eq 5 ]; then
+        break
+    fi
+    echo $i
+done
+
+# Continue to next iteration
+for i in {1..10}; do
+    if [ $i -eq 5 ]; then
+        continue
+    fi
+    echo $i
+done
+
+# Read file line by line
+while IFS= read -r line; do
+    echo "Line: $line"
+done < file.txt
+#+END_SRC
+
+** Functions
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Defining Functions
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+
+# Define function
+greet() {
+    echo "Hello, $1!"
+}
+
+# Call function
+greet "Alice"
+greet "Bob"
+
+# Function with return value
+add() {
+    local result=$(($1 + $2))
+    echo $result
+}
+
+sum=$(add 5 3)
+echo "Sum: $sum"
+#+END_SRC
+
+** Function Best Practices
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Local Variables and Returns
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Use local variables
+calculate() {
+    local a=$1
+    local b=$2
+    local result=$((a + b))
+    echo $result
+}
+
+# Return exit status
+is_valid() {
+    if [ -f "$1" ]; then
+        return 0  # Success
+    else
+        return 1  # Failure
+    fi
+}
+
+if is_valid "file.txt"; then
+    echo "File is valid"
+fi
+#+END_SRC
+
+** Error Handling
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+### Robust Scripts
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Exit on undefined variable
+set -u
+
+# Pipeline fails if any command fails
+set -o pipefail
+
+# All together
+set -euo pipefail
+
+# Check command success
+if ! command -v git &> /dev/null; then
+    echo "git not found"
+    exit 1
+fi
+
+# Custom error messages
+mkdir /tmp/mydir || { echo "Failed to create directory"; exit 1; }
+#+END_SRC
+
+** Input and Output
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** User Input
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Read user input
+echo "Enter your name:"
+read name
+echo "Hello, $name"
+
+# Read with prompt
+read -p "Enter your age: " age
+
+# Read password (hidden)
+read -sp "Enter password: " password
+echo
+
+# Read with timeout
+read -t 5 -p "Enter (5 sec timeout): " input
+
+# Read into array
+read -a array
+echo "First element: ${array[0]}"
+#+END_SRC
+
+** Arrays
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Working with Arrays
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Create array
+fruits=("apple" "banana" "cherry")
+
+# Access elements
+echo ${fruits[0]}        # First element
+echo ${fruits[@]}        # All elements
+echo ${#fruits[@]}       # Array length
+
+# Add elements
+fruits+=("date")
+
+# Iterate over array
+for fruit in "${fruits[@]}"; do
+    echo $fruit
+done
+
+# Slice array
+echo ${fruits[@]:1:2}    # Elements 1-2
+#+END_SRC
+
+** String Manipulation
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+### String Operations
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Length
+str="Hello World"
+echo ${#str}
+
+# Substring
+echo ${str:0:5}          # Hello
+echo ${str:6}            # World
+
+# Replace
+echo ${str/World/Bash}   # Replace first
+echo ${str//l/L}         # Replace all
+
+# Remove prefix/suffix
+file="document.txt"
+echo ${file%.txt}        # document
+echo ${file#*.}          # txt
+#+END_SRC
+
+## Script Best Practices
+
+*** Good Practices
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_BEAMER: :overlay +-
+- Always use =#!/bin/bash= shebang
+- Use meaningful variable names
+- Quote variables: ="$var"=
+- Use =set -euo pipefail= for safety
+- Add comments to explain complex logic
+- Check for required commands
+- Validate input
+- Use functions for reusable code
+- Handle errors gracefully
+
+** Debugging Scripts
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Debugging Techniques
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+# Print commands as they execute
+set -x
+
+# Turn off debug mode
+set +x
+
+# Run with debugging
+bash -x script.sh
+
+# Add debug statements
+echo "DEBUG: Variable value is $var" >&2
+
+# Check syntax without running
+bash -n script.sh
+
+# Verbose mode
+set -v
+#+END_SRC
+
+** Practical Script Example
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Complete Script
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_SRC bash
+#!/bin/bash
+set -euo pipefail
+
+# Backup script
+backup_dir="/backups/$(date +%Y%m%d)"
+source_dir="$HOME/documents"
+
+# Create backup directory
+mkdir -p "$backup_dir"
+
+# Backup files
+echo "Starting backup..."
+tar -czf "$backup_dir/documents.tar.gz" "$source_dir"
+
+if [ $? -eq 0 ]; then
+    echo "Backup completed successfully"
+else
+    echo "Backup failed" >&2
+    exit 1
+fi
+#+END_SRC
+
+** Questions?
+
+#+BEGIN_CENTER
+{\Large Thank you!}
+
+\vspace{1em}
+
+Ask your questions on *Piazza*
+
+\vspace{0.5em}
+
+Check the syllabus for assignment details
+#+END_CENTER
