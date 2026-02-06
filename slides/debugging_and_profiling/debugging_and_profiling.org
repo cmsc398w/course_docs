@@ -1,0 +1,805 @@
+#+Title: Debugging and Profiling
+#+SUBTITLE: CMSC398W: Practical Tools For Efficient Development
+#+AUTHOR: Mohammad Durrani
+#+DATE: \today
+#+OPTIONS: H:2 toc:nil num:nil
+#+STARTUP: beamer
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+BEAMER_THEME: Madrid
+#+BEAMER_COLOR_THEME: dolphin
+#+BEAMER_FONT_THEME: structurebold
+#+LATEX_HEADER: \setbeamertemplate{navigation symbols}{}
+#+LATEX_HEADER: \setbeamertemplate{footline}[frame number]
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usetikzlibrary{shapes,arrows,positioning,shadows,calc}
+#+LATEX_HEADER: \usepackage{pgfplots}
+#+LATEX_HEADER: \usepgfplotslibrary{polar}
+#+LATEX_HEADER: \pgfplotsset{compat=1.18}
+#+LATEX_HEADER: \usepackage[height=1200]{beamer-reveal}
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col)
+
+* Debugging & Profiling
+
+* Learning Objectives
+
+** Goals for Today
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+By the end of this lecture, you will be able to:
+
+- Apply the *scientific method* to debugging (Observe, Hypothesize, Test).
+- Differentiate between *print debugging*, *logging*, and *interactive debugging*.
+- Utilize specialized tools like =strace= and *network analyzers* for system-level issues.
+- Leverage *browser developer tools* for frontend inspection.
+- Identify performance bottlenecks using *profilers* and *flame graphs*.
+
+* Diagnostic Mindset
+
+** The Core Problem
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Software does *exactly* what you tell it, not what you *intend*.
+
+- Debugging = bridging the gap between intended vs. actual behavior
+- Though time-intensive, systematic debugging saves time in the long run
+- Instead of a reactive slowdown, structured debugging accelerates development
+
+** A Systematic Approach: The Scientific Method
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+BEGIN_EXPORT latex
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm, auto,
+    block/.style={rectangle, draw, fill=blue!20, text width=5em, text centered, rounded corners, minimum height=3em},
+    line/.style={draw, -latex', thick}]
+    \node [block] (repro) {Reproduce};
+    \node [block, right of=repro] (iso) {Isolate};
+    \node [block, right of=iso] (hyp) {Hypothesize};
+    \node [block, right of=hyp] (test) {Test};
+    \node [block, below of=iso] (fix) {Fix \& Verify};
+
+    \path [line] (repro) -- (iso);
+    \path [line] (iso) -- (hyp);
+    \path [line] (hyp) -- (test);
+    \path [line] (test) -- (fix);
+    \path [line] (test) edge[bend right=45] node[above] {Fail} (hyp);
+\end{tikzpicture}
+\end{center}
+#+END_EXPORT
+
+Debugging is *methodical*, not trial-and-error. Avoid "shotgun debugging" (changing things randomly until it works).
+
+1. *Reproduce* $\rightarrow$ If you can't reproduce, you can't fix
+2. *Isolate* $\rightarrow$ Use binary search strategy in code
+3. *Form a hypothesis* $\rightarrow$ Develop a theory based on symptoms
+4. *Test the hypothesis* $\rightarrow$ Only change one thing at a time
+5. *Fix and verify* $\rightarrow$ Confirm it solves the issue
+
+** Discussion: The "Haunted" Bug
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+*Question:* What is the hardest or weirdest bug you've ever encountered?
+
+- Was it a logic error?
+- A race condition?
+- A "Heisenbug" (disappears when you try to study it)?
+
+** The Psychological Tool: Rubber Duck Debugging
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+/The practice of explaining your code, line-by-line, to an inanimate object./
+
+- Forces you to slow down and articulate your logic.
+- Often, you find the bug before finishing the explanation.
+- *Why it works*: shifts brain from "creation" mode to "explanation" mode.
+
+** Isolation Strategies: "Divide and Conquer"
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+How to find a bug in 10,000 lines of code?
+
+1. *Binary Search the Code*: Comment out half the code. Does it still crash?
+   - Yes $\rightarrow$ Bug is in the active half.
+   - No $\rightarrow$ Bug is in the commented half.
+2. *Git Bisect*: Binary search through commit history to find *when* the bug was introduced.
+   - Good commit vs. Bad commit.
+
+** Deep Dive: Git Bisect
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+Automated binary search through your commit history.
+
+#+BEGIN_EXPORT latex
+\begin{center}
+\begin{tikzpicture}[
+    commit/.style={circle, draw, thick, minimum size=0.6cm, font=\footnotesize},
+    good/.style={fill=green!30},
+    bad/.style={fill=red!30},
+    check/.style={fill=yellow!30},
+    arrow/.style={->, thick, >=stealth}
+]
+    % Timeline line
+    \draw[thick, gray] (0,0) -- (8,0);
+
+    % Commits nodes
+    \node[commit, good, label=below:\textcolor{green!50!black}{Good}] (c1) at (0,0) {v1};
+    \node[commit] (c2) at (2,0) {v2};
+    \node[commit, check, label=above:\textcolor{blue}{Check?}] (c3) at (4,0) {v3};
+    \node[commit] (c4) at (6,0) {v4};
+    \node[commit, bad, label=below:\textcolor{red}{Bad}] (c5) at (8,0) {v5};
+
+    % Connections
+    \draw[arrow] (c1) -- (c2);
+    \draw[arrow] (c2) -- (c3);
+    \draw[arrow] (c3) -- (c4);
+    \draw[arrow] (c4) -- (c5);
+\end{tikzpicture}
+\end{center}
+#+END_EXPORT
+
+#+BEGIN_SRC bash
+$ git bisect start
+$ git bisect bad              # Current version is broken
+$ git bisect good v1.0        # Last known working version
+# Git checks out the middle commit (v3)...
+# Run your tests...
+$ git bisect bad              # If v3 is broken
+# Git checks out v2...
+$ git bisect reset            # Finish
+#+END_SRC
+
+** Example Walkthrough
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+Web app crashes on file upload.
+
+- Step 1: Reproduce with user uploads
+- Step 2: Isolate $\rightarrow$ file parsing function
+- Step 3: Hypothesize $\rightarrow$ large files cause memory issue
+- Step 4: Test $\rightarrow$ try different file sizes
+- Step 5: Fix $\rightarrow$ switch to streaming instead of full load
+
+* Static Analysis & Prevention
+
+** Catching Bugs Before They Happen
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+The cheapest bug to fix is the one you never write.
+
+- *Linters*: Analyze code for stylistic errors and suspicious constructs.
+- *Type Checkers*: Enforce type safety (e.g., TypeScript, MyPy).
+- *Formatters*: Ensure consistent style, reducing cognitive load.
+
+** Tools of the Trade
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+| Language | Linter | Formatter | Type Checker |
+|----------|--------|-----------|--------------|
+| Python | =pylint=, =ruff= | =black= | =mypy= |
+| JavaScript | =eslint= | =prettier= | =TypeScript= |
+| C/C++ | =cppcheck= | =clang-format= | (Compiler) |
+
+* Printf Debugging & Logging
+
+** Print Debugging: The Foundation
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Brian Kernighan (1979): /"The most effective debugging tool is still careful thought, coupled with judiciously placed print statements."/
+
+- Print statements = simplest debugging method
+- Iterate by adding prints near problem areas until root cause is clear
+- Preferred because it's quick, easy, and effective
+
+** Logging: Enhanced Print Debugging
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+Logging advantages:
+
+- Output to files, sockets, remote servers (easier to review than terminal)
+- Severity levels: =INFO=, =DEBUG=, =WARN=, =ERROR=
+- Long-term monitoring + immediate debugging
+- Structured logging (key–value pairs) $\rightarrow$ searchable, filterable, analyzable
+
+** Logging Best Practices
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <3->
+:END:
+
+| Practice | Purpose |
+|----------|---------|
+| Set log levels properly | Filter noise |
+| Use structured logging | Key–value pairs for analysis |
+| Ensure traceability | Unique messages/prefixes to source |
+| Use correlation IDs | Track requests end-to-end |
+| Be strategic | Don't let logging consume resources |
+| *Never log sensitive info* | Security first |
+
+** Good vs. Bad Logging
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Bad Log Message | Good Log Message | Why? |
+|-----------------|------------------|------|
+| "Error happened" | "Failed to upload file: timeout" | Specificity |
+| "User 123" | "User 123 logged in from IP..." | Context |
+| "Catch block reached" | "Database connection failed: retrying..." | Intent/Action |
+| "Debug: 5" | "Calculated tax: 5.00 for order 99" | Meaning |
+
+** Discussion: Critique This Log
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+What is wrong with this log file?
+
+#+BEGIN_SRC text
+Error: File not found
+Processing item...
+Done
+Error: File not found
+#+END_SRC
+
+*** Analysis
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+- *No Timestamps*: When did this happen? Are these errors related?
+- *No Context*: *Which* file was not found? *Which* item was processed?
+- *No Severity*: Is "File not found" a crash or just a warning?
+- *Ambiguity*: Did "Done" mean success or just end of function?
+
+** Time to Explore: Better Logging
+
+*** Challenge
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+1. Look at a recent project you wrote.
+2. Find a place where you used `print()` statements for debugging.
+3. Replace them with proper logging (mock it if needed).
+   - Add a timestamp.
+   - Add a severity level (INFO, WARN, ERROR).
+   - Add context (variables, state).
+
+** External Logging
+:PROPERTIES:
+:BEAMER_ACT: <4->
+:END:
+
+When working with external dependencies (web servers, databases, containers), check their logs:
+
+- Most programs write to =/var/log= on UNIX systems
+- Containerized apps: =docker logs <container-name>=
+- Client-side error messages often lack detail
+
+* Interactive Debuggers
+
+** When Print Debugging Is Not Enough
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Debuggers are programs that let you interact with execution, allowing:
+
+- Halt execution when reaching a certain line
+- Step through the program one instruction at a time
+- Inspect values of variables after crashes
+- Conditionally halt execution when a condition is met
+- Many more advanced features
+
+/Should be covered in CMSC132!/
+
+** Debugger Concepts
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Core Operations                                          :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- *Breakpoints*: Pause execution at specific lines
+- *Step Over*: Execute current line including function calls
+- *Step Into*: Enter function to debug internals
+- *Step Out*: Continue until function returns
+
+**** Inspection Capabilities                                  :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- *Call Stack*: Sequence of function calls to current point
+- *Variable Inspection*: Examine and modify values
+- *Watch Expressions*: Monitor specific values during execution
+- *Conditional Breakpoints*: Only halt when condition is true (e.g., `i == 1000`) $\leftarrow$ *Superpower!*
+
+** Think-Pair-Share: Which Step?
+
+*** The Scenario
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+You are at line 10: `calculate_total(cart)`. You suspect the bug is inside `calculate_total`, but you want to see if the `cart` variable is correct *before* you go in.
+
+*** The Question
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+Which debugger action do you take first?
+1. Step Over
+2. Step Into
+3. Inspect `cart` variable
+
+*** Answer
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+*3. Inspect `cart` variable.* Always verify your assumptions (inputs) before diving deeper! Then use *Step Into* if the input is correct.
+
+** Summary: Choosing the Right Tool
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Tool | Best For... | Cons |
+|------|-------------|------|
+| *Printf / Logs* | Flow tracing, production issues, long-running processes | Clutters code, requires re-running |
+| *Debugger* | Deep logic inspection, stepping, modifying state | Manual, slow, hard for concurrency |
+| *Profilers* | Performance bottlenecks, memory leaks | Doesn't fix correctness, overhead |
+
+* WebDev / Developer Tools
+
+** Browser Developer Tools
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Essential for web development debugging (Chrome DevTools, Firefox Developer Tools).
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** JavaScript Debugging                                     :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Open DevTools (F12)
+- Sources tab $\rightarrow$ set breakpoints
+- Step through code
+- Inspect variables in Scope panel
+- Console for live evaluation
+
+**** Network Debugging                                        :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Network tab for requests
+- Headers, Preview, Response, Timing
+- "Copy as cURL" to replay
+- Preserve log across navigation
+- Performance analysis
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.8\textwidth
+[[./images/devtools.png]]
+/Placeholder: Screenshot of Chrome DevTools showing Network or Sources tab/
+#+END_CENTER
+
+** Common Use Cases
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+| Use Case | How |
+|----------|-----|
+| API debugging | Check request data & response structure |
+| Performance issues | Use timing column to find slow requests |
+| Cookie/Storage | Application tab shows cookies, localStorage |
+| JavaScript errors | Console shows errors with stack traces |
+| Live editing | Modify CSS/JS to test fixes without redeploying |
+
+* Specialized Tools
+
+** System Call Tracing
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Monitor interactions between a program and the OS kernel.
+
+- Tools: =strace= (Linux), =dtruss= (macOS)
+- Useful for debugging programs where you cannot see source code
+- Shows every system call made by a program with arguments and results
+
+#+BEGIN_SRC bash
+# On Linux
+sudo strace -e lstat ls -l > /dev/null
+# On macOS
+sudo dtruss -t lstat64_extended ls -l > /dev/null
+#+END_SRC
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.8\textwidth
+[[./images/strace_output.png]]
+/Placeholder: Screenshot of strace output showing open, read, close calls/
+#+END_CENTER
+
+** Network Packet Analysis
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+Diagnose network-related issues by examining traffic between systems.
+
+- Tools: =tcpdump= (command line), =Wireshark= (GUI)
+- Captures and filters network packets
+- Helpful for debugging network performance, security vulnerabilities, or data transmission
+
+* Profiling
+
+** Beyond Functional Correctness
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Even if your code behaves correctly, it might not be good enough if it takes all your CPU or memory.
+
+- Algorithms classes teach big $O$ notation but not how to find hot spots
+- *Premature optimization is the root of all evil*
+- Profilers help you understand which parts take most time/resources
+- Focus optimization efforts where they matter most
+
+** Think-Pair-Share: To Optimize or Not?
+
+*** The Scenario
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+You are building a web page.
+- Part A: Takes 0.05s to run, runs on every page load.
+- Part B: Takes 5.0s to run, runs once per month (admin report).
+
+*** The Question
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+Which part should you optimize first? Why?
+
+*** Answer
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+*Part A.* Even though it's faster, it affects *every user, every time*. 0.05s $\times$ millions of views adds up. Part B is slow but rarely used.
+
+* Profiling via Internal Timing
+
+** Types of Timing
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+When measuring program execution, there are different types of time:
+
+| Type | Description |
+|------|-------------|
+| *Real Time* | Total time from start to finish (wall clock) |
+| *User Time* | CPU time spent running your program's code |
+| *Sys Time* | CPU time spent on system-level tasks (OS calls, I/O) |
+
+** Understanding the Differences
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+Wall clock time can be misleading:
+
+- Your computer may run other processes simultaneously
+- Program may wait for external events (network, disk I/O)
+- Real Time = User Time + Sys Time + Wait Time
+
+** Key Insight
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <3->
+:END:
+
+If your program spends lots of time waiting for external resources:
+
+- Improve by reducing wait times, not making code faster
+- Send fewer requests to servers
+- Cache information to avoid re-checking files on disk
+
+* CPU Profilers
+
+** CPU Profilers: Tracing vs Sampling
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Tools to analyze and measure CPU time spent on different functions/code blocks.
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Tracing Profilers                                        :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Track *every* function call your program makes
+- Complete record of execution
+- Higher overhead
+- Precise call counts
+
+**** Sampling Profilers                                       :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Periodically sample program's stack (e.g., every millisecond)
+- Aggregate statistics of time usage
+- Lower overhead
+- Statistical approximation
+
+** Python Example: =cProfile=
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+Python's =cProfile= module profiles time per function call:
+
+#+BEGIN_SRC python
+import cProfile
+import re
+
+def grep_python(pattern, filename):
+    with open(filename, 'r') as f:
+        for line in f:
+            if re.search(pattern, line):
+                print(line.strip())
+
+# Profile the function
+cProfile.run('grep_python("import", "script.py")')
+#+END_SRC
+
+*** Sample Output
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+#+BEGIN_SRC text
+   204 function calls in 0.002 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.002    0.002 <string>:1(<module>)
+      100    0.001    0.000    0.001    0.000 re.py:289(filter)
+        1    0.000    0.000    0.002    0.002 script.py:4(grep_python)
+#+END_SRC
+
+* Flame Graphs
+
+** Flame Graphs: Hierarchical Visualization
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Visualizations showing how much time a program spends in different functions.
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Reading Flame Graphs                                     :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- *Y-axis*: Call stack depth
+- *X-axis*: Time/sample count proportions (NOT passage of time)
+- Each box = function in call stack
+- Width = time spent
+- Height = call stack depth
+- Wide boxes at top = bottlenecks
+
+**** Key Points                                               :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Colors are random (visual distinction)
+- Interactive: click to zoom
+- Look for wide boxes
+- Easy to identify hot paths
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.8\textwidth
+[[./images/flamegraph.png]]
+/Placeholder: Screenshot of a flame graph/
+#+END_CENTER
+
+** Generating Flame Graphs with =py-spy=
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+#+BEGIN_SRC bash
+# Install py-spy
+pip install py-spy
+
+# Profile and generate flame graph
+py-spy record -o profile.svg --duration 30 -- python script.py
+
+# Or attach to running process
+py-spy record -o profile.svg --pid 12345
+#+END_SRC
+
+Creates an interactive SVG file you can open in your browser.
+
+** Example Interpretation
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <3->
+:END:
+
+If you see a wide box labeled =json.loads=, your program spends significant time parsing JSON.
+
+Optimize by:
+- Parsing JSON once and caching the result
+- Using a faster JSON library like =orjson=
+- Reducing the amount of JSON data being parsed
+
+* Memory Profilers
+
+** Memory Profiling Overview
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Track, measure, and analyze memory usage to detect inefficiencies and prevent memory issues like leaks.
+
+** Common Memory Antipatterns
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+Where does memory go?
+
+- *The Global List*: Appending to a global list (cache) without ever removing.
+- *Unclosed Resources*: Forgetting to close files or database connections.
+- *Reference Cycles*: Objects A and B point to each other, preventing garbage collection.
+- *Large Data Loading*: Loading a 5GB file into RAM instead of processing line-by-line.
+
+** Types of Memory Profiling
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+| Type | Purpose |
+|------|---------|
+| *Heap Profiling* | Track dynamic memory allocations/deallocations |
+| *Stack Profiling* | Monitor memory in call stack (local variables) |
+| *Reference Counting* | Track how many references exist to each object |
+
+** Optimization Strategy
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <3->
+:END:
+
+*Avoid unnecessary allocations*:
+
+- Memory allocation takes time and resources
+- Garbage collection cycles introduce overhead
+- Minimize allocations by reusing memory
+- Use memory pools or object pooling techniques
+- Avoid repeated allocations/deallocations
+
+* Summary
+
+** Key Takeaways
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Debugging                                                :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Systematic approach: Observe, Hypothesize, Test
+- Print debugging with logging
+- Interactive debuggers for deep dives
+- Specialized tools for system/network
+- Browser DevTools for web
+
+**** Profiling                                                :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Measure before optimizing
+- CPU profilers (tracing vs sampling)
+- Memory profilers for leaks
+- Flame graphs for visualization
+- Focus on bottlenecks, not hunches
+
+** Final Thought
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+/"Premature optimization is the root of all evil."/ — Donald Knuth
+
+Use profilers to find *real* bottlenecks before optimizing.

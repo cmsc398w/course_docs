@@ -5,7 +5,7 @@
 #+OPTIONS: H:2 toc:nil num:nil
 #+STARTUP: beamer
 #+LATEX_CLASS: beamer
-#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
 #+BEAMER_THEME: Madrid
 #+BEAMER_COLOR_THEME: dolphin
 #+BEAMER_FONT_THEME: structurebold
@@ -16,47 +16,38 @@
 #+LATEX_HEADER: \usepackage{pgfplots}
 #+LATEX_HEADER: \usepgfplotslibrary{polar}
 #+LATEX_HEADER: \pgfplotsset{compat=1.18}
-#+LATEX_HEADER: \usepackage[height=3024]{beamer-reveal}
+#+LATEX_HEADER: \usepackage[width=3840]{beamer-reveal}
 #+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col)
 
+
 * About The Class
-
-** Welcome To Class!
-
-
 ** Icebreaker
-
 *** Please share in the Zoom chat:
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
-
 1. Your year (Freshman, Sophomore, Junior, Senior)
 2. Either:
    - One thing you did over break, *OR*
    - What you hope to learn from this class
 
-** About The Class
+*** 
+:PROPERTIES:
+:BEAMER_ENV: note
+:END:
 
+1. This is a note about something
+2. THis is also a note about something
+3. THis is all I have to say about that thing
+
+
+** About The Class
 *** Course Information
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
-
 *CMSC398W: Practical Tools For Efficient Development*
-
 - Overview of tools used in development: command line, Git, debuggers, build systems, etc.
-- Emphasis on breadth over depth
-- Hands-on learning through projects
-
-*** Course Goals
-:PROPERTIES:
-:BEAMER_ENV: exampleblock
-:END:
-
-- Improve your computing ecosystem literacy
-- Improve your efficiency
-- Reduce cognitive load while developing
 
 ** About Me - Mohammad
 
@@ -166,9 +157,8 @@ Based on feedback from the previous iteration, we'll have days focused on using 
 (Subject to change)
 
 ** Grade Distribution
-
 #+BEGIN_SRC gnuplot :file grade-pie.png :exports results
-set terminal pngcairo size 600,400
+set terminal pngcairo size 1200,600
 set output 'grade-pie.png'
 set title "Grade Distribution"
 set xlabel "Grade"
@@ -187,6 +177,7 @@ e
 #+END_SRC
 
 #+RESULTS:
+#+ATTR_LATEX: :width 0.7\textwidth
 [[file:grade-pie.png]]
 
 * The Shell
@@ -815,7 +806,7 @@ src/main.py: # TODO: optimize this
 $ grep -i "ERROR" app.log
 #+END_SRC
 
-** Think-Pair-Share: The Needle in the Haystack
+** Think-Pair-Share: Play With Grep
 :PROPERTIES:
 :BEAMER_OPT: fragile
 :END:
@@ -840,7 +831,7 @@ $ grep -rn "TODO.*authentication" .
 #+END_SRC
 
 - *-r*: Search all files in all subdirectories.
-- *-n*: Tell me exactly which line the comment is on!
+- *-n*: Show line number with match
 
 ** Wildcards and Globbing
 
@@ -970,13 +961,14 @@ mkdir -p project/{src,test,docs}
 :BEAMER_ENV: block
 :END:
 
-| Key/Command   | Action                                |
-|---------------|---------------------------------------|
-| Up/Down arrows| Navigate history                      |
-| =history= | Show command history                |
-| =!!=   | Repeat last command                   |
-| =!grep= | Execute last command starting with grep |
-| Ctrl+R        | Reverse search history (The MVP!)     |
+| Key/Command    | Action                                  |
+|----------------+-----------------------------------------|
+| Up/Down arrows | Navigate history                        |
+| =!!=           | Repeat last command                     |
+| =!grep=        | Execute last command starting with grep |
+| Ctrl+R         | Reverse search history                  |
+| =history=      | List command history                    |
+
 
 ** History Examples
 :PROPERTIES:
@@ -992,24 +984,24 @@ mkdir -p project/{src,test,docs}
 # View last 20 commands
 history 20
 
-# Forgot sudo?
+# we ALL been there
 $ ls /var/root
 ls: /var/root: Permission denied
 $ sudo !!
 
-# Search history
+# when you typed that super long comand a while ago
 (Press Ctrl+R, then type 'ssh')
-(reverse-i-search)`ssh': ssh user@umd.edu
+(reverse-i-search)`ssh': ssh random-user@umd.edu
 #+END_SRC
 
 ** Tab Completion
 
-*** Productivity Booster
+*** Note
 :PROPERTIES:
 :BEAMER_ENV: exampleblock
 :END:
 
-*Tab completion* saves time and prevents typos. If you aren't mashing the Tab key, you're working too hard.
+*Tab completion* saves time and prevents typos. I really hope you've been using this.
 
 *** How it works
 :PROPERTIES:
@@ -1040,20 +1032,19 @@ Command substitution allows you to use the output of a command as an argument to
 #+BEGIN_EXPORT latex
 \begin{center}
 \begin{tikzpicture}[
-    node distance=0.7cm,
-    box/.style={rectangle, draw, thick, minimum width=7cm, minimum height=0.6cm, align=center, font=\small\ttfamily}
+ node distance=0.7cm,
+ box/.style={rectangle, draw, thick, minimum width=7cm, minimum height=0.6cm, align=center, font=\small\ttfamily}
 ]
-    \node[box, fill=blue!15] (original) {tar -czf backup-\$(date +\%Y\%m\%d).tar.gz files/};
-    \node[box, fill=yellow!20, below=of original] (executed) {\$(date +\%Y\%m\%d) $\rightarrow$ "YYYYMMDD"};
-    \node[box, fill=green!20, below=of executed] (final) {tar -czf backup-YYYYMMDD.tar.gz files/};
-
-    \draw[->, very thick] (original) -- (executed);
-    \draw[->, very thick] (executed) -- (final);
+ \node[box, fill=blue!15] (original) {tar -czf backup-\$(date +\%Y\%m\%d).tar.gz files/};
+ \node[box, fill=yellow!20, below=of original] (executed) {\$(date +\%Y\%m\%d) \textrightarrow\ "20260205"};
+ \node[box, fill=green!20, below=of executed] (final) {tar -czf backup-20260205.tar.gz files/};
+ \draw[->, very thick] (original) -- (executed);
+ \draw[->, very thick] (executed) -- (final);
 \end{tikzpicture}
 \end{center}
 #+END_EXPORT
 
-Inner command executes → output replaces substitution → full command runs
+Inner command executes --> output replaces substitution --> full command runs
 
 ** Command Substitution Examples
 :PROPERTIES:
@@ -1066,16 +1057,13 @@ Inner command executes → output replaces substitution → full command runs
 :END:
 
 #+BEGIN_SRC bash
-# Using $(command) syntax (preferred)
-echo "Today is $(date)"
-files=$(ls -1)
-echo "Found $(wc -l < file.txt) lines"
+   echo "Today is $(date)"
 
-# Using backticks (older syntax)
-echo "Today is `date`"
+   files=$(ls -1)
 
-# Nested substitution
-echo "User $(whoami) in $(pwd)"
+   echo "Found $(wc -l < file.txt) lines"
+
+   echo "User $(whoami) in $(pwd)"
 #+END_SRC
 
 ** Think-Pair-Share: Creative Substitution
@@ -1114,34 +1102,27 @@ mv *.log "$(date +%Y-%m)"
 * Pipes and Redirection
 
 ** Redirection Basics
-
-***                                                              :B_columns:
+*** Problem                                                          
 :PROPERTIES:
-:BEAMER_ENV: columns
-:END:
-
-**** Problem                                                        :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.35
 :BEAMER_ENV: block
 :END:
+What if we want to save the output of the terminal?
 
-Output goes to screen and disappears
+What if we want to use the output of one command as part of a larger data pipeline?
 
-**** Solution                                                       :BMCOL:
+*** Solution                                                         
 :PROPERTIES:
-:BEAMER_COL: 0.6
 :BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
 :END:
-
 | Operator | Action              |
-|----------|---------------------|
+|----------+---------------------|
 | =>=      | Overwrite file      |
 | =>>=     | Append to file      |
 | =2>=     | Redirect errors     |
 | =&>=     | Redirect everything |
+| =<=      | Redirect input      |
 
-Note: =command &> file= works in bash/zsh; the portable form is =command > file 2>&1=.
 
 ** File Descriptors & Redirection
 
@@ -1225,21 +1206,20 @@ command &> all.log  # Shorter syntax
 :END:
 
 #+BEGIN_SRC bash
-# Script that produces both stdout and stderr
-$ python buggy_script.py
-Processing file1.txt
-ERROR: file2.txt not found
-Done
+  # Script that produces both stdout and stderr
+  $ python buggy_script.py
+  Processing file1.txt
+  ERROR: file2.txt not found
+  Done
+  
+  $ python buggy_script.py > output.txt 2> errors.txt
 
-# Capture separately
-$ python buggy_script.py > output.txt 2> errors.txt
+  $ cat output.txt
+  Processing file1.txt
+  Done
 
-$ cat output.txt
-Processing file1.txt
-Done
-
-$ cat errors.txt
-ERROR: file2.txt not found
+  $ cat errors.txt
+  ERROR: file2.txt not found
 #+END_SRC
 
 ** Think-Pair-Share: Redirection Pitfalls
@@ -1256,7 +1236,6 @@ ERROR: file2.txt not found
 echo "Hello" > greeting.txt
 echo "World" >> greeting.txt
 echo "Goodbye" > greeting.txt
-cat greeting.txt
 #+END_SRC
 
 *** Discussion
@@ -1265,7 +1244,7 @@ cat greeting.txt
 :END:
 
 1. What is the final content of =greeting.txt=?
-2. What happens if you run =cat greeting.txt > greeting.txt=? *WARNING: Don't do this yet!*
+2. What happens if you run =cat greeting.txt > greeting.txt=?
 3. How can you save both errors and output to the same file?
 
 *** Answer
@@ -1275,20 +1254,14 @@ cat greeting.txt
 :END:
 
 #+ATTR_BEAMER: :overlay +-
-1. *Goodbye* (The final =>= nuked previous content).
+1. *Goodbye*
 2. The file becomes *empty*! (The shell truncates the file for writing before =cat= can read it).
 3. =command &> file=
 
 ** Pipes
 
-***                                                              :B_columns:
+**** Problem
 :PROPERTIES:
-:BEAMER_ENV: columns
-:END:
-
-**** Problem                                                        :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.48
 :BEAMER_ENV: block
 :END:
 
@@ -1297,11 +1270,10 @@ Count .txt files:
 - =grep= filters
 - =wc -l= counts
 
-How to connect?
+How do we connect these?
 
-**** Solution                                                       :BMCOL:
+**** Solution                                                  
 :PROPERTIES:
-:BEAMER_COL: 0.48
 :BEAMER_ENV: exampleblock
 :END:
 
@@ -1413,42 +1385,11 @@ $ cat app.log | grep ERROR | wc -l
 2
 #+END_SRC
 
-** Think-Pair-Share: Debug the Pipeline
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** The Goal
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-
-Find all lines with "Error" in =app.log= and count them.
-
-*** Broken Commands
-:PROPERTIES:
-:BEAMER_ENV: exampleblock
-:END:
-
-Identify the flaw in each command:
-1. =grep "Error" app.log > wc -l=
-2. =cat app.log | grep Error | wc=
-
-*** Answers
-:PROPERTIES:
-:BEAMER_ENV: alertblock
-:BEAMER_ACT: <2->
-:END:
-
-#+ATTR_BEAMER: :overlay +-
-1. *Redirection Error:* =>= sends output to a *file* named =wc=. Use =|= to send to a *program*.
-2. *Ambiguous Output:* =wc= shows lines, words, AND characters. Use =wc -l= for just lines.
-
 * xargs
 
 ** xargs: Bridging the Gap
 
-*** What is it?
+*** 
 :PROPERTIES:
 :BEAMER_ENV: definition
 :END:
@@ -1467,21 +1408,19 @@ Some commands (like =rm=, =mkdir=, =mv=) don't read from standard input. They on
 :PROPERTIES:
 :BEAMER_OPT: fragile
 :END:
-
 *** Examples
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
-
 #+BEGIN_SRC bash
-# Delete all .tmp files (safe with spaces)
-find . -name "*.tmp" -print0 | xargs -0 rm
+  # Delete .tmp files
+  find . -name "*.tmp" | xargs rm
 
-# Run 1 command per input line (NUL-delimited)
-printf '%s\0' dir1 dir2 dir3 | xargs -0 -n 1 mkdir
+  # Create multiple directories
+  echo "dir1 dir2 dir3" | xargs mkdir
 
-# Custom placement of arguments (safe with spaces)
-find . -maxdepth 1 -name "*.txt" -print0 | xargs -0 -I {} mv "{}" backup/
+  # Move files to backup/
+  find . -name "*.txt" | xargs -I {} mv {} backup/
 #+END_SRC
 
 *** Common Flags
@@ -1489,13 +1428,11 @@ find . -maxdepth 1 -name "*.txt" -print0 | xargs -0 -I {} mv "{}" backup/
 :BEAMER_ENV: exampleblock
 :BEAMER_ACT: <2->
 :END:
-
-| Option   | Description                           |
-|----------|---------------------------------------|
-| =-n N=     | Use at most N args per command        |
-| =-I {}=    | Replace {} with the input string      |
-| =-0=       | Read NUL-delimited input (safe)       |
-| =-P N=     | Run N processes in parallel (Fast!)   |
+| Option  | Description                 |
+|---------+-----------------------------|
+| =-I {}= | Replace {} with each input  |
+| =-n N=  | Use N arguments per command |
+| =-P N=  | Run N commands in parallel  |
 
 ** System Health with top
 :PROPERTIES:
@@ -1587,13 +1524,6 @@ Cleaning, transforming, and analyzing data using command-line tools.
 :BEAMER_OPT: fragile
 :END:
 
-*** Why?
-:PROPERTIES:
-:BEAMER_ENV: alertblock
-:END:
-
-=uniq= only works on *adjacent* lines. That's why we almost always =sort= before we =uniq=.
-
 *** Examples with Output
 :PROPERTIES:
 :BEAMER_ENV: block
@@ -1603,19 +1533,23 @@ Cleaning, transforming, and analyzing data using command-line tools.
 #+ATTR_LATEX: :options fontsize=\small
 #+BEGIN_SRC bash
 # Sample file: fruits.txt (apple, banana, apple, cherry, banana)
-
-# Count unique occurrences
 $ sort fruits.txt | uniq -c
    2 apple
    2 banana
    1 cherry
 
-# Sort by frequency (descending)
 $ sort fruits.txt | uniq -c | sort -rn
    2 banana
    2 apple
    1 cherry
 #+END_SRC
+
+*** Why?
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+=uniq= only works on *adjacent* lines. That's why we almost always =sort= before we =uniq=.
 
 
 ** Data Wrangling Example
@@ -1629,8 +1563,6 @@ $ sort fruits.txt | uniq -c | sort -rn
 :END:
 
 #+BEGIN_SRC bash
-# Analyze web server logs
-# Find most common ERROR messages
 cat access.log \
   | grep "ERROR" \
   | awk '{print $5}' \
@@ -1658,68 +1590,162 @@ cat access.log \
 :BEAMER_OPT: fragile
 :END:
 
-*** Why Regex?
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-Regex patterns allow for powerful, flexible text matching beyond simple wildcards.
-
-** Regex Flavors: A Shell Caveat
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** Comparison
+*** Note: Pattern Matching Beyond Wildcards
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
 
-| Feature | BRE (Basic) | ERE (Extended) | PCRE (Perl/JS/Py) |
-|---------+-------------+----------------+-------------------|
-| Tools   | =grep=, =sed=  | =grep -E=, =awk=  | =grep -P=, Python  |
-| =+=, =?=  | Need =\=    | Raw: =+=, =?=  | Raw: =+=, =?=     |
-| =()=, ={}= | Need =\=    | Raw: =()=, ={}= | Raw: =()=, ={}=    |
+Regex patterns allow for powerful, flexible text matching. They're used in =grep=, =sed=, =awk=, and many other tools.
 
-#+ATTR_BEAMER: :overlay +-
-- *Note:* macOS BSD =grep= usually lacks =-P=. Prefer =grep -E= or install GNU =grep= (often =ggrep=).
-
-*** Example: Matching "1 or more"
+*** Pattern Cheat Sheet
 :PROPERTIES:
 :BEAMER_ENV: exampleblock
 :END:
 
-- *BRE:* =grep 'a\+'=
-- *ERE:* =grep -E 'a+'=
-- *PCRE:* =grep -P 'a+'=
+| Pattern  | Matches                               |
+|----------+---------------------------------------|
+| =^= / =$= | Start / End of line                   |
+| =.=        | Any single character                  |
+| =*=        | Zero or more of previous              |
+| =[abc]=    | Any character in brackets             |
+| =[0-9]=    | Any digit                             |
 
+** Regex Example: What Matches?
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
 
-** Pattern Cheat Sheet
+*** Sample Text
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
 
-| Type       | Pattern  | Matches                               |
-|------------+----------+---------------------------------------|
-| *Anchors*  | =^= / =$= | Start / End of line                   |
-| *Quantify* | =*= / =+= | Zero+ / One+ repetitions              |
-| *Groups*   | =[]= / =()= | Sets / Capture groups                 |
-| *Wildcard* | =.=        | Any single character                  |
+#+BEGIN_SRC text
+apple pie
+red apple
+banana
+dog
+hot dog
+dogwood
+error123
+ERROR456
+#+END_SRC
 
-*** Basic Examples
+*** Patterns and Their Matches
 :PROPERTIES:
 :BEAMER_ENV: exampleblock
 :BEAMER_ACT: <2->
 :END:
 
 #+ATTR_BEAMER: :overlay +-
-- =^apple= matches "apple pie" but not "red apple"
-- =dog$= matches "hot dog" but not "dogwood"
-- =ba+na= matches "banana", "baana", but not "bana"
-- =[0-9]{3}= matches exactly three digits
+- =^apple= matches: *"apple pie"* only (starts with apple)
+- =apple$= matches: *"red apple"* only (ends with apple)
+- =^dog$= matches: *"dog"* only (entire line is exactly "dog")
+- =dog= matches: *"dog", "hot dog", "dogwood"* (contains dog anywhere)
+- =[0-9]= matches: *"error123", "ERROR456"* (contains any digit)
+- =^[a-z]= matches: *"apple pie", "red apple", "banana", "dog", "hot dog", "dogwood", "error123"* (starts with lowercase)
+
+** Regex Flavors in Shell Tools
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Important Note
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+Different tools use different regex "flavors" with slightly different syntax.
+
+*** Common Flavors
+:PROPERTIES:
+:BEAMER_ENV: block
+:BEAMER_ACT: <2->
+:END:
+
+| Tool | Flavor | Example |
+|------+--------+---------|
+| =grep= (default) | Basic (BRE) | =grep 'pattern'= |
+| =grep -E= | Extended (ERE) | =grep -E 'pattern+'= |
+| =sed= (default) | Basic (BRE) | =sed 's/old/new/'= |
+| =awk= | Extended (ERE) | =awk '/pattern+/'= |
+
+*** Key Difference
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <3->
+:END:
+
+With *Basic* regex, special chars like =+=, =?=, =()=, ={}= need backslashes: =\+=, =\?=
+
+With *Extended* regex (=-E= flag), use them directly: =+=, =?=
 
 * sed (Stream Editor)
 
-** The sed Execution Model
+** A Bit of History
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** The Origins of sed
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+Created by Lee E. McMahon at Bell Labs in 1973-74, =sed= was designed for editing files in batch mode. It uses *Basic Regular Expressions (BRE)* by default, which is why some special characters need escaping.
+
+** What is sed?
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Definition
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+=sed= is a *stream editor* for filtering and transforming text. It reads input line by line, applies commands, and outputs the result.
+
+*** Basic Syntax
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+\centering \large \texttt{sed 'command' file}
+
+Common commands:
+- =s/pattern/replacement/= - substitute (search and replace)
+- =d= - delete matching lines
+- =p= - print (usually with =-n= flag)
+
+** sed: Search and Replace Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Basic Substitution
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_LATEX: :options fontsize=\small
+#+BEGIN_SRC bash
+# Replace first 'foo' with 'bar'
+$ echo "foo foo" | sed 's/foo/bar/'
+bar foo
+
+# Replace ALL 'foo' with 'bar' (global flag 'g')
+$ echo "foo foo" | sed 's/foo/bar/g'
+bar bar
+
+# Delete lines matching a pattern
+$ printf "line1\n#comment\nline2" | sed '/^#/d'
+line1
+line2
+#+END_SRC
+
+** How sed Works (Execution Model)
 :PROPERTIES:
 :BEAMER_OPT: fragile
 :END:
@@ -1756,33 +1782,7 @@ Regex patterns allow for powerful, flexible text matching beyond simple wildcard
 :BEAMER_ACT: <2->
 :END:
 
-=sed= works line-by-line. It never modifies the original file unless you use the =-i= (in-place) flag.
-
-** sed: Search and Replace
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** Examples with Output
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-
-#+ATTR_LATEX: :options fontsize=\small
-#+BEGIN_SRC bash
-# Replace first 'foo' with 'bar'
-$ echo "foo foo" | sed 's/foo/bar/'
-bar foo
-
-# Replace ALL 'foo' with 'bar' (global)
-$ echo "foo foo" | sed 's/foo/bar/g'
-bar bar
-
-# Delete lines matching a pattern
-$ printf "line1\n#comment\nline2" | sed '/^#/d'
-line1
-line2
-#+END_SRC
+=sed= processes one line at a time. Original file is *never* modified unless you use =-i= (in-place editing).
 
 ** sed: Addressing and Ranges
 :PROPERTIES:
@@ -1846,21 +1846,78 @@ sed -i.bak 's/debug/info/g' config.yml
 
 * awk (Pattern Processing)
 
-** awk: The Pattern-Action Model
+** A Bit of History
 :PROPERTIES:
 :BEAMER_OPT: fragile
 :END:
 
-*** How it works
+*** The Origins of awk
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+Created in 1977 by *A*ho, *W*einberger, and *K*ernighan at Bell Labs (hence "awk"). It's actually a full programming language! Unlike =sed=, =awk= uses *Extended Regular Expressions (ERE)* by default.
+
+** What is awk?
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Definition
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
 
-=awk= automatically loops over every line. You define *patterns* and *actions*.
+=awk= is a powerful text processing tool for extracting and manipulating data in *columns*.
 
-\centering \large \texttt{awk 'pattern { action }' file}
+*** Basic Syntax
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
 
-*** Basic Examples
+\centering \large \texttt{awk 'pattern \{ action \}' file}
+
+Key concepts:
+- Automatically splits each line into *fields* (columns)
+- =$1= = first field, =$2= = second field, etc.
+- =$0= = entire line
+
+** awk: Basic Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Simple Field Extraction
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_LATEX: :options fontsize=\small
+#+BEGIN_SRC bash
+# Print 1st and 3rd columns (default delimiter: space/tab)
+$ awk '{print $1, $3}' data.txt
+
+# Print only the first column
+$ awk '{print $1}' data.txt
+
+# Use a custom delimiter (e.g., colon for /etc/passwd)
+$ awk -F':' '{print $1}' /etc/passwd
+#+END_SRC
+
+** awk: Pattern-Action Model
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** How awk Processes Data
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+=awk= automatically loops over every line and applies your *pattern* and *action* to each line.
+
+*** Pattern Examples
 :PROPERTIES:
 :BEAMER_ENV: exampleblock
 :BEAMER_ACT: <2->
@@ -1868,14 +1925,11 @@ sed -i.bak 's/debug/info/g' config.yml
 
 #+ATTR_LATEX: :options fontsize=\small
 #+BEGIN_SRC bash
-# Print 1st and 3rd columns (default delimiter: space)
-$ awk '{print $1, $3}' data.txt
-
-# Filter by value: print line if 2nd col > 100
+# Filter by value: print line if 2nd column > 100
 $ awk '$2 > 100' data.txt
 
-# Use a custom delimiter (e.g., colon)
-$ awk -F':' '{print $1}' /etc/passwd
+# Pattern with action: print 1st col if 2nd col > 100
+$ awk '$2 > 100 {print $1}' data.txt
 #+END_SRC
 
 ** awk: Context and Math
