@@ -16,7 +16,7 @@
 #+LATEX_HEADER: \usepackage{pgfplots}
 #+LATEX_HEADER: \usepgfplotslibrary{polar}
 #+LATEX_HEADER: \pgfplotsset{compat=1.18}
-#+LATEX_HEADER: \usepackage[width=3840]{beamer-reveal}
+#+LATEX_HEADER: \usepackage[height=1890]{beamer-reveal}
 #+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col)
 
 
@@ -31,15 +31,6 @@
    - One thing you did over break, *OR*
    - What you hope to learn from this class
 
-*** 
-:PROPERTIES:
-:BEAMER_ENV: note
-:END:
-
-1. This is a note about something
-2. THis is also a note about something
-3. THis is all I have to say about that thing
-
 
 ** About The Class
 *** Course Information
@@ -48,6 +39,7 @@
 :END:
 *CMSC398W: Practical Tools For Efficient Development*
 - Overview of tools used in development: command line, Git, debuggers, build systems, etc.
+
 
 ** About Me - Mohammad
 
@@ -80,7 +72,8 @@
 - Rock climbing
 - Basketball
 - Robots
- 
+
+
 ** What To Expect
 
 *** Course Structure
@@ -111,6 +104,7 @@
 
 - Projects focusing on application
 - Best way to learn: *use them*
+
 
 ** Course Logistics
 
@@ -202,6 +196,7 @@ A text-based interface to the operating system.
 | *Terminal* | The application that runs the shell | iTerm2, Windows Terminal |
 | *Shell* | Interprets and runs commands | bash, zsh, fish |
 
+
 ** Why Do We Need It?
 
 *** Power & Efficiency
@@ -223,6 +218,7 @@ A text-based interface to the operating system.
 We focus on *Bash* because it's common and the skills are largely transferable.
 On macOS the default interactive shell is often =zsh=, but the core concepts and scripting translate.
 
+
 ** The Prompt
 
 *** Anatomy of the Prompt
@@ -231,6 +227,7 @@ On macOS the default interactive shell is often =zsh=, but the core concepts and
 :END:
 
 =username@host:directory$=
+
 
 *** Components
 :PROPERTIES:
@@ -273,6 +270,7 @@ echo "Hello World"      # Handle spaces
 ls -l ~                # Command with flags
 #+END_SRC
 
+
 ** File Paths
 
 *** Types
@@ -296,6 +294,7 @@ ls -l ~                # Command with flags
 | =..=   | Parent directory  |
 | =~=    | Home directory    |
 
+
 ** Essential Navigation Commands
 
 *** Why?
@@ -318,6 +317,7 @@ How do you know where you are in a system with millions of files?
 | =ls -l=   | Long format listing                 |
 | =ls -a=   | Show hidden files                   |
 | =ls -lh=  | Human-readable sizes                |
+
 
 ** Navigation Examples
 :PROPERTIES:
@@ -368,6 +368,7 @@ $ pwd
 /home/user
 #+END_SRC
 
+
 ** Think-Pair-Share: Navigation Puzzle
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -391,7 +392,8 @@ cd .././photos/../././docs/../../
 
 Where are you now? Work with a partner to trace the path step-by-step.
 
-*** Answer
+
+** Answer
 :PROPERTIES:
 :BEAMER_ENV: alertblock
 :BEAMER_ACT: <2->
@@ -433,6 +435,7 @@ Where are you now? Work with a partner to trace the path step-by-step.
 - *-f*: Force (no prompt)
 - *-v*: Verbose (show progress)
 
+
 ** File Manipulation Examples
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -457,6 +460,7 @@ mv old_name.txt new_name.txt
 rm -rf temporary_work
 #+END_SRC
 
+
 ** Time to Explore: File Operations
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -474,6 +478,7 @@ Perform the following tasks using only the shell:
 3. Copy =notes.txt= to a new file called =README.md=.
 4. Move all =.py= files into a new subdirectory called =src=.
 5. Try to remove the =STIC= directory using =rmdir=. Why does it fail?
+
 
 ** Solutions: File Operations
 :PROPERTIES:
@@ -527,6 +532,7 @@ What if the file is on a remote server? What if it's 10GB?
 | =tail -n N <file>=| Show last N lines               |
 | =tail -f <file>= | Follow file updates (logs)        |
 
+
 ** Viewing Examples
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -554,6 +560,7 @@ tail -n 15 file.txt
 tail -f /var/log/system.log
 #+END_SRC
 
+
 ** Think-Pair-Share: Which tool when?
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -569,6 +576,7 @@ tail -f /var/log/system.log
 3. You want to see the first line of every =.txt= file in a directory.
 4. You want to watch a log file update in real-time as you run a server.
 
+
 *** Answers
 :PROPERTIES:
 :BEAMER_ENV: exampleblock
@@ -580,6 +588,7 @@ tail -f /var/log/system.log
 2. =less= (it doesn't load the whole file at once!)
 3. =head -n 1 *.txt=
 4. =tail -f=
+
 
 ** PATH: Finding Programs
 
@@ -598,6 +607,7 @@ The =PATH= environment variable is a list of directories the shell searches thro
 - Colon-separated list: =/usr/local/bin:/usr/bin:/bin=
 - *First match wins:* The shell searches from left to right.
 - If it's not in =PATH=, use an explicit path (e.g., =/usr/local/bin/my_prog= or =./my_prog=).
+
 
 ** PATH Variable - Example
 :PROPERTIES:
@@ -623,6 +633,7 @@ $ /bin/date
 # sample output: Fri Jan 30 14:00:00 EST 2026
 #+END_SRC
 
+
 ** Modifying PATH
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -646,6 +657,7 @@ This adds =my_tools= to the beginning of your PATH, giving it priority.
 :END:
 
 Why might it be dangerous to add =.= (current directory) to the *start* of your PATH?
+
 
 ** Environment Variables
 :PROPERTIES:
@@ -702,6 +714,7 @@ export MY_VAR="value"
 env | head
 #+END_SRC
 
+
 ** Time to Explore: Environment
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -716,6 +729,7 @@ env | head
 2. Create a variable: =MY_NAME="Your Name"=. Try =echo $MY_NAME=.
 3. Open a *new* terminal window. Is =$MY_NAME= still there?
 4. Try =export PS1="Ready> "= (or something fun). What happened to your prompt?
+
 
 ** Solutions: Environment
 :PROPERTIES:
@@ -755,6 +769,7 @@ Imagine searching through 100,000 lines of logs or finding a specific file in a 
 | =grep= | Search text | =-r= (recursive), =-i= (case), =-n= (line#) |
 | =which= | Find exe | - |
 
+
 ** find: Locate Files
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -778,6 +793,7 @@ $ find . -type d -name "test*"
 # Find files larger than 100MB
 $ find /var/log -size +100M
 #+END_SRC
+
 
 ** grep: Search File Contents
 :PROPERTIES:
@@ -806,6 +822,7 @@ src/main.py: # TODO: optimize this
 $ grep -i "ERROR" app.log
 #+END_SRC
 
+
 ** Think-Pair-Share: Play With Grep
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -832,6 +849,7 @@ $ grep -rn "TODO.*authentication" .
 
 - *-r*: Search all files in all subdirectories.
 - *-n*: Show line number with match
+
 
 ** Wildcards and Globbing
 
@@ -924,6 +942,7 @@ Which files match these patterns?
 3. =img1.png=, =img2.png=
 4. =img1.png=, =backup_img1.png=
 
+
 ** Brace Expansion
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -934,7 +953,7 @@ Which files match these patterns?
 :BEAMER_ENV: definition
 :END:
 
-Brace expansion generates multiple strings from a pattern. Excellent for bulk creation.
+Brace expansion generates multiple strings from a pattern.
 
 *** Examples
 :PROPERTIES:
@@ -1096,8 +1115,6 @@ mkdir "$(date +%Y-%m)"
 mv *.log "$(date +%Y-%m)"
 #+END_SRC
 
-# Note: Process Substitution section moved to advanced topics
-# (Not needed for basic shell understanding)
 
 * Pipes and Redirection
 
@@ -1257,6 +1274,7 @@ echo "Goodbye" > greeting.txt
 1. *Goodbye*
 2. The file becomes *empty*! (The shell truncates the file for writing before =cat= can read it).
 3. =command &> file=
+
 
 ** Pipes
 
@@ -1527,7 +1545,6 @@ Cleaning, transforming, and analyzing data using command-line tools.
 *** Examples with Output
 :PROPERTIES:
 :BEAMER_ENV: block
-:BEAMER_ACT: <2->
 :END:
 
 #+ATTR_LATEX: :options fontsize=\small
@@ -1615,11 +1632,18 @@ Regex patterns allow for powerful, flexible text matching. They're used in =grep
 :BEAMER_OPT: fragile
 :END:
 
-*** Sample Text
+***                                                              :B_columns:
 :PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Sample Text                                                    :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.35
 :BEAMER_ENV: block
 :END:
 
+#+ATTR_LATEX: :options fontsize=\small
 #+BEGIN_SRC text
 apple pie
 red apple
@@ -1631,19 +1655,20 @@ error123
 ERROR456
 #+END_SRC
 
-*** Patterns and Their Matches
+**** Patterns and Their Matches                                     :BMCOL:
 :PROPERTIES:
+:BEAMER_COL: 0.6
 :BEAMER_ENV: exampleblock
 :BEAMER_ACT: <2->
 :END:
 
 #+ATTR_BEAMER: :overlay +-
-- =^apple= matches: *"apple pie"* only (starts with apple)
-- =apple$= matches: *"red apple"* only (ends with apple)
-- =^dog$= matches: *"dog"* only (entire line is exactly "dog")
-- =dog= matches: *"dog", "hot dog", "dogwood"* (contains dog anywhere)
-- =[0-9]= matches: *"error123", "ERROR456"* (contains any digit)
-- =^[a-z]= matches: *"apple pie", "red apple", "banana", "dog", "hot dog", "dogwood", "error123"* (starts with lowercase)
+- =^apple=: *"apple pie"*
+- =apple$=: *"red apple"*
+- =^dog$=: *"dog"* exactly
+- =dog=: *"dog", "hot dog", "dogwood"*
+- =[0-9]=: *"error123", "ERROR456"*
+- =^[a-z]=: *all lowercase starts*
 
 ** Regex Flavors in Shell Tools
 :PROPERTIES:
@@ -1657,18 +1682,17 @@ ERROR456
 
 Different tools use different regex "flavors" with slightly different syntax.
 
-*** Common Flavors
+*** Basic vs Extended Regular Expressions
 :PROPERTIES:
 :BEAMER_ENV: block
 :BEAMER_ACT: <2->
 :END:
-
-| Tool | Flavor | Example |
-|------+--------+---------|
-| =grep= (default) | Basic (BRE) | =grep 'pattern'= |
-| =grep -E= | Extended (ERE) | =grep -E 'pattern+'= |
-| =sed= (default) | Basic (BRE) | =sed 's/old/new/'= |
-| =awk= | Extended (ERE) | =awk '/pattern+/'= |
+| Pattern      | Basic (BRE)  | Extended (ERE) |
+|--------------+--------------+----------------|
+| One or more  | =\+=         | =+=            |
+| Zero or more | =*=          | =*=            |
+| Grouping     | =\( \)=      | =( )=          |
+| Example      | =grep 'a\+'= | =grep -E 'a+'= |
 
 *** Key Difference
 :PROPERTIES:
@@ -1719,12 +1743,12 @@ Common commands:
 - =d= - delete matching lines
 - =p= - print (usually with =-n= flag)
 
-** sed: Search and Replace Examples
+** sed: Basic Examples
 :PROPERTIES:
 :BEAMER_OPT: fragile
 :END:
 
-*** Basic Substitution
+*** Simple Substitution
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
@@ -1743,6 +1767,85 @@ bar bar
 $ printf "line1\n#comment\nline2" | sed '/^#/d'
 line1
 line2
+#+END_SRC
+
+** sed: Working with Files
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Sample Data File
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_LATEX: :options fontsize=\scriptsize
+#+BEGIN_SRC bash
+$ cat sample_data.txt
+A line ending with foo
+Another line with foo but not at the end
+A bar line (with parentheses)
+A foo line ending in bar
+An unbalanced line ending with )
+foo and bar both appear on this line
+#+END_SRC
+
+*** Basic Substitution
+:PROPERTIES:
+:BEAMER_ENV: block
+:BEAMER_ACT: <2->
+:END:
+
+#+ATTR_LATEX: :options fontsize=\scriptsize
+#+BEGIN_SRC bash
+# Transform foo to FUBAR
+$ sed 's/foo/FUBAR/g' sample_data.txt
+A line ending with FUBAR
+Another line with FUBAR but not at the end
+A bar line (with parentheses)
+A FUBAR line ending in bar
+An unbalanced line ending with )
+FUBAR and bar both appear on this line
+#+END_SRC
+
+** sed: Extended Regex Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Alternation with -E Flag
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_LATEX: :options fontsize=\scriptsize
+#+BEGIN_SRC bash
+# Transform either foo or bar to FUBAR (note use of -E for extended regex)
+$ sed -E 's/(foo|bar)/FUBAR/g' sample_data.txt
+A line ending with FUBAR
+Another line with FUBAR but not at the end
+A FUBAR line (with parentheses)
+A FUBAR line ending in FUBAR
+An unbalanced line ending with )
+FUBAR and FUBAR both appear on this line
+#+END_SRC
+
+*** Grouping and Back-references
+:PROPERTIES:
+:BEAMER_ENV: block
+:BEAMER_ACT: <2->
+:END:
+
+#+ATTR_LATEX: :options fontsize=\scriptsize
+#+BEGIN_SRC bash
+# Put double quotes around instances of foo or bar using grouping
+$ sed -E 's/(foo|bar)/"\1"/g' sample_data.txt
+A line ending with "foo"
+Another line with "foo" but not at the end
+A "bar" line (with parentheses)
+A "foo" line ending in "bar"
+An unbalanced line ending with )
+"foo" and "bar" both appear on this line
 #+END_SRC
 
 ** How sed Works (Execution Model)
@@ -1819,30 +1922,6 @@ $ sed '/error/s/false/true/' log.txt
 :BEAMER_ACT: <2->
 :END:
 =sed -e '/^#/d' -e '/^$/d' config.txt=
-
-** More sed Examples
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** Advanced Usage
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-
-#+BEGIN_SRC bash
-# Change delimiter (useful for paths)
-sed 's|/usr/local|/opt|g' paths.txt
-
-# Backreferences (Swap first two words)
-echo "Hello World" | sed 's/\(\w\+\) \(\w\+\)/\2 \1/'
-
-# Multiple commands
-sed -e 's/foo/bar/g' -e 's/baz/qux/g' file.txt
-
-# In-place editing (GNU/BSD differ; macOS needs -i '')
-sed -i.bak 's/debug/info/g' config.yml
-#+END_SRC
 
 * awk (Pattern Processing)
 
@@ -1989,6 +2068,7 @@ You have a CSV (=Name,Age,Score=) called =class.csv=.
 1. =awk -F',' '$2 > 20 {print $1}' class.csv=
 2. =awk '{total += NF} END {print total}' file.txt=
 
+
 ** More awk Examples
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -2123,6 +2203,7 @@ current_user=$(whoami)
 2. *Answer:* =grep "$1" "$2"=
 - Use =$@= for looping over arguments.
 
+
 ** Logic and Conditionals
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -2227,6 +2308,7 @@ done
 - Use =while read= for processing large files line-by-line.
 - =(( ... ))= is used for arithmetic in Bash.
 
+
 ** Functions and Scope
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -2322,6 +2404,7 @@ greet "Alice"
 1. What happens if you run =rm -rf $DIR/file= and =$DIR= is undefined?
 2. How does =set -u= prevent this disaster?
 3. *Answer:* Without =-u=, it runs =rm -rf /file=. With =-u=, the script exits immediately.
+
 
 ** Example: Auto-Backup
 :PROPERTIES:
