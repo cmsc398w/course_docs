@@ -1,0 +1,855 @@
+#+Title: Git
+#+SUBTITLE: CMSC398W: Practical Tools For Efficient Development
+#+AUTHOR: Mohammad Durrani
+#+DATE: \today
+#+OPTIONS: H:2 toc:nil num:nil
+#+STARTUP: beamer
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+BEAMER_THEME: Madrid
+#+BEAMER_COLOR_THEME: dolphin
+#+BEAMER_FONT_THEME: structurebold
+#+LATEX_HEADER: \setbeamertemplate{navigation symbols}{}
+#+LATEX_HEADER: \setbeamertemplate{footline}[frame number]
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usetikzlibrary{shapes,arrows,positioning,shadows,calc}
+#+LATEX_HEADER: \usepackage{pgfplots}
+#+LATEX_HEADER: \usepgfplotslibrary{polar}
+#+LATEX_HEADER: \pgfplotsset{compat=1.18}
+#+LATEX_HEADER: \usepackage[height=1890]{beamer-reveal}
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col)
+
+* Git
+
+* Learning Objectives
+
+** Goals for Today
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+By the end of this lecture, you will be able to:
+
+- Model Git as a *graph of snapshots*, not a backup tool.
+- Use the three-stage workflow: Working Directory $\rightarrow$ Staging $\rightarrow$ Repository.
+- Create branches, merge changes, and resolve conflicts.
+- Push and pull with remotes, and understand tracking branches.
+- Recover from mistakes using =reflog= and =revert=.
+
+* The Mental Model
+
+** Why Git?
+
+*** The Problem
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+You are working on a project. Things go wrong.
+
+- "It worked yesterday — what changed?"
+- "I deleted that function and now I need it back."
+- "My teammate's changes broke my code."
+
+*** Git Solves This
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+Git is a *version control system*: a permanent, queryable record of every snapshot of your project, plus the tools to collaborate on it.
+
+** Git is a Graph of Snapshots
+
+*** The Commit
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Git thinks in *full snapshots* of the project, not diffs.
+
+| Field | Description |
+|-------|-------------|
+| *Hash* | Unique ID (e.g. =a1b2c3d=) |
+| *Parent(s)* | Link(s) back to previous snapshot |
+| *Tree* | Pointer to the full file snapshot |
+| *Message* | Human-readable description |
+
+*** HEAD: You Are Here
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+=HEAD= is a pointer to your current position in the graph. It usually points to a branch, which points to a commit.
+
+** Visualizing the Graph
+
+*** The Commit Graph
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+begin_src mermaid :file graph_intro.pdf :background-color transparent :width 700 :theme dark
+gitGraph
+   commit id: "init project"
+   commit id: "add README"
+   commit id: "fix typo" type: HIGHLIGHT
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=0.92\textwidth]{graph_intro}\end{center}
+#+END_EXPORT
+
+*** Key Insight
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+Every commit knows its parent. =HEAD= (highlighted) points to the tip of the current branch. The graph grows *forward* — you always walk *backward* through history.
+
+* Setting Up a Project
+
+** Starting a Repository
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** New Project                                              :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+=git init=
+
+- Creates a brand-new repo in the current folder
+- Creates a hidden =.git/= directory
+- Use for greenfield projects
+
+**** Existing Project                                         :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+=git clone <url>=
+
+- Downloads a full copy of the repo *and all its history*
+- Sets up =origin= automatically
+- Use when joining an existing project
+
+* The Three Stages
+
+** The Three Areas
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+BEGIN_EXPORT latex
+\begin{center}
+\begin{tikzpicture}[node distance=5cm, auto,
+    box/.style={rectangle, draw, fill=blue!20, text width=5.5em, text centered, rounded corners, minimum height=3em},
+    line/.style={draw, -latex', thick}]
+    \node [box] (wd) {Working\\Directory};
+    \node [box, right of=wd] (idx) {Staging\\Area};
+    \node [box, right of=idx] (repo) {Repository};
+
+    \path [line] (wd) -- node[above]{\texttt{git add}} (idx);
+    \path [line] (idx) -- node[above]{\texttt{git commit}} (repo);
+\end{tikzpicture}
+\end{center}
+#+END_EXPORT
+
+- *Working Directory*: Your scratchpad — files on disk as you edit them.
+- *Staging Area (Index)*: The draft commit. You choose exactly what goes in.
+- *Repository*: Permanent history — sealed commits in the graph.
+
+** The Core Workflow
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+BEGIN_SRC bash
+$ git status              # Where am I? What's changed?
+$ git diff                # Working vs. Staging
+$ git diff --staged       # Staging vs. last commit
+$ git add file.txt        # Stage a file
+$ git add -p              # Stage interactively (hunk by hunk)
+$ git commit -m "message" # Seal staging into a commit
+$ git log --oneline --graph  # See the graph
+#+END_SRC
+
+** Think-Pair-Share: What Gets Committed?
+
+*** The Scenario
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+You edit =app.py= and =README.md=. You run =git add app.py= then =git commit -m "fix login bug"=.
+
+*** The Question
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+What is in the commit? What is *not* in the commit?
+
+*** Answer
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+Only =app.py= is committed. The changes to =README.md= are still in the Working Directory — unstaged. The staging area is your *explicit choice* of what to snapshot.
+
+** Writing Good Commit Messages
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Convention                                               :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Short imperative subject line (≤50 chars)
+- Blank line, then optional longer body
+- Explain *why*, not just *what*
+
+#+BEGIN_SRC text
+Add login rate limiting
+
+Prevents brute-force attacks
+by capping attempts per IP.
+Fixes #142.
+#+END_SRC
+
+**** Anti-Patterns                                            :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+| Bad Message | Problem |
+|-------------|---------|
+| ="stuff"= | Meaningless |
+| ="Updated file.txt"= | What changed? |
+| ="Fixed bug"= | Which bug? |
+| ="WIP"= | Useless in log |
+
+** The =.gitignore= File
+
+*** Ignored Files
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Tells Git which files to *never* track.
+
+| Pattern | What It Ignores |
+|---------|-----------------|
+| =*.log= | All log files |
+| =node_modules/= | Entire directory |
+| =.env= | Secrets file |
+| =.DS_Store= | macOS metadata junk |
+| =__pycache__/= | Python bytecode |
+
+*** Rule of Thumb
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+Create =.gitignore= *early*. Removing already-tracked files is more annoying than ignoring them from the start.
+
+* Branching
+
+** Branches Are Cheap Pointers
+
+*** What Is a Branch?
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+A branch is a *lightweight pointer* to a commit. Creating one does not copy any files.
+
+*** Why Branch?
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+- Isolate risky experiments from =main=
+- Work on multiple features simultaneously
+- Code review: a branch is a unit of reviewable work
+
+** Branch Commands
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Command | Action |
+|---------|--------|
+| =git branch <name>= | Create a new pointer at HEAD |
+| =git switch <name>= | Move HEAD to that branch |
+| =git switch -c <name>= | Create *and* switch in one step |
+| =git branch -d <name>= | Delete a branch pointer |
+| =git branch -v= | List branches with latest commit |
+
+** Visualizing Branches
+
+*** The Graph with Two Branches
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+begin_src mermaid :file branches.pdf :background-color transparent :width 650 :theme dark
+gitGraph
+   commit id: "C1"
+   commit id: "C2"
+   branch feature
+   checkout feature
+   commit id: "C3"
+   commit id: "C4"
+   checkout main
+   commit id: "C5"
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=0.82\textwidth]{branches}\end{center}
+#+END_EXPORT
+
+*** Detached HEAD
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+Checking out a raw commit hash puts you in *detached HEAD* state. Any new commits have no branch pointing to them — run =git switch -c new-branch= immediately to save your work.
+
+* Merging & Conflicts
+
+** Fast-Forward Merge
+
+*** How It Works
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- =main= has not moved since the branch was created
+- Git slides the pointer forward — *no new commit*
+- Linear history preserved
+
+*** Command \& Result
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+#+BEGIN_SRC bash
+git merge feature    # Fast-forward: pointer slides forward, no new commit
+#+END_SRC
+
+#+begin_src mermaid :file ff_merge.pdf :background-color transparent :width 550 :theme dark
+gitGraph
+   commit id: "C1"
+   commit id: "C2"
+   branch feature
+   checkout feature
+   commit id: "C3"
+   checkout main
+   merge feature
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=0.78\textwidth]{ff_merge}\end{center}
+#+END_EXPORT
+
+** Merge Commit
+
+*** How It Works
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+- Both branches have new commits (diverged)
+- Git creates a new commit with *two parents*
+- Full branch history is preserved
+
+*** Command \& Result
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+#+BEGIN_SRC bash
+git merge feature          # Merge commit when branches have diverged
+git merge --no-ff feature  # Force merge commit even if fast-forward possible
+#+END_SRC
+
+#+begin_src mermaid :file merge_commit.pdf :background-color transparent :width 600 :theme dark
+gitGraph
+   commit id: "C1"
+   commit id: "C2"
+   branch feature
+   checkout feature
+   commit id: "C3"
+   checkout main
+   commit id: "C4"
+   merge feature id: "M"
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=0.78\textwidth]{merge_commit}\end{center}
+#+END_EXPORT
+
+** Conflict Resolution Workflow
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+A conflict occurs when Git cannot mathematically decide which line is correct.
+
+1. *Git pauses* and inserts conflict markers into the file.
+2. *Human edits* the file — choose lines to keep, or combine both.
+3. =git add <file>= — tell Git "I resolved it."
+4. =git commit= — finalize the merge.
+
+** Reading Conflict Markers
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+BEGIN_SRC text
+<<<<<<< HEAD (Current Change)
+return total * 1.08   # your version
+=======
+return total * 1.10   # incoming version
+>>>>>>> feature/tax-update (Incoming Change)
+#+END_SRC
+
+*** Key Point
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+These markers are what Git *actually writes*. Editors like VS Code label them "Current" vs "Incoming" as a convenience layer on top.
+
+** Time to Explore: Branching & Merging
+
+*** Challenge
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+1. =git init= a new project and make two commits on =main=.
+2. =git switch -c feature= and make one commit.
+3. Switch back to =main=, edit the *same line* you changed on =feature=, and commit.
+4. =git merge feature= — witness and resolve the conflict.
+5. Run =git log --oneline --graph --all= to see the merge commit.
+
+* Remotes
+
+** Remotes: Just Another Graph Copy
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+A *remote* is another copy of the repository on someone else's machine (or GitHub's servers). The graphs are synchronized by pushing and pulling commits.
+
+| Term | Meaning |
+|------|---------|
+| =origin= | Default nickname for the remote URL |
+| =upstream= | The original repo you forked from |
+| =origin/main= | Your local *bookmark* of where the remote's branch was last checked |
+
+** Push, Fetch, Pull
+
+*** Commands
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Command | What It Does |
+|---------|--------------|
+| =git push= | Upload local branch + commits to remote |
+| =git push -u origin <branch>= | First push; links local branch to remote |
+| =git fetch= | Download new commits; *do not* touch working files |
+| =git pull= | =fetch= + =merge= in one step |
+
+*** Common Scenario
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+*"Your branch is behind origin/main"* — the remote has commits you don't. Run =git pull= to catch up.
+
+** Two Collaboration Flows
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Shared Repo (Teams/Coursework)                           :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+1. =git clone <url>=
+2. =git switch -c feature=
+3. Work, commit
+4. =git push -u origin feature=
+5. Open Pull Request on GitHub
+
+**** Fork-Based (Open Source)                                 :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+1. Fork on GitHub (UI)
+2. =git clone <your fork>=
+3. =git switch -c fix=
+4. Work, commit, push to your fork
+5. Open Pull Request to the original repo
+
+** Visualizing Push and Pull
+
+*** Sync Flow
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+begin_src mermaid :file remotes.pdf :background-color transparent :width 600 :theme dark
+sequenceDiagram
+    participant L as Local Repo
+    participant R as origin (GitHub)
+    L->>R: git push
+    R-->>L: git fetch
+    R-->>L: git pull (fetch + merge)
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=0.82\textwidth]{remotes}\end{center}
+#+END_EXPORT
+
+*** Note on =-u=
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+Without =-u= on the first push, Git will error: *"The current branch has no upstream branch."* Use =git push -u origin <branch>= once; after that, plain =git push= works.
+
+* Rebasing
+
+** Rebase: Replaying on a New Base
+
+*** The Goal
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+*Linear history* — a clean, straight log instead of a web of merge commits.
+
+*Metaphor*: "Pick up my commits and replay them on top of the new =main=."
+
+*** Mechanics
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+#+BEGIN_SRC bash
+# While on your feature branch:
+git rebase main
+#+END_SRC
+
+Git re-applies your commits one by one on top of =main='s latest commit.
+
+** Merge vs. Rebase
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Merge: Creates a Diamond                                 :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.50
+:END:
+
+#+begin_src mermaid :file merge_result.pdf :background-color transparent :width 480 :theme dark
+gitGraph
+   commit id: "C1"
+   commit id: "C2"
+   branch feature
+   checkout feature
+   commit id: "C3"
+   checkout main
+   commit id: "C4"
+   merge feature id: "M"
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=\columnwidth]{merge_result}\end{center}
+#+END_EXPORT
+
+**** Rebase: Straight Line                                    :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.50
+:END:
+
+#+begin_src mermaid :file rebase_result.pdf :background-color transparent :width 400 :theme dark
+gitGraph
+   commit id: "C1"
+   commit id: "C2"
+   commit id: "C4"
+   commit id: "C3' (replayed)"
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=\columnwidth]{rebase_result}\end{center}
+#+END_EXPORT
+
+** The Golden Rule of Rebasing
+
+*** Golden Rule
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+*Never rebase public history* — commits that have already been pushed and shared with others.
+
+Rebasing rewrites commit hashes. If teammates have built on top of those commits, you create a divergence nightmare.
+
+*** Safe Rebase Pattern
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+Rebase is safe when used *locally* on a feature branch you haven't pushed yet, or on a branch only you use.
+
+* Cherry-Pick
+
+** Cherry-Pick: The Surgical Tool
+
+*** The Command
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Copies *one specific commit* from another branch and applies it to your current branch.
+
+#+BEGIN_SRC bash
+git cherry-pick <hash>
+#+END_SRC
+
+Creates a *new* commit with the same changes but a *different hash*.
+
+*** When to Use It
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
+:END:
+
+| Scenario | Why Cherry-Pick? |
+|----------|-----------------|
+| Hotfix landed on =main=, need it on =release= | Avoid merging all of =main= |
+| Pull one useful commit from an abandoned branch | No need to revive the whole branch |
+| Backport a fix to an older version | Target exactly one change |
+
+** Visualizing Cherry-Pick
+
+*** The Graph
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+#+begin_src mermaid :file cherry_pick.pdf :background-color transparent :width 600 :theme dark
+gitGraph
+   commit id: "C1"
+   commit id: "C2"
+   branch feature
+   checkout feature
+   commit id: "C3 (bugfix)"
+   commit id: "C4"
+   checkout main
+   commit id: "C3' (cherry-pick)"
+#+end_src
+
+#+BEGIN_EXPORT latex
+\begin{center}\includegraphics[width=0.80\textwidth]{cherry_pick}\end{center}
+#+END_EXPORT
+
+*** Key Detail
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+=C3= and =C3'=: same changes, *different hashes* — independent commits.
+
+* Safety Nets
+
+** The Reflog: Git's Undo Button
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+Git records *every time HEAD moves* — even destructive operations like =reset --hard=.
+
+#+BEGIN_SRC bash
+# Oops — destroyed work with a hard reset
+$ git reset --hard HEAD~2
+
+# Find the lost commit in reflog
+$ git reflog
+a1b2c3d HEAD@{2}: commit: Add payment feature  <- this one!
+
+# Restore it
+$ git reset --hard a1b2c3d
+#+END_SRC
+
+** Revert: The Safe Undo
+
+*** =git revert <hash>=
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Creates a *new commit* that is the exact inverse of the target. History is never rewritten.
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** git reset                                                :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Moves the branch pointer backward
+- *Rewrites history*
+- *Unsafe* on public/shared branches
+- Use locally only
+
+**** git revert                                               :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Creates a new "undo" commit
+- *Preserves history*
+- *Safe* for public branches
+- Use when others have your commits
+
+** Think-Pair-Share: Reset or Revert?
+
+*** The Scenario
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+You pushed a commit to =main= that broke the build. Your teammate has already pulled it. You need to undo the damage.
+
+*** The Question
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+Do you use =git reset= or =git revert=? Why?
+
+*** Answer
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+*=git revert=.* Your teammate already has the commit — resetting would rewrite shared history and cause a painful divergence. Revert adds a safe "undo" commit on top without disturbing existing history.
+
+** Safety Net Reference
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Situation | Tool | Command |
+|-----------|------|---------|
+| Accidentally deleted a branch | Reflog | =git reflog= + =git switch -c <b> <hash>= |
+| Pushed a bad commit to shared branch | Revert | =git revert <hash>= |
+| Local commit is wrong, not pushed | Reset | =git reset --hard HEAD~1= |
+| Want to undo a commit, keep changes staged | Reset (soft) | =git reset --soft HEAD~1= |
+
+** Time to Explore: Safety Nets & History
+
+*** Challenge
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+1. Create two branches with diverging commits. Run =git rebase= on the feature branch. Observe the straight-line log.
+2. From =main=, =git cherry-pick <hash>= to grab one commit from the other branch.
+3. Run =git reset --hard HEAD~1= to "lose" a commit. Use =git reflog= to find and recover it.
+4. Push a commit, then =git revert= it. Observe the new "undo" commit in =git log=.
+
+* Summary
+
+** Choosing the Right Workflow
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+| Goal | Tool |
+|------|------|
+| Save progress locally | =add= + =commit= |
+| Share work with team | =push= / =pull= |
+| Isolate new feature | =switch -c <branch>= |
+| Incorporate teammate's work | =merge= or =rebase= |
+| Pull one specific fix | =cherry-pick= |
+| Undo a shared commit | =revert= |
+| Recover "lost" work | =reflog= |
+
+** Key Takeaways
+
+***                                                          :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Local Graph                                              :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Git stores *snapshots*, not diffs
+- Three stages: Working $\rightarrow$ Staging $\rightarrow$ Repo
+- Branches are cheap, use them freely
+- Commits explain *why*, not just what
+
+**** Distributed Work                                         :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:END:
+
+- Remotes are just other graph copies
+- =origin/main= is a local bookmark
+- Rebase for clean history (local only)
+- Reflog and revert are your safety nets
+
+** Final Thought
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+/"In case of fire: =git commit=, =git push=, leave building."/ — developer proverb
+
+The graph never forgets. When in doubt, commit.

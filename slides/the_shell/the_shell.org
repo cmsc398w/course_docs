@@ -1690,7 +1690,7 @@ Different tools use different regex "flavors" with slightly different syntax.
 | Pattern      | Basic (BRE)  | Extended (ERE) |
 |--------------+--------------+----------------|
 | One or more  | =\+=         | =+=            |
-| Zero or more | =*=          | =*=            |
+| Zero or more | ~\*~         | ~*~            |
 | Grouping     | =\( \)=      | =( )=          |
 | Example      | =grep 'a\+'= | =grep -E 'a+'= |
 
@@ -1705,18 +1705,6 @@ With *Basic* regex, special chars like =+=, =?=, =()=, ={}= need backslashes: =\
 With *Extended* regex (=-E= flag), use them directly: =+=, =?=
 
 * sed (Stream Editor)
-
-** A Bit of History
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** The Origins of sed
-:PROPERTIES:
-:BEAMER_ENV: alertblock
-:END:
-
-Created by Lee E. McMahon at Bell Labs in 1973-74, =sed= was designed for editing files in batch mode. It uses *Basic Regular Expressions (BRE)* by default, which is why some special characters need escaping.
 
 ** What is sed?
 :PROPERTIES:
@@ -1743,110 +1731,6 @@ Common commands:
 - =d= - delete matching lines
 - =p= - print (usually with =-n= flag)
 
-** sed: Basic Examples
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** Simple Substitution
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-
-#+ATTR_LATEX: :options fontsize=\small
-#+BEGIN_SRC bash
-# Replace first 'foo' with 'bar'
-$ echo "foo foo" | sed 's/foo/bar/'
-bar foo
-
-# Replace ALL 'foo' with 'bar' (global flag 'g')
-$ echo "foo foo" | sed 's/foo/bar/g'
-bar bar
-
-# Delete lines matching a pattern
-$ printf "line1\n#comment\nline2" | sed '/^#/d'
-line1
-line2
-#+END_SRC
-
-** sed: Working with Files
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** Sample Data File
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-
-#+ATTR_LATEX: :options fontsize=\scriptsize
-#+BEGIN_SRC bash
-$ cat sample_data.txt
-A line ending with foo
-Another line with foo but not at the end
-A bar line (with parentheses)
-A foo line ending in bar
-An unbalanced line ending with )
-foo and bar both appear on this line
-#+END_SRC
-
-*** Basic Substitution
-:PROPERTIES:
-:BEAMER_ENV: block
-:BEAMER_ACT: <2->
-:END:
-
-#+ATTR_LATEX: :options fontsize=\scriptsize
-#+BEGIN_SRC bash
-# Transform foo to FUBAR
-$ sed 's/foo/FUBAR/g' sample_data.txt
-A line ending with FUBAR
-Another line with FUBAR but not at the end
-A bar line (with parentheses)
-A FUBAR line ending in bar
-An unbalanced line ending with )
-FUBAR and bar both appear on this line
-#+END_SRC
-
-** sed: Extended Regex Examples
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** Alternation with -E Flag
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-
-#+ATTR_LATEX: :options fontsize=\scriptsize
-#+BEGIN_SRC bash
-# Transform either foo or bar to FUBAR (note use of -E for extended regex)
-$ sed -E 's/(foo|bar)/FUBAR/g' sample_data.txt
-A line ending with FUBAR
-Another line with FUBAR but not at the end
-A FUBAR line (with parentheses)
-A FUBAR line ending in FUBAR
-An unbalanced line ending with )
-FUBAR and FUBAR both appear on this line
-#+END_SRC
-
-*** Grouping and Back-references
-:PROPERTIES:
-:BEAMER_ENV: block
-:BEAMER_ACT: <2->
-:END:
-
-#+ATTR_LATEX: :options fontsize=\scriptsize
-#+BEGIN_SRC bash
-# Put double quotes around instances of foo or bar using grouping
-$ sed -E 's/(foo|bar)/"\1"/g' sample_data.txt
-A line ending with "foo"
-Another line with "foo" but not at the end
-A "bar" line (with parentheses)
-A "foo" line ending in "bar"
-An unbalanced line ending with )
-"foo" and "bar" both appear on this line
-#+END_SRC
 
 ** How sed Works (Execution Model)
 :PROPERTIES:
@@ -1887,6 +1771,72 @@ An unbalanced line ending with )
 
 =sed= processes one line at a time. Original file is *never* modified unless you use =-i= (in-place editing).
 
+** sed: Basic Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Simple Substitution
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_LATEX: :options fontsize=\small
+#+BEGIN_SRC bash
+# Replace first 'foo' with 'bar'
+$ echo "foo foo" | sed "s/foo/bar/"
+bar foo
+
+# Replace ALL 'foo' with 'bar' (global flag 'g')
+$ echo "foo foo" | sed "s/foo/bar/g"
+bar bar
+
+# Delete lines matching a pattern
+$ printf "line1\n#comment\nline2" | sed '/^#/d'
+line1
+line2
+#+END_SRC
+
+** sed: Working with Files
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Sample Data (=test/ex-sed/sample_data.txt=)
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+Try these against =sample_data.txt= locally:
+
+#+ATTR_LATEX: :options fontsize=\small
+#+BEGIN_SRC bash
+# Transform foo to FUBAR (global)
+sed 's/foo/FUBAR/g' sample_data.txt
+
+# Delete lines matching a pattern
+sed '/^#/d' sample_data.txt
+#+END_SRC
+
+** sed: Extended Regex Examples
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Alternation and Back-references (=test/ex-sed/sample_data.txt=)
+:PROPERTIES:
+:BEAMER_ENV: block
+:END:
+
+#+ATTR_LATEX: :options fontsize=\small
+#+BEGIN_SRC bash
+# Transform either foo or bar to FUBAR (-E for extended regex)
+sed -E 's/(foo|bar)/FUBAR/g' sample_data.txt
+
+# Put double quotes around foo or bar using back-references
+sed -E 's/(foo|bar)/"\1"/g' sample_data.txt
+#+END_SRC
+
 ** sed: Addressing and Ranges
 :PROPERTIES:
 :BEAMER_OPT: fragile
@@ -1924,18 +1874,6 @@ $ sed '/error/s/false/true/' log.txt
 =sed -e '/^#/d' -e '/^$/d' config.txt=
 
 * awk (Pattern Processing)
-
-** A Bit of History
-:PROPERTIES:
-:BEAMER_OPT: fragile
-:END:
-
-*** The Origins of awk
-:PROPERTIES:
-:BEAMER_ENV: alertblock
-:END:
-
-Created in 1977 by *A*ho, *W*einberger, and *K*ernighan at Bell Labs (hence "awk"). It's actually a full programming language! Unlike =sed=, =awk= uses *Extended Regular Expressions (ERE)* by default.
 
 ** What is awk?
 :PROPERTIES:
@@ -2066,7 +2004,7 @@ You have a CSV (=Name,Age,Score=) called =class.csv=.
 
 #+ATTR_BEAMER: :overlay +-
 1. =awk -F',' '$2 > 20 {print $1}' class.csv=
-2. =awk '{total += NF} END {print total}' file.txt=
+2. ~awk '{total += NF} END {print total}' file.txt~
 
 
 ** More awk Examples
@@ -2089,12 +2027,11 @@ awk 'length($0) > 80' file.txt  # Print lines > 80 chars
 # Logical conditions (AND/OR)
 awk '$1 == "POST" && $9 == 200' access.log
 
-# Range pattern (start, end)
-awk '/START/,/END/' data.txt
+#  Filter by timestamp range and format
+awk -F',' '$1 >= "2025-01-08 15:00" && $1 <= "2025-01-08 16:00" {
+    printf "%s,%.2f,%.2f\n", $1, $2, $3
+}' stats.log
 
-# Filter by timestamp range and format output
-awk '$1 >= "2026-01-20" && $1 <= "2026-01-25" \
-  {printf "[%s %s] %s\n", $1, $2, substr($0, index($0,$3))}' system.log
 #+END_SRC
 
 * Shell Scripting
@@ -2141,8 +2078,8 @@ echo "Date: $(date)"
 :END:
 
 #+BEGIN_SRC bash
-chmod +x hello.sh
-./hello.sh
+  chmod +x hello.sh
+  ./hello.sh
 #+END_SRC
 
 
@@ -2199,9 +2136,23 @@ current_user=$(whoami)
 :BEAMER_ENV: exampleblock
 :END:
 
-1. Create a script that takes a word as =$1= and a file as =$2= and greps for it.
-2. *Answer:* =grep "$1" "$2"=
-- Use =$@= for looping over arguments.
+Create a script that takes a word as =$1= and a file as =$2= and greps for it.
+
+** Answer: Arg Grep
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+*** Solution
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:END:
+
+#+BEGIN_SRC bash
+grep "$1" "$2"
+#+END_SRC
+
+- Use =$@= for looping over all arguments.
 
 
 ** Logic and Conditionals
@@ -2250,6 +2201,59 @@ fi
 #+ATTR_BEAMER: :overlay +-
 1. Write a script that checks if a directory exists before creating it.
 2. *Answer:* =if [ ! -d "$dir" ]; then mkdir "$dir"; fi=
+
+
+** Arithmetic in Bash
+:PROPERTIES:
+:BEAMER_OPT: fragile
+:END:
+
+***                                                              :B_columns:
+:PROPERTIES:
+:BEAMER_ENV: columns
+:END:
+
+**** Syntax                                                         :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.5
+:END:
+
+#+BEGIN_SRC bash
+# $(( )) evaluates arithmetic
+x=5
+y=3
+echo $(( x + y ))   # 8
+echo $(( x * y ))   # 15
+echo $(( x ** 2 ))  # 25
+echo $(( x % y ))   # 2
+
+# Increment / decrement
+(( x++ ))
+(( x += 10 ))
+#+END_SRC
+
+**** Operators                                                      :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.45
+:END:
+
+| Operator | Meaning        |
+|----------+----------------|
+| =+=      | Addition       |
+| =-=      | Subtraction    |
+| =*=      | Multiplication |
+| =/=      | Division (int) |
+| =%=      | Modulo         |
+| =**=     | Exponentiation |
+
+*** Important Note
+:PROPERTIES:
+:BEAMER_ENV: alertblock
+:BEAMER_ACT: <2->
+:END:
+
+Bash only does *integer* arithmetic. For decimals, use =bc= or =awk=:
+=echo "scale=2; 7/2" | bc= → =3.50=
 
 
 ** Iteration (for, while)
@@ -2304,9 +2308,6 @@ done
 #+ATTR_BEAMER: :overlay +-
 1. Write a =for= loop that adds a =.old= extension to every file in the current directory.
 2. *Answer:* =for f in *; do mv "$f" "$f.old"; done=
-- =for f in *= is safer and faster than =for f in $(ls)=.
-- Use =while read= for processing large files line-by-line.
-- =(( ... ))= is used for arithmetic in Bash.
 
 
 ** Functions and Scope
@@ -2357,7 +2358,7 @@ greet "Alice"
 2. *Answer:* =square() { echo $(($1 * $1)); }=
 
 
-** Robust Scripting and Debugging
+** Scripting and Debugging
 :PROPERTIES:
 :BEAMER_OPT: fragile
 :END:
@@ -2411,7 +2412,7 @@ greet "Alice"
 :BEAMER_OPT: fragile
 :END:
 
-*** A Robust Backup Script
+*** A Robust Backup Script (=test/auto_backup.sh=)
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:

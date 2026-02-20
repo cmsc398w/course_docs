@@ -32,7 +32,7 @@ By the end of this lecture, you will be able to:
 
 - Apply the scientific method to debugging (Observe, Hypothesize, Test).
 - Differentiate between print debugging, logging, and interactive debugging.
-- Use =tcpdump= to capture and analyze network traffic.
+- Utilize specialized tools like =strace= for system-level issues.
 - Use =git bisect= to find when bugs were introduced.
 - Identify performance bottlenecks using profilers and flame graphs.
 
@@ -223,7 +223,7 @@ Logging advantages:
 - Output to files, sockets, remote servers (easier to review than terminal)
 - Severity levels: =INFO=, =DEBUG=, =WARN=, =ERROR=
 - Long-term monitoring + immediate debugging
-- Structured logging (key=value pairs) $\rightarrow$ searchable, filterable, analyzable
+- Structured logging (key–value pairs) $\rightarrow$ searchable, filterable, analyzable
 
 ** Logging Best Practices
 :PROPERTIES:
@@ -278,19 +278,16 @@ def process_file(filename):
     return total
 #+END_SRC
 
-** What's Wrong? (Find at least 4-5 Issues)
-
-*** Issues Found
+*** What's Wrong?
 :PROPERTIES:
 :BEAMER_ENV: alertblock
 :BEAMER_ACT: <2->
 :END:
 
 1. *No timestamps* - When did operations occur?
-2. *No severity levels* - Are these errors or info?
-3. *Missing context* - Which file is being processed?
-4. *No actionable info* - What was the total? How many succeeded?
-5. *Generic messages* - "Processing item..." and "Done" say nothing useful
+2. *No severity levels* - Errors vs info?
+3. *Missing context* - Which file?
+4. *No actionable info* - Total? Success count?
 
 Compare with =demo/good_logging.py= for improvements!
 
@@ -390,51 +387,40 @@ Which debugger action do you take first?
 
 * Specialized Tools
 
-** Network Packet Analysis
+** System Call Tracing
 :PROPERTIES:
 :BEAMER_ENV: block
+:END:
+
+Monitor interactions between a program and the OS kernel.
+
+- Tools: =strace= (Linux), =dtruss= (macOS)
+- Useful for debugging programs where you cannot see source code
+- Shows every system call made by a program with arguments and results
+
+#+BEGIN_SRC bash
+# On Linux
+sudo strace -e lstat ls -l > /dev/null
+# On macOS
+sudo dtruss -t lstat64_extended ls -l > /dev/null
+#+END_SRC
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :width 0.8\textwidth
+[[./images/strace_output.png]]
+#+END_CENTER
+
+** Network Packet Analysis
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:BEAMER_ACT: <2->
 :END:
 
 Diagnose network-related issues by examining traffic between systems.
 
 - Tools: =tcpdump= (command line), =Wireshark= (GUI)
-- Captures and filters packets to show what travels over the network
-- Useful for debugging API calls, latency issues, and data transmission
-
-***                                                          :B_columns:
-:PROPERTIES:
-:BEAMER_ENV: columns
-:END:
-
-**** Run the demo                                             :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.48
-:END:
-
-#+BEGIN_SRC bash
-# Terminal 1: capture HTTP traffic
-sudo tcpdump -i lo0 -A port 8080
-
-# Terminal 2: run the demo
-python demo/tcpdump_demo.py
-#+END_SRC
-
-**** What you'll see                                          :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.48
-:END:
-
-- Client sends a =GET /data= request
-- Server replies with JSON
-- =tcpdump= shows the raw bytes on the wire
-
-*** Key Callout
-:PROPERTIES:
-:BEAMER_ENV: alertblock
-:BEAMER_ACT: <2->
-:END:
-
-=-A= prints ASCII output so you can read HTTP headers and JSON bodies in the terminal. Use =-w capture.pcap= to save packets and open them in *Wireshark*.
+- Captures and filters network packets
+- Helpful for debugging network performance, security vulnerabilities, or data transmission
 
 * Profiling
 
@@ -710,7 +696,7 @@ Different tools for different problems:
 | *Print/Logs* | Flow tracing, production debugging | Requires code changes, re-running |
 | *Debugger* | Deep inspection, state modification | Manual, slower, hard for concurrency |
 | *Profilers* | Finding performance bottlenecks | Doesn't fix correctness, adds overhead |
-| *tcpdump/Wireshark* | Network traffic, API debugging | Requires network access, verbose output |
+| *strace/dtruss* | System call issues, black-box debugging | Low-level, verbose output |
 | *git bisect* | Finding when bug was introduced | Need reproducible test case |
 
 ** Key Takeaways
@@ -732,7 +718,7 @@ Different tools for different problems:
 - Logging beats print debugging
 - Interactive debuggers for deep inspection
 - =git bisect= for finding regressions
-- =tcpdump= for network-level issues
+- =strace= for system-level issues
 
 **** Profiling                                                :BMCOL:
 :PROPERTIES:
@@ -751,6 +737,6 @@ Different tools for different problems:
 :BEAMER_ACT: <2->
 :END:
 
-/"Premature optimization is the root of all evil."/ - Donald Knuth
+/"Premature optimization is the root of all evil."/ — Donald Knuth
 
 Use profilers to find *real* bottlenecks before optimizing.
