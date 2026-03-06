@@ -43,10 +43,10 @@ By the end of this lecture, you will be able to:
 :BEAMER_ENV: block
 :END:
 
-Software does exactly what you tell it, not what you intend.
+Software does what you tell it to do, not what you want intend it to do.
 
-- Debugging = bridging the gap between intended vs. actual behavior
-- Structured debugging is methodical, not trial-and-error
+- Debugging is about bridging the gap between intended vs. actual behavior
+- Structured debugging is methodical
 - Avoid just changing things randomly until it works
 
 ** The Scientific Method for Debugging
@@ -74,24 +74,25 @@ Software does exactly what you tell it, not what you intend.
 \end{center}
 #+END_EXPORT
 
-1. *Reproduce* - If you can't reproduce, you can't fix
-2. *Isolate* - Binary search through code
-3. *Hypothesize* - Form theory based on symptoms
-4. *Test* - Change ONE thing at a time
-5. *Fix & Verify* - Confirm it solves the issue
+1. *Reproduce*:  If you can't reproduce, you can't fix
+2. *Isolate*: Binary search through code
+3. *Hypothesize*: Form theory based on symptoms
+4. *Test*: Change ONE thing at a time
+5. *Fix & Verify*: Confirm it solves the issue
 
 ** Real-World Example
 :PROPERTIES:
 :BEAMER_ENV: block
 :END:
 
-In 2020, Discord saved millions in hardware costs by profiling their "Read States" service (tracking which messages you’ve read).
+**How Heap Saved Millions by Profiling Their Postgres Cluster**
 
-* Symptom: Every 2 minutes, the service experienced massive latency spikes and irregular CPU usage despite no change in user traffic.
-* Debugging / Profiling: Developers used flame graphs and heap profilers to realize the Garbage Collector was trying to scan a cache of items.
-* Discovery: Every time the cache grew, the GC had to work harder to inspect  it, creating a pause that slowed down every user request.
-* Result: They moved the service to **Rust** (which has no GC), reducing CPU usage by **10x** using the exact same hardware.
+- **Symptom:** Heap's Postgres cluster had mysteriously high CPU usage, causing events to take hours to appear in dashboards during peak traffic.
+- **Debugging:** Engineer used Linux `perf` + flame graphs to sample the Postgres process — revealing ~55% of CPU time was spent *fetching and parsing index metadata*, not evaluating regex predicates as everyone assumed.
+- **Discovery:** Events were inserted one-at-a-time across sharded tables, causing Postgres to re-parse index definitions on nearly every insert because its per-process cache was never reused.
+- **Result:** Batching inserts to the same table made metadata parsing a one-time cost per batch — delivering a **10x CPU reduction** with no new hardware, saving Heap millions in projected infrastructure costs.
 
+Learn more at https://www.heap.io/blog/basic-performance-analysis-saved-us-millions
 
 ** Rubber Duck Debugging
 :PROPERTIES:
@@ -202,15 +203,30 @@ The cheapest bug to fix is the one you never write.
 * Printf Debugging & Logging
 
 ** Print Debugging: The Foundation
+
+***                                                          :B_columns:
 :PROPERTIES:
-:BEAMER_ENV: block
+:BEAMER_ENV: columns
+:END:
+
+**** Text                                                     :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.60
 :END:
 
 Brian Kernighan (1979): /"The most effective debugging tool is still careful thought, coupled with judiciously placed print statements."/
 
-- Print statements = simplest debugging method
+- Print statements are the simplest debugging method
 - Iterate by adding prints near problem areas until root cause is clear
 - Preferred because it's quick, easy, and effective
+
+**** Image                                                    :BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.40
+:END:
+
+#+ATTR_LATEX: :width \columnwidth
+[[./images/print_debugging_meme.jpg]]
 
 ** Logging: Enhanced Print Debugging
 :PROPERTIES:
@@ -224,6 +240,11 @@ Logging advantages:
 - Severity levels: =INFO=, =DEBUG=, =WARN=, =ERROR=
 - Long-term monitoring + immediate debugging
 - Structured logging (key=value pairs) $\rightarrow$ searchable, filterable, analyzable
+
+#+BEGIN_CENTER
+#+ATTR_LATEX: :height 3cm
+[[./images/logging_demo.png]]
+#+END_CENTER
 
 ** Logging Best Practices
 :PROPERTIES:
@@ -304,11 +325,8 @@ Compare with =demo/good_logging.py= for improvements!
 You're building a web application that processes user uploads. Discuss with your group:
 
 1. *What should you log?*
-   - Every file upload? Only failures? File sizes? Processing times?
 2. *What log level should each use?*
-   - INFO, DEBUG, WARNING, or ERROR?
 3. *What sensitive data must you NEVER log?*
-   - Passwords? User emails? IP addresses? Credit cards?
 
 ** External Logging
 :PROPERTIES:
@@ -355,11 +373,9 @@ When print debugging isn't enough, use debuggers to interact with execution. (/S
 *Conditional Breakpoints*
 
 Only halt when condition is true:
-- =i == 1000=
-- =user.id == 42=
-- =len(items) > 100=
-
-Perfect for finding bugs in loops or rare conditions!
+- ~i == 1000~
+- ~user.id == 42~
+- ~len(items) > 100~
 
 ** Think-Pair-Share: Which Step?
 
@@ -519,38 +535,17 @@ If User is high:
 * CPU Profilers
 
 ** CPU Profilers: Tracing vs Sampling
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
 
 Tools to analyze and measure CPU time spent on different functions/code blocks.
 
-***                                                          :B_columns:
-:PROPERTIES:
-:BEAMER_ENV: columns
-:END:
+| | *Tracing* | *Sampling* |
+|---|---|---|
+| *How* | Records every function call | Periodically snapshots the stack |
+| *Data* | Complete execution record | Statistical approximation |
+| *Overhead* | Higher | Lower |
+| *Strength* | Precise call counts | Low-impact, production-safe |
 
-**** Tracing Profilers                                        :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.48
-:END:
-
-- Track *every* function call your program makes
-- Complete record of execution
-- Higher overhead
-- Precise call counts
-
-**** Sampling Profilers                                       :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.48
-:END:
-
-- Periodically sample program's stack (e.g., every millisecond)
-- Aggregate statistics of time usage
-- Lower overhead
-- Statistical approximation
-
-** Python Example: =cProfile=
+** Python Example: cProfile
 :PROPERTIES:
 :BEAMER_ENV: exampleblock
 :BEAMER_ACT: <2->
@@ -560,10 +555,7 @@ Python's =cProfile= module profiles time per function call. See =demo/cprofile_d
 
 #+BEGIN_SRC bash
 # Run the profiler demo
-python demo/cprofile_demo.py
-
-# Or profile any Python script
-python -m cProfile -s cumulative your_script.py
+python3 -m cProfile -s cumulative cprofile_demo.py
 #+END_SRC
 
 *** Sample Output
@@ -622,7 +614,7 @@ Visualizations showing how much time a program spends in different functions.
 [[./images/flamegraph.png]]
 #+END_CENTER
 
-** Generating Flame Graphs with =py-spy=
+** Generating Flame Graphs with pyinstrument
 :PROPERTIES:
 :BEAMER_ENV: exampleblock
 :BEAMER_ACT: <2->
@@ -631,18 +623,11 @@ Visualizations showing how much time a program spends in different functions.
 Try it with =demo/flamegraph_demo.py=:
 
 #+BEGIN_SRC bash
-# Install py-spy
-pip install py-spy
-
-# Profile the demo and generate flame graph
-py-spy record -o profile.svg --duration 10 \
-  -- python demo/flamegraph_demo.py
-
-# Open profile.svg in your browser
-# Click boxes to zoom in on hot paths
+pip install pyinstrument
+pyinstrument -r html flamegraph_demo.py
 #+END_SRC
 
-The demo has intentional performance bottlenecks - can you identify them in the flame graph?
+The demo has intentional performance bottlenecks, can you identify them in the flame graph?
 
 ** Example Interpretation
 :PROPERTIES:
@@ -664,29 +649,12 @@ Optimize by:
 :BEAMER_ENV: block
 :END:
 
-***                                                          :B_columns:
-:PROPERTIES:
-:BEAMER_ENV: columns
-:END:
-
-**** Common Memory Issues                                     :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.48
-:END:
-
-- *The Global List*: Cache that never clears
-- *Unclosed Resources*: File/DB connections not closed
-- *Reference Cycles*: Objects pointing to each other
-- *Large Data Loading*: Reading 5GB files into RAM
-
-**** Profiling Approaches                                     :BMCOL:
-:PROPERTIES:
-:BEAMER_COL: 0.48
-:END:
-
-- *Heap Profiling*: Track allocations/deallocations
-- *Reference Counting*: Monitor object references
-- Tools: =memory_profiler=, =tracemalloc=, =valgrind=
+| *Issue* | *Cause* | *Tool* |
+|---|---|---|
+| Memory leak | Global list / cache that never clears | =tracemalloc= |
+| Resource leak | Unclosed file/DB connections | =memory_profiler= |
+| Reference cycles | Objects pointing to each other | =gc= module |
+| Excess allocation | Loading 5GB files into RAM | =valgrind= |
 
 *** Key Strategy
 :PROPERTIES:
