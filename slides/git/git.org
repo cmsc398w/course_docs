@@ -184,7 +184,7 @@ Why doesn't Git just commit everything the moment you save a file? Why do we *ha
 :BEAMER_ACT: <2->
 :END:
 
-Control and precision. The staging area lets you group related changes together. You can fix five different things but commit them as five separate, logical units.
+The staging area lets you group related changes together. You can fix five different things but commit them as five separate, logical units.
 
 ** Workflow Example
 
@@ -383,6 +383,19 @@ Creates a *new commit* that is the inverse of the target commit. History is neve
 
 ** Reset: Undo Local Commits
 
+*** git reset
+:PROPERTIES:
+:BEAMER_ENV: exampleblock
+:END:
+
+Moves the branch pointer to an earlier commit. Rewrites history; only use on unpushed commits.
+
+| Mode | Command | Side Effect (all will undo commits) |
+|------|---------|--------|
+| Soft | =git reset --soft HEAD~1= | Changes stay *staged*              |
+| Mixed (default) | =git reset HEAD~1= | Changes go to *working directory*              |
+| Hard | =git reset --hard HEAD~1= | Changes are *discarded*              |
+
 *** Relative Refs
 :PROPERTIES:
 :BEAMER_ENV: block
@@ -394,20 +407,6 @@ Creates a *new commit* that is the inverse of the target commit. History is neve
 |-----|---------|
 | =HEAD~1= or =HEAD~= | One commit back (parent) |
 | =HEAD~2= | Two commits back (grandparent) |
-
-*** git reset
-:PROPERTIES:
-:BEAMER_ENV: exampleblock
-:BEAMER_ACT: <2->
-:END:
-
-Moves the branch pointer to an earlier commit. Rewrites history; only use on unpushed commits.
-
-| Mode | Command | Effect |
-|------|---------|--------|
-| Soft | =git reset --soft HEAD~1= | Undo commit; changes stay *staged* |
-| Mixed (default) | =git reset HEAD~1= | Undo commit; changes go to *working directory* |
-| Hard | =git reset --hard HEAD~1= | Undo commit; changes are *discarded* |
 
 ** The Reflog
 
@@ -429,20 +428,6 @@ a1b2c3d HEAD@{2}: commit: Add payment feature  <- this one!
 # Restore it
 $ git reset --hard a1b2c3d
 #+END_SRC
-
-** Safety Net Reference
-
-*** Safety Net Reference
-:PROPERTIES:
-:BEAMER_ENV: block
-:END:
-
-| Situation | Tool | Command |
-|-----------|------|---------|
-| Accidentally deleted a branch | Reflog | =git reflog= + =git switch -c <b> <hash>= |
-| Pushed a bad commit to a shared branch | Revert | =git revert <hash>= |
-| Local commit is wrong, not pushed | Reset (hard) | =git reset --hard HEAD~1= |
-| Undo commit but keep changes staged | Reset (soft) | =git reset --soft HEAD~1= |
 
 ** Discussion: Reset or Revert?
 
@@ -676,7 +661,7 @@ gitGraph
 #+end_src
 
 #+BEGIN_EXPORT latex
-\begin{center}\includegraphics[width=\textwidth]{branches}\end{center}
+\begin{center}\includegraphics[width=\linewidth]{branches}\end{center}
 #+END_EXPORT
 
 ** Detached HEAD
