@@ -17,9 +17,6 @@
 # Projects
 
 - [System Monitoring Project](./Projects/SystemMonitoring/ProjectDescription.md)
-- [PacMan Part 1](./Projects/pacman_part1.md)
-- [PacMan Part 2](./Projects/pacman_part2.md)
-- [Networking Project](./Projects/NetworkingProject/ProjectDescription.md)
 
 # Application Day
 
