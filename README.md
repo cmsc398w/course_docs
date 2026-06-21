@@ -1,13 +1,52 @@
-# CMSC389W: Practical Tools For Efficient Development
+# CMSC398W: Practical Tools for Efficient Development
 
-## Building and Generating Notes
+Course site for CMSC398W, built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build). Deployed at **https://cmsc398w.github.io/course_docs/**.
 
-1. [Install mdbook](https://rust-lang.github.io/mdBook/guide/installation.html)
+## Local Development
 
-2. [Install mdbook-admonish](https://github.com/tommilligan/mdbook-admonish?tab=readme-ov-file#installation)
+**Prerequisites:**
+- Node.js 22+
+- Emacs (for building slides from `.org` sources)
+- TeX Live with XeLaTeX (`texlive-xetex`, `texlive-latex-extra`, `texlive-latex-recommended`, `texlive-fonts-recommended`, `texlive-extra-utils`)
+- [BeamerReveal](https://metacpan.org/dist/BeamerReveal) Perl module (`cpanm BeamerReveal`)
+- `poppler-utils` and `ffmpeg` (used by BeamerReveal for PDF/video processing)
 
-3. [Install mdbook-mermaid](https://github.com/badboy/mdbook-mermaid)
+**Install Node dependencies:**
+```bash
+npm install
+```
 
-4. `cd` into /src
+**Build slides** (generates HTML/PDF from `.org` sources):
+```bash
+bash scripts/build-slides.sh
+```
 
-5. Run `mdbook serve --open`
+**Run dev server:**
+```bash
+npm run dev
+```
+
+**Build for production:**
+```bash
+npm run build
+npm run preview
+```
+
+## Project Structure
+
+```
+slides/          # Org-mode Beamer slide sources + images
+scripts/         # build-slides.sh, export-slides.el, beamer-reveal.sty
+src/
+  content/docs/  # Starlight markdown/MDX pages
+  components/    # Astro components (e.g. SlideEmbed)
+public/          # Static assets; slides are built into public/slides/
+```
+
+## Deployment
+
+Pushes to `main` trigger the GitHub Actions workflow (`.github/workflows/deploy.yml`), which:
+1. Installs Emacs, TeX Live, BeamerReveal, and supporting tools
+2. Compiles org-mode slides to PDF and reveal.js HTML via `build-slides.sh`
+3. Builds the Astro site with `npm run build`
+4. Deploys to GitHub Pages
