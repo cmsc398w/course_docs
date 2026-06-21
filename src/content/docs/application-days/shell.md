@@ -5,7 +5,7 @@ description: Shell Application Day for CMSC398W.
 
 Build a command-line todo list manager in Bash. The app stores todos in a file and supports adding, viewing, completing, removing, and cleaning up tasks.
 
-Repository: [https://github.com/cmsc398w/STIC](https://github.com/cmsc398w/STIC)
+Repository: [https://github.com/cmsc398w/course_docs](https://github.com/cmsc398w/course_docs)
 
 Submit your `todo.sh` script on Gradescope.
 

@@ -33,7 +33,7 @@ Start the dev server:
 
 ```bash
 npm run dev
-# → http://localhost:4321/STIC/
+# → http://localhost:4321/course_docs/
 ```
 
 ## Adding or Updating Slides
@@ -58,4 +58,4 @@ The build script priority per topic directory:
 
 ## Deployment
 
-Pushing to `main` triggers the GitHub Actions workflow (`.github/workflows/deploy.yml`), which installs all dependencies, runs `scripts/build-slides.sh`, builds the Astro site, and deploys to GitHub Pages at `https://mdurrani808.github.io/STIC/`.
+Pushing to `main` triggers the GitHub Actions workflow (`.github/workflows/deploy.yml`), which installs all dependencies, runs `scripts/build-slides.sh`, builds the Astro site, and deploys to GitHub Pages at `https://mdurrani808.github.io/course_docs/`.
